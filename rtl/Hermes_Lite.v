@@ -334,8 +334,8 @@ wire write_IP;
 // Emulate EEPROM
 
 assign This_MAC = {8'h00,8'h1c,8'hc0,8'ha2,8'h22,8'h5c};
-assign AssignIP = {8'd192,8'd168,8'd2,8'd31};
-//assign AssignIP = 32'd0;
+//assign AssignIP = {8'd192,8'd168,8'd2,8'd31};
+assign AssignIP = 32'd0;
 assign MAC_ready = 1'b1;
 assign IP_ready = 1'b1;
 assign IP_write_done = 1'b1;
