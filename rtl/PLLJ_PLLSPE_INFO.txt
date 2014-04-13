@@ -1,0 +1,10 @@
+PLL_Name	ethclocks:PLL_clocks_inst|altpll:altpll_component|ethclocks_altpll:auto_generated|pll1
+PLLJITTER	31
+PLLSPEmax	84
+PLLSPEmin	-53
+
+PLL_Name	ifclocks:PLL_IF_inst|altpll:altpll_component|ifclocks_altpll:auto_generated|pll1
+PLLJITTER	NA
+PLLSPEmax	84
+PLLSPEmin	-53
+

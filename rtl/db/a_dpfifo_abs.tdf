@@ -1,0 +1,73 @@
+--a_dpfifo ALLOW_RWCYCLE_WHEN_FULL="OFF" DEVICE_FAMILY="Cyclone IV E" LPM_NUMWORDS=258 LPM_SHOWAHEAD="OFF" lpm_width=8 lpm_widthu=9 OVERFLOW_CHECKING="ON" UNDERFLOW_CHECKING="ON" aclr clock data q rreq sclr wreq CARRY_CHAIN="MANUAL" CARRY_CHAIN_LENGTH=48 CYCLONEII_M4K_COMPATIBILITY="ON" LOW_POWER_MODE="AUTO"
+--VERSION_BEGIN 13.1 cbx_altdpram 2013:10:17:04:07:49:SJ cbx_altsyncram 2013:10:17:04:07:49:SJ cbx_cycloneii 2013:10:17:04:07:49:SJ cbx_fifo_common 2013:10:17:04:07:49:SJ cbx_lpm_add_sub 2013:10:17:04:07:49:SJ cbx_lpm_compare 2013:10:17:04:07:49:SJ cbx_lpm_counter 2013:10:17:04:07:49:SJ cbx_lpm_decode 2013:10:17:04:07:49:SJ cbx_lpm_mux 2013:10:17:04:07:49:SJ cbx_mgl 2013:10:17:04:34:36:SJ cbx_scfifo 2013:10:17:04:07:49:SJ cbx_stratix 2013:10:17:04:07:49:SJ cbx_stratixii 2013:10:17:04:07:49:SJ cbx_stratixiii 2013:10:17:04:07:49:SJ cbx_stratixv 2013:10:17:04:07:49:SJ cbx_util_mgl 2013:10:17:04:07:49:SJ  VERSION_END
+
+
+-- Copyright (C) 1991-2013 Altera Corporation
+--  Your use of Altera Corporation's design tools, logic functions 
+--  and other software and tools, and its AMPP partner logic 
+--  functions, and any output files from any of the foregoing 
+--  (including device programming or simulation files), and any 
+--  associated documentation or information are expressly subject 
+--  to the terms and conditions of the Altera Program License 
+--  Subscription Agreement, Altera MegaCore Function License 
+--  Agreement, or other applicable license agreement, including, 
+--  without limitation, that your use is for the sole purpose of 
+--  programming logic devices manufactured by Altera and sold by 
+--  Altera or its authorized distributors.  Please refer to the 
+--  applicable agreement for further details.
+
+
+FUNCTION a_fefifo_48e (aclr, clock, rreq, sclr, wreq)
+RETURNS ( empty, full);
+FUNCTION dpram_omt (data[7..0], inclock, outclock, outclocken, rdaddress[8..0], wraddress[8..0], wren)
+RETURNS ( q[7..0]);
+FUNCTION cntr_4ob (aclr, clock, cnt_en, sclr)
+RETURNS ( q[8..0]);
+
+--synthesis_resources = lut 27 M9K 1 reg 29 
+SUBDESIGN a_dpfifo_abs
+( 
+	aclr	:	input;
+	clock	:	input;
+	data[7..0]	:	input;
+	q[7..0]	:	output;
+	rreq	:	input;
+	sclr	:	input;
+	wreq	:	input;
+) 
+VARIABLE 
+	fifo_state : a_fefifo_48e;
+	FIFOram : dpram_omt;
+	rd_ptr_count : cntr_4ob;
+	wr_ptr : cntr_4ob;
+	rd_ptr[8..0]	: WIRE;
+	valid_rreq	: WIRE;
+	valid_wreq	: WIRE;
+
+BEGIN 
+	fifo_state.aclr = aclr;
+	fifo_state.clock = clock;
+	fifo_state.rreq = rreq;
+	fifo_state.sclr = sclr;
+	fifo_state.wreq = wreq;
+	FIFOram.data[] = data[];
+	FIFOram.inclock = clock;
+	FIFOram.outclock = clock;
+	FIFOram.outclocken = (valid_rreq # sclr);
+	FIFOram.rdaddress[] = ((! sclr) & rd_ptr[]);
+	FIFOram.wraddress[] = wr_ptr.q[];
+	FIFOram.wren = valid_wreq;
+	rd_ptr_count.aclr = aclr;
+	rd_ptr_count.clock = clock;
+	rd_ptr_count.cnt_en = valid_rreq;
+	rd_ptr_count.sclr = sclr;
+	wr_ptr.aclr = aclr;
+	wr_ptr.clock = clock;
+	wr_ptr.cnt_en = valid_wreq;
+	wr_ptr.sclr = sclr;
+	q[] = FIFOram.q[];
+	rd_ptr[] = rd_ptr_count.q[];
+	valid_rreq = (rreq & (! fifo_state.empty));
+	valid_wreq = (wreq & (! fifo_state.full));
+END;
+--VALID FILE
