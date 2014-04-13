@@ -8,7 +8,7 @@ This is a work in progress to create a low-cost software defined radio HF transc
 #### Project Goals
  * 0-30MHz (HF) transceiver with decent performance
  * Entirely open source and open hardware design
- * Cost of less than $150 for hobbyist who build their own
+ * Cost of less than $150 (cost includes FPGA board) for hobbyist who build their own
  * Maintain enough compatibility with Hermes to use existing Hermes SDR front-end software with no or minor modification
 
 
