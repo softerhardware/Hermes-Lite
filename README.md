@@ -16,7 +16,9 @@ This is a work in progress to create a low-cost software defined radio HF transc
 
 ## Demonstration
 
-From April 13 through April 20, 2014, you may be able to listen to the Hermes-Lite with [ghpsdr3-alex](http://napan.ca/ghpsdr3/index.php/Main_Page) using either the QtRadio front-end or the Android glSDR available on the playstore. The server is listed as Hermes-Lite. It might not always be up. A fellow ham has kindly let me host the Hermes-Lite at his station as he has a much better antenna setup. We noticed that his antenna was so "live" that clipping occurs at certain times during the day with the default gain setting. The gain can be reduced in QtRadio.   
+From April 13 through April 20, 2014, you may be able to listen to the Hermes-Lite with [ghpsdr3-alex](http://napan.ca/ghpsdr3/index.php/Main_Page) using either the QtRadio front-end or the Android glSDR available on the playstore. The server is listed under my call, KF7O, as HermesLite. It might not always be up. KL7NA has kindly let me host the Hermes-Lite at his station as he has a much better antenna setup. We noticed that his antenna was so "live" that clipping occurs at certain times during the day with the default gain setting. The gain can be reduced in QtRadio.   
+
+Thank you to N9VV for posting [screencast1](http://www.screencast.com/t/HGJk74dE) and [screencast2](http://www.screencast.com/t/Q3MsL02y).
 
 
 ## Receive Experiments
