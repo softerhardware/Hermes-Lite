@@ -14,7 +14,7 @@ The Kicad project is named ad9866.pro. You may have to update paths fp-lib-table
 
 This hardware design is licensed under the TAPR open hardware license. See LICENSE.TXT for details.
 
-== Additional Documentation ==
+## Additional Documentation ##
 
 Analog Devices made a AD9866 evaluation board which is a helpful reference. The schematic is [here](http://www.analog.com/static/imported-files/eval_boards/AD9865_66_Schematics.pdf) and the layout is [here](http://www.analog.com/static/imported-files/eval_boards/AD9865_66_Layout.pdf).
 
