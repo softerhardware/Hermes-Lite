@@ -20,6 +20,8 @@ Analog Devices made a AD9866 evaluation board which is a helpful reference. The 
 
 Schematics and documentation for the BeMicro SDR can be found [here](http://www.alteraforum.com/forum/archive/index.php/t-30731.html)
 
+A good paper on mixed signal PCB layout and analog grounds can be found [here](http://www.analog.com/library/analogdialogue/archives/46-06/staying_well_grounded.html)
+
 ## Assembly Experiences ##
 
 I tried three assembly methods. At first, I thought I'd use an inexpensive stencil from OshStencils, solder paste and my infrawave toaster oven. I could never get the proper (minimum) amount of paste on the pcb because the large thermal via opening in the stencil under the AD9866 caused too much paste to be pushed under the stencil on to some pins. I scrapped this plan and went with hot air. (I have a $80 smt rework station that includes hot air. You can find them on e-bay or amazon.) I was eventually able to get hot air to work by following techniques you can find on youtube videos. The AD9866 moved around quite a bit. This prototype has problems that at different gain settings for the ADC I see excessive noise. I think I fried it during assembly. The last technique and the one I would recommend would be to slightly tin the AD9866 pads and thermal pad on the PCB with a regular iron and regular solder. Care must be taken to not use too much solder. Then, place the AD9866 and use a toaster oven to solder it in place. I then placed and soldered all the other components by hand. I choose a minimum size of 0805 to make this easy. It may be possible to place and solder the other SMT components along with the AD9866 in the toaster oven too. 
