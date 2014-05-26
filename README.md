@@ -3,7 +3,13 @@ Hermes-Lite
 
 ## Introduction
 
-This is a work in progress to create a low-cost software defined radio HF transceiver. The hardware is based on Analog Devices' [AD9866](http://www.analog.com/en/broadband-products/broadband-codecs/ad9866/products/product.html) which is a 12-bit broadband modem mixed signal front end that has been repurposed as a direct down conversion and direct up conversion SDR transceiver covering 0-36 MHz. A hardware prototype has been built and tested that uses a [BeMicro SDR](http://www.arrownac.com/solutions/bemicro-sdk/) FPGA board for DSP processing. The FPGA firmware is a port of the [Hermes SDR](http://openhpsdr.org/wiki/index.php?title=HERMES) project. The ported firmware preserves enough compatibility with the original Hermes SDR so that existing Hermes front-end software may be used with the Hermes-Lite without modification. Initial receive and transmit tests show good performance and appear later in this README. All software and hardware intellectual property is open source. Contributions and derivatives are encouraged. Please review all issues and README files in the pcb and fpga directories. 
+This is a work in progress to create a low-cost software defined radio HF transceiver. The hardware is based on Analog Devices' [AD9866](http://www.analog.com/en/broadband-products/broadband-codecs/ad9866/products/product.html) which is a 12-bit broadband modem mixed signal front end that has been repurposed as a direct down conversion and direct up conversion SDR transceiver covering 0-36 MHz. A hardware prototype has been built and tested that uses a [BeMicro SDR](http://www.arrownac.com/solutions/bemicro-sdk/) FPGA board for DSP processing. The FPGA firmware is a port of the [Hermes SDR](http://openhpsdr.org/wiki/index.php?title=HERMES) project. The ported firmware preserves enough compatibility with the original Hermes SDR so that existing Hermes front-end software may be used with the Hermes-Lite without modification. Initial receive and transmit tests show good performance and appear later in this README. All software and hardware intellectual property is open source. Contributions and derivatives are encouraged. Please refer to the development section in this README. 
+
+Thank you to N9VV for posting [screencast1](http://www.screencast.com/t/HGJk74dE) and [screencast2](http://www.screencast.com/t/Q3MsL02y).
+
+A development discussion forum is on [Google Groups](https://groups.google.com/forum/#!forum/hermes-lite). 
+
+The original Hermes-Lite project is [here](https://github.com/softerhardware/Hermes-Lite/edit/master/README.md).
 
 #### Project Goals
  * 0-30MHz (HF) transceiver with decent performance
@@ -14,9 +20,11 @@ This is a work in progress to create a low-cost software defined radio HF transc
 
 ![Hermes-Lite](docs/hermeslite.jpg)
 
-## Demonstration
+## Development
 
-From April 13 through April 20, 2014, you may be able to listen to the Hermes-Lite with [ghpsdr3-alex](http://napan.ca/ghpsdr3/index.php/Main_Page) using either the QtRadio front-end or the Android glSDR available on the playstore. The server is listed as Hermes-Lite. It might not always be up. A fellow ham has kindly let me host the Hermes-Lite at his station as he has a much better antenna setup. We noticed that his antenna was so "live" that clipping occurs at certain times during the day with the default gain setting. The gain can be reduced in QtRadio.   
+Discussion regarding development takes place on the [Hermes-Lite Google Group](https://groups.google.com/forum/#!forum/hermes-lite). Bugs and future enhancments are captured in the [github issues](https://github.com/softerhardware/Hermes-Lite/issues). Also, refer to the README files in the fpga and pcb subdirectories.
+
+If you are interested in helping with development, please fork this project on github. Once you think you have significant contributions, issue a pull request. I will review your changes and may include them in this repository. Also, I am happy to see other forks of this project gain traction and possibly become the "main" repository. More power to you if you build a better Hermes-Lite! I do not plan to have a single central repository with multiple committers. 
 
 
 ## Receive Experiments
