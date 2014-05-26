@@ -90,7 +90,7 @@ localparam Merc_serialno = 8'd00;		// Use same value as equivalent Mercury code
 
 localparam RX_FIFO_SZ  = 4096; 			// 16 by 4096 deep RX FIFO
 localparam TX_FIFO_SZ  = 1024; 			// 16 by 1024 deep TX FIFO  
-localparam SP_FIFO_SZ = 8192;			// 16 by 8192 deep SP FIFO, was 16384 but wouldn't fit
+localparam SP_FIFO_SZ = 2048;			// 16 by 8192 deep SP FIFO, was 16384 but wouldn't fit
 
 localparam read_reg_address = 5'h10; 	// PHY register to read from - gives connect speed and fully duplex	
 
@@ -936,8 +936,8 @@ cdc_sync #(32)
 cdc_sync #(32)
 	freq1 (.siga(IF_frequency[1]), .rstb(C122_rst), .clkb(C122_clk), .sigb(C122_frequency_HZ[0])); // transfer Rx1 frequency
 
-//cdc_sync #(32)
-//	freq2 (.siga(IF_frequency[2]), .rstb(C122_rst), .clkb(C122_clk), .sigb(C122_frequency_HZ[1])); // transfer Rx2 frequency
+cdc_sync #(32)
+	freq2 (.siga(IF_frequency[2]), .rstb(C122_rst), .clkb(C122_clk), .sigb(C122_frequency_HZ[1])); // transfer Rx2 frequency
 
 
 cdc_sync #(2)
@@ -1001,7 +1001,7 @@ pulsegen cdc_m   (.sig(IF_CLRCLK), .rst(IF_rst), .clk(IF_clk), .pulse(IF_get_sam
 //                 All DSP code is in the Receiver module
 //------------------------------------------------------------------------------
 
-localparam NR = 1; // number of receivers to implement
+localparam NR = 2; // number of receivers to implement
 
 reg       [31:0] C122_frequency_HZ [0:NR-1];   // frequency control bits for CORDIC
 reg       [31:0] C122_frequency_HZ_Tx;
@@ -1102,19 +1102,19 @@ receiver receiver_inst0(   // Rx1
 	.test_strobe3()
 	);
 
-//receiver receiver_inst1(	// Rx2
+receiver receiver_inst1(	// Rx2
 	//control
-//	.clock(C122_clk),
-//	.rate(rate),
-//	.frequency(C122_sync_phase_word[1]),
-//	.out_strobe(strobe[1]),
+	.clock(C122_clk),
+	.rate(rate),
+	.frequency(C122_sync_phase_word[1]),
+	.out_strobe(strobe[1]),
 	//input
-//	.in_data(temp_ADC),
+	.in_data(temp_ADC),
 	//output
-//	.out_data_I(rx_I[1]),
-//	.out_data_Q(rx_Q[1]),
-//	.test_strobe3()
-//	);
+	.out_data_I(rx_I[1]),
+	.out_data_Q(rx_Q[1]),
+	.test_strobe3()
+	);
 
 
 
