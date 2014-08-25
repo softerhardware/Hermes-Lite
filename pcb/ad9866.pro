@@ -1,6 +1,6 @@
-update=Mon 31 Mar 2014 11:13:43 AM PDT
+update=Sun 24 Aug 2014 08:38:14 PM PDT
 version=1
-last_client=eeschema
+last_client=kicad
 [cvpcb]
 version=1
 NetIExt=net
@@ -52,6 +52,8 @@ SubpartIdSeparator=0
 SubpartFirstId=65
 LibDir=/home/shaynal/Hermes-Lite/pcb/libs
 NetFmtName=PcbnewAdvanced
+SpiceForceRefPrefix=0
+SpiceUseNetNumbers=0
 RptD_X=0
 RptD_Y=100
 RptLab=1
@@ -91,3 +93,4 @@ LibName31=libs/ad9866c
 LibName32=libs/ad9866
 LibName33=transf_minickts
 LibName34=con-pci_express(pci-e)
+LibName35=modified
