@@ -8,4 +8,5 @@
   (lib (name DIPSWITCH)(type KiCad)(uri /home/shaynal/Hermes-Lite/pcb/libs/dipswitch.pretty)(options "")(descr ""))
   (lib (name BEMICRO)(type KiCad)(uri /home/shaynal/Hermes-Lite/pcb/libs/bemicroconnector.pretty)(options "")(descr ""))
   (lib (name OPCIE)(type Legacy)(uri /home/shaynal/Hermes-Lite/pcb/libs/epcie.mod)(options "")(descr ""))
+  (lib (name PCIE36)(type KiCad)(uri /home/shaynal/Hermes-Lite/pcb/libs/pcie36.pretty)(options "")(descr ""))
 )
