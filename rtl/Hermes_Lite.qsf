@@ -34,8 +34,6 @@ set_global_assignment -name MAX_CORE_JUNCTION_TEMP 85
 set_global_assignment -name DEVICE_FILTER_PACKAGE FBGA
 set_global_assignment -name DEVICE_FILTER_PIN_COUNT 256
 set_global_assignment -name USE_CONFIGURATION_DEVICE ON
-set_global_assignment -name LL_ROOT_REGION ON -entity Mercury -section_id "Root Region"
-set_global_assignment -name LL_MEMBER_STATE LOCKED -entity Mercury -section_id "Root Region"
 set_global_assignment -name FORCE_CONFIGURATION_VCCIO ON
 set_global_assignment -name RESERVE_ALL_UNUSED_PINS_WEAK_PULLUP "AS INPUT TRI-STATED"
 set_global_assignment -name ALLOW_POWER_UP_DONT_CARE OFF
@@ -66,8 +64,6 @@ set_global_assignment -name OUTPUT_IO_TIMING_NEAR_END_VMEAS "HALF VCCIO" -rise
 set_global_assignment -name OUTPUT_IO_TIMING_NEAR_END_VMEAS "HALF VCCIO" -fall
 set_global_assignment -name OUTPUT_IO_TIMING_FAR_END_VMEAS "HALF SIGNAL SWING" -rise
 set_global_assignment -name OUTPUT_IO_TIMING_FAR_END_VMEAS "HALF SIGNAL SWING" -fall
-set_global_assignment -name SEARCH_PATH Documents/Hermes/Hermes_v1.8/ -tag from_archive
-set_global_assignment -name SEARCH_PATH Hermes_v1.9/ -tag from_archive
 set_global_assignment -name SYNTH_TIMING_DRIVEN_SYNTHESIS ON
 set_global_assignment -name ADV_NETLIST_OPT_SYNTH_WYSIWYG_REMAP ON
 set_global_assignment -name FITTER_EFFORT "STANDARD FIT"
@@ -84,7 +80,6 @@ set_global_assignment -name PHYSICAL_SYNTHESIS_REGISTER_RETIMING ON
 set_global_assignment -name ROUTER_LCELL_INSERTION_AND_LOGIC_DUPLICATION AUTO
 set_global_assignment -name MUX_RESTRUCTURE AUTO
 set_global_assignment -name STATE_MACHINE_PROCESSING "USER-ENCODED"
-set_global_assignment -name SEARCH_PATH "100% timing met_v4.7/" -tag from_archive
 set_global_assignment -name SEARCH_PATH Polyphase_FIR/ -tag from_archive
 set_global_assignment -name SMART_RECOMPILE ON
 set_global_assignment -name NUM_PARALLEL_PROCESSORS ALL
@@ -147,6 +142,7 @@ set_instance_assignment -name GLOBAL_SIGNAL "GLOBAL CLOCK" -to PHY_CLK125
 set_global_assignment -name SDC_FILE Hermes_Lite.sdc
 set_global_assignment -name VERILOG_FILE Hermes_Lite.v
 set_global_assignment -name VERILOG_FILE myhdl/ad9866.v
+set_global_assignment -name VERILOG_FILE Polyphase_FIR/firfilt.v
 set_global_assignment -name VERILOG_FILE Polyphase_FIR/CicInterpM5.v
 set_global_assignment -name VERILOG_FILE Polyphase_FIR/firromI_1024.v
 set_global_assignment -name QIP_FILE Polyphase_FIR/firromI_1024.qip
@@ -154,14 +150,10 @@ set_global_assignment -name VERILOG_FILE Polyphase_FIR/firram36I_1024.v
 set_global_assignment -name QIP_FILE Polyphase_FIR/firram36I_1024.qip
 set_global_assignment -name VERILOG_FILE Polyphase_FIR/FirInterp8_1024.v
 set_global_assignment -name MIF_FILE Polyphase_FIR/coefI8_1024.mif
-set_global_assignment -name MIF_FILE Polyphase_FIR/coefFb.mif
-set_global_assignment -name MIF_FILE Polyphase_FIR/coefFa.mif
-set_global_assignment -name MIF_FILE Polyphase_FIR/coefEb.mif
-set_global_assignment -name MIF_FILE Polyphase_FIR/coefEa.mif
-set_global_assignment -name MIF_FILE Polyphase_FIR/coefD.mif
-set_global_assignment -name MIF_FILE Polyphase_FIR/coefC.mif
-set_global_assignment -name MIF_FILE Polyphase_FIR/coefB.mif
-set_global_assignment -name MIF_FILE Polyphase_FIR/coefA.mif
+set_global_assignment -name VERILOG_FILE Polyphase_FIR/firram36.v
+set_global_assignment -name QIP_FILE Polyphase_FIR/firram36.qip
+set_global_assignment -name VERILOG_FILE Polyphase_FIR/firromH.v
+set_global_assignment -name QIP_FILE Polyphase_FIR/firromH.qip
 set_global_assignment -name MIF_FILE Polyphase_FIR/coefL8H.mif
 set_global_assignment -name MIF_FILE Polyphase_FIR/coefL8G.mif
 set_global_assignment -name MIF_FILE Polyphase_FIR/coefL8F.mif
@@ -210,4 +202,7 @@ set_global_assignment -name VERILOG_FILE ethclocks.v
 set_global_assignment -name QIP_FILE ifclocks.qip
 set_global_assignment -name VERILOG_FILE ifclocks.v
 set_global_assignment -name QIP_FILE ASMI.qip
+set_global_assignment -name QIP_FILE EPCS_fifo.qip
+set_global_assignment -name QIP_FILE Tx_fifo.qip
+set_global_assignment -name QIP_FILE PHY_Rx_fifo.qip
 set_instance_assignment -name PARTITION_HIERARCHY root_partition -to | -section_id Top

@@ -1917,8 +1917,8 @@ endmodule
 // Retrieval info: CONNECT: @write 0 0 0 0 write 0 0 0 0
 // Retrieval info: GEN_FILE: TYPE_NORMAL ASMI.v TRUE FALSE
 // Retrieval info: GEN_FILE: TYPE_NORMAL ASMI.qip TRUE FALSE
-// Retrieval info: GEN_FILE: TYPE_NORMAL ASMI.bsf TRUE TRUE
-// Retrieval info: GEN_FILE: TYPE_NORMAL ASMI_inst.v TRUE TRUE
-// Retrieval info: GEN_FILE: TYPE_NORMAL ASMI_bb.v TRUE TRUE
-// Retrieval info: GEN_FILE: TYPE_NORMAL ASMI.inc TRUE TRUE
-// Retrieval info: GEN_FILE: TYPE_NORMAL ASMI.cmp TRUE TRUE
+// Retrieval info: GEN_FILE: TYPE_NORMAL ASMI.bsf FALSE TRUE
+// Retrieval info: GEN_FILE: TYPE_NORMAL ASMI_inst.v FALSE TRUE
+// Retrieval info: GEN_FILE: TYPE_NORMAL ASMI_bb.v FALSE TRUE
+// Retrieval info: GEN_FILE: TYPE_NORMAL ASMI.inc FALSE TRUE
+// Retrieval info: GEN_FILE: TYPE_NORMAL ASMI.cmp FALSE TRUE
