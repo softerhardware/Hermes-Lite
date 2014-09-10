@@ -847,7 +847,7 @@ assign temp_DACD = 0;
 always @ (posedge C122_clk) 
 begin 
 
-  	temp_ADC <= {ad9866_adio,4'b0000};
+  	temp_ADC <= {{4{ad9866_adio[11]}},ad9866_adio};
 
     if (ad9866_adio == 12'b011111111111)
     	ad9866clipp <= 1'b1;
