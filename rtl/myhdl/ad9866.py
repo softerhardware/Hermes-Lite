@@ -68,7 +68,7 @@ def ad9866_spi(reset,clk,sclk,sdio,sdo,sen_n,start,datain,dataout):
 def ad9866_pgm(reset,clk,sen_n,start,datain,extrqst,extdata):
   """ Send commpands to the AD9866 """
 
-  pc = Signal(intbv(0)[4:])
+  pc = Signal(intbv(0)[5:])
   ##state = Signal(intbv(0)[1:])
 
   ## Mealy outputs
@@ -105,8 +105,18 @@ def ad9866_pgm(reset,clk,sen_n,start,datain,extrqst,extdata):
     elif pc == 0x0b and sen_n:
       start.next = 1
       datain.next = 0x0861
-   
-    elif pc == 0x0e and sen_n and extrqst:
+
+    ## Rewrite clock settings in case of error on powerup
+    elif pc == 0x0d and sen_n:
+      start.next = 1
+      datain.next = 0x0401
+
+    ## Rewrite clock settings in case of error on powerup
+    elif pc == 0x0f and sen_n:
+      start.next = 1
+      datain.next = 0x0644
+
+    elif pc == 0x1e and sen_n and extrqst:
       start.next = 1
       datain.next = extdata
 
@@ -119,8 +129,8 @@ def ad9866_pgm(reset,clk,sen_n,start,datain,extrqst,extdata):
   @always_seq(clk.posedge,reset=reset)
   def FSM():
 
-    if pc == 0x0f:
-      pc.next = 0x0e
+    if pc == 0x1f:
+      pc.next = 0x1e
     elif sen_n:
       pc.next = pc + 1
 

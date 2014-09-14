@@ -36,7 +36,7 @@ module Hermes_Lite(
 	// AD9866
 	output [5:0] ad9866_pga,
 	
-	inout [11:0] ad9866_adio,
+	//inout [11:0] ad9866_adio,
 	//input [5:0] ad9866_rx,
 	//output [5:0] ad9866_tx,
 	
@@ -53,7 +53,7 @@ module Hermes_Lite(
 
 	output ad9866_sclk,
     output ad9866_sdio,
-    input  ad9866_sdo,
+    //input  ad9866_sdo,
     output ad9866_sen_n,
    
 
@@ -114,9 +114,8 @@ cdc_sync #(1)
 //---------------------------------------------------------
 
 //wire C122_clk = LTC2208_122MHz;
-wire C122_clk; //  = AD9866clk;
-wire _122MHz;  // = AD9866clk;
-wire ad9866spiclk;
+wire C122_clk; // = AD9866clk;
+wire _122MHz; // = AD9866clk;
 
 wire IF_clk;
 wire CLRCLK;
@@ -129,7 +128,9 @@ Hermes_clk_lrclk_gen clrgen (.reset(C122_rst), .CLK_IN(C122_clk), .BCLK(C122_cbc
 
 
 wire 	IF_locked;
-ifclocks PLL_IF_inst( .inclk0(AD9866clk), .c0(IF_clk), .c1(C122_clk), .c2(_122MHz), .c3(ad9866spiclk), .locked(IF_locked));
+//ifclocks PLL_IF_inst( .inclk0(C122_clk), .c0(IF_clk), .locked(IF_locked));
+testclocks PLL_IF_inst( .inclk0(clk50mhz), .c0(IF_clk), .c1(C122_clk), .c2(_122MHz), .locked(IF_locked));
+
 
 //----------------------------PHY Clocks-------------------
 
@@ -845,77 +846,35 @@ reg [7:0] dacdclip;
 
 assign temp_DACD = 0;
 
-always @ (posedge C122_clk) 
-begin 
-
-  	temp_ADC <= {{4{ad9866_adio[11]}},ad9866_adio};
-
-    if (ad9866_adio == 12'b011111111111)
-    	ad9866clipp <= 1'b1;
-    else
-    	ad9866clipp <= 1'b0;
-
-
-	if (ad9866_adio == 12'b100000000000)
-    	ad9866clipn <= 1'b1;
-    else
-    	ad9866clipn <= 1'b0;
-
-
-   	if (DACD[13:12] == 2'b01)
-    	dacdclip[7] <= 1'b1;
-    else
-    	dacdclip[7] <= 1'b0;
-
-
-   	if (DACD[13:11] == 3'b001)
-    	dacdclip[6] <= 1'b1;
-    else
-    	dacdclip[6] <= 1'b0;
-
-
-   	if (DACD[13:10] == 4'b0001)
-    	dacdclip[5] <= 1'b1;
-    else
-    	dacdclip[5] <= 1'b0;
-
-
-   	if (DACD[13:9] == 5'b00001)
-    	dacdclip[4] <= 1'b1;
-    else
-    	dacdclip[4] <= 1'b0;
-
-
-   	if (DACD[13:8] == 6'b000001)
-    	dacdclip[3] <= 1'b1;
-    else
-    	dacdclip[3] <= 1'b0;
-
-
-   	if (DACD[13:7] == 7'b0000001)
-    	dacdclip[2] <= 1'b1;
-    else
-    	dacdclip[2] <= 1'b0;
-
-
-   	if (DACD[13:6] == 8'b00000001)
-    	dacdclip[1] <= 1'b1;
-    else
-    	dacdclip[1] <= 1'b0;
-
-
-   	if (DACD[13:6] == 9'b000000001)
-    	dacdclip[0] <= 1'b1;
-    else
-    	dacdclip[0] <= 1'b0;
-
-
-end 
-
 
 // RX/TX port
-assign ad9866_adio = FPGA_PTT ? DACD[13:2] : 12'bZ;
+//assign ad9866_adio = FPGA_PTT ? DACD[13:2] : 12'bZ;
 
+
+reg [3:0] incnt;
+
+always @ (posedge C122_clk)
+  begin
+    case (incnt)
+      4'h0 : temp_ADC = 16'b0000000000000000;
+      4'h1 : temp_ADC = 16'b0010010101011111;
+      4'h2 : temp_ADC = 16'b0100010100001101;
+      4'h3 : temp_ADC = 16'b0101101000111000;
+      4'h4 : temp_ADC = 16'b0110000110101000;
+      4'h5 : temp_ADC = 16'b0101101000111000;
+      4'h6 : temp_ADC = 16'b0100010100001101;
+      4'h7 : temp_ADC = 16'b0010010101011111;
+      4'h8 : temp_ADC = 16'b1000000000000000;
+      4'h9 : temp_ADC = 16'b1101101010100001;
+      4'ha : temp_ADC = 16'b1011101011110011;
+      4'hb : temp_ADC = 16'b1010010111001000;
+      4'hc : temp_ADC = 16'b1001111001011000;
+      4'hd : temp_ADC = 16'b1010010111001000;
+      4'he : temp_ADC = 16'b1011101011110011;
+      4'hf : temp_ADC = 16'b1101101010100001;
+    endcase
+    incnt <= incnt + 4'h1; 
+  end 
 
 
 
@@ -937,8 +896,8 @@ cdc_sync #(32)
 cdc_sync #(32)
 	freq1 (.siga(IF_frequency[1]), .rstb(C122_rst), .clkb(C122_clk), .sigb(C122_frequency_HZ[0])); // transfer Rx1 frequency
 
-cdc_sync #(32)
-	freq2 (.siga(IF_frequency[2]), .rstb(C122_rst), .clkb(C122_clk), .sigb(C122_frequency_HZ[1])); // transfer Rx2 frequency
+//cdc_sync #(32)
+//	freq2 (.siga(IF_frequency[2]), .rstb(C122_rst), .clkb(C122_clk), .sigb(C122_frequency_HZ[1])); // transfer Rx2 frequency
 
 
 cdc_sync #(2)
@@ -1002,7 +961,7 @@ pulsegen cdc_m   (.sig(IF_CLRCLK), .rst(IF_rst), .clk(IF_clk), .pulse(IF_get_sam
 //                 All DSP code is in the Receiver module
 //------------------------------------------------------------------------------
 
-localparam NR = 2; // number of receivers to implement
+localparam NR = 1; // number of receivers to implement
 
 reg       [31:0] C122_frequency_HZ [0:NR-1];   // frequency control bits for CORDIC
 reg       [31:0] C122_frequency_HZ_Tx;
@@ -1103,19 +1062,19 @@ receiver receiver_inst0(   // Rx1
 	.test_strobe3()
 	);
 
-receiver receiver_inst1(	// Rx2
+//receiver receiver_inst1(	// Rx2
 	//control
-	.clock(C122_clk),
-	.rate(rate),
-	.frequency(C122_sync_phase_word[1]),
-	.out_strobe(strobe[1]),
+//	.clock(C122_clk),
+//	.rate(rate),
+//	.frequency(C122_sync_phase_word[1]),
+//	.out_strobe(strobe[1]),
 	//input
-	.in_data(temp_ADC),
+//	.in_data(temp_ADC),
 	//output
-	.out_data_I(rx_I[1]),
-	.out_data_Q(rx_Q[1]),
-	.test_strobe3()
-	);
+//	.out_data_I(rx_I[1]),
+//	.out_data_Q(rx_Q[1]),
+//	.test_strobe3()
+//	);
 
 
 
@@ -1960,22 +1919,26 @@ assign clean_dash = 0;
 
 
 // AD9866 Instance
-ad9866 ad9866_inst(.reset(IF_rst),.clk(ad9866spiclk),.sclk(ad9866_sclk),.sdio(ad9866_sdio),.sdo(ad9866_sdo),.sen_n(ad9866_sen_n),.dataout(),.extrqst(ad9866rqst),.extdata(ad9866data));
+wire ad9866_sdo;
+assign ad9866_sdo = 1'b0;
+ad9866 ad9866_inst(.reset(IF_rst),.clk(IF_clk),.sclk(ad9866_sclk),.sdio(ad9866_sdio),.sdo(ad9866_sdo),.sen_n(ad9866_sen_n),.dataout(),.extrqst(ad9866rqst),.extdata(ad9866data));
 
 
 parameter half_second = 10000000; // at 48MHz clock rate
 
 	
-Led_flash Flash_LED0(.clock(C122_clk), .signal(ad9866clipp), .LED(leds[0]), .period(half_second));
-Led_flash Flash_LED1(.clock(C122_clk), .signal(ad9866clipn), .LED(leds[1]), .period(half_second));
+//Led_flash Flash_LED0(.clock(C122_clk), .signal(FPGA_PTT), .LED(leds[0]), .period(half_second));
+assign leds[0] = FPGA_PTT;
+
+Led_flash Flash_LED1(.clock(C122_clk), .signal(RX_DV), .LED(leds[1]), .period(half_second));
 
 //Led_flash Flash_LED0(.clock(C122_clk), .signal(dacdclip[0]), .LED(leds[0]), .period(half_second));
 //Led_flash Flash_LED1(.clock(C122_clk), .signal(dacdclip[1]), .LED(leds[1]), .period(half_second));
-Led_flash Flash_LED2(.clock(C122_clk), .signal(dacdclip[2]), .LED(leds[2]), .period(half_second));
-Led_flash Flash_LED3(.clock(C122_clk), .signal(dacdclip[3]), .LED(leds[3]), .period(half_second));
-Led_flash Flash_LED4(.clock(C122_clk), .signal(dacdclip[4]), .LED(leds[4]), .period(half_second));	
-Led_flash Flash_LED5(.clock(C122_clk), .signal(dacdclip[5]), .LED(leds[5]), .period(half_second));
-Led_flash Flash_LED6(.clock(C122_clk), .signal(dacdclip[6]), .LED(leds[6]), .period(half_second));
+Led_flash Flash_LED2(.clock(C122_clk), .signal(this_MAC), .LED(leds[2]), .period(half_second));
+Led_flash Flash_LED3(.clock(C122_clk), .signal(PHY_TX_EN), .LED(leds[3]), .period(half_second));
+Led_flash Flash_LED4(.clock(C122_clk), .signal(IF_SYNC_state == SYNC_RX_1_2), .LED(leds[4]), .period(half_second));	
+//Led_flash Flash_LED5(.clock(C122_clk), .signal(dacdclip[5]), .LED(leds[5]), .period(half_second));
+//Led_flash Flash_LED6(.clock(C122_clk), .signal(dacdclip[6]), .LED(leds[6]), .period(half_second));
 //Led_flash Flash_LED7(.clock(C122_clk), .signal(dacdclip[7]), .LED(leds[7]), .period(half_second));		
 
 
@@ -1987,6 +1950,7 @@ begin
 end
 assign leds[7] = counter[25];
 
+assign leds[6:5] = Hermes_atten[4:3];
 
 
 function integer clogb2;

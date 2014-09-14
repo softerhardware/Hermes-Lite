@@ -46,7 +46,7 @@ set_clock_groups -asynchronous -group {PHY_TX_CLOCK \
 					PHY_RX_CLOCK \
 					PHY_RX_CLOCK_2 \
 					} \
-					-group {PLL_IF_inst|altpll_component|auto_generated|pll1|clk[0] PLL_IF_inst|altpll_component|auto_generated|pll1|clk[3]} \
+					-group {PLL_IF_inst|altpll_component|auto_generated|pll1|clk[0]} \
 					-group {AD9866clk} \
 					-group {PLL_IF_inst|altpll_component|auto_generated|pll1|clk[1] PLL_IF_inst|altpll_component|auto_generated|pll1|clk[2]} \
 					-group {ad9866_rxclk}		 

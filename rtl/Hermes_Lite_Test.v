@@ -114,9 +114,8 @@ cdc_sync #(1)
 //---------------------------------------------------------
 
 //wire C122_clk = LTC2208_122MHz;
-wire C122_clk; //  = AD9866clk;
-wire _122MHz;  // = AD9866clk;
-wire ad9866spiclk;
+wire C122_clk; // = AD9866clk;
+wire _122MHz; // = AD9866clk;
 
 wire IF_clk;
 wire CLRCLK;
@@ -130,6 +129,7 @@ Hermes_clk_lrclk_gen clrgen (.reset(C122_rst), .CLK_IN(C122_clk), .BCLK(C122_cbc
 
 wire 	IF_locked;
 ifclocks PLL_IF_inst( .inclk0(AD9866clk), .c0(IF_clk), .c1(C122_clk), .c2(_122MHz), .c3(ad9866spiclk), .locked(IF_locked));
+
 
 //----------------------------PHY Clocks-------------------
 
@@ -937,8 +937,8 @@ cdc_sync #(32)
 cdc_sync #(32)
 	freq1 (.siga(IF_frequency[1]), .rstb(C122_rst), .clkb(C122_clk), .sigb(C122_frequency_HZ[0])); // transfer Rx1 frequency
 
-cdc_sync #(32)
-	freq2 (.siga(IF_frequency[2]), .rstb(C122_rst), .clkb(C122_clk), .sigb(C122_frequency_HZ[1])); // transfer Rx2 frequency
+//cdc_sync #(32)
+//	freq2 (.siga(IF_frequency[2]), .rstb(C122_rst), .clkb(C122_clk), .sigb(C122_frequency_HZ[1])); // transfer Rx2 frequency
 
 
 cdc_sync #(2)
@@ -1002,7 +1002,7 @@ pulsegen cdc_m   (.sig(IF_CLRCLK), .rst(IF_rst), .clk(IF_clk), .pulse(IF_get_sam
 //                 All DSP code is in the Receiver module
 //------------------------------------------------------------------------------
 
-localparam NR = 2; // number of receivers to implement
+localparam NR = 1; // number of receivers to implement
 
 reg       [31:0] C122_frequency_HZ [0:NR-1];   // frequency control bits for CORDIC
 reg       [31:0] C122_frequency_HZ_Tx;
@@ -1103,19 +1103,19 @@ receiver receiver_inst0(   // Rx1
 	.test_strobe3()
 	);
 
-receiver receiver_inst1(	// Rx2
-	//control
-	.clock(C122_clk),
-	.rate(rate),
-	.frequency(C122_sync_phase_word[1]),
-	.out_strobe(strobe[1]),
-	//input
-	.in_data(temp_ADC),
-	//output
-	.out_data_I(rx_I[1]),
-	.out_data_Q(rx_Q[1]),
-	.test_strobe3()
-	);
+//receiver receiver_inst1(	// Rx2
+//	//control
+//	.clock(C122_clk),
+//	.rate(rate),
+//	.frequency(C122_sync_phase_word[1]),
+//	.out_strobe(strobe[1]),
+//	//input
+//	.in_data(temp_ADC),
+//	//output
+//	.out_data_I(rx_I[1]),
+//	.out_data_Q(rx_Q[1]),
+//	.test_strobe3()
+//	);
 
 
 
@@ -1820,7 +1820,9 @@ assign ad9866rqst = 1'b0;
 assign ad9866data = 16'h00;
 
 // Hack to use IF_DITHER to switch highest bit of attenuation
-assign ad9866_pga = {~IF_DITHER, ~Hermes_atten};
+//assign ad9866_pga = {~IF_DITHER, ~Hermes_atten};
+// Constant gain of 20 dB
+assign ad9866_pga = 6'h20;
 
 
 //---------------------------------------------------------
@@ -1976,8 +1978,8 @@ Led_flash Flash_LED3(.clock(C122_clk), .signal(dacdclip[3]), .LED(leds[3]), .per
 Led_flash Flash_LED4(.clock(C122_clk), .signal(dacdclip[4]), .LED(leds[4]), .period(half_second));	
 Led_flash Flash_LED5(.clock(C122_clk), .signal(dacdclip[5]), .LED(leds[5]), .period(half_second));
 Led_flash Flash_LED6(.clock(C122_clk), .signal(dacdclip[6]), .LED(leds[6]), .period(half_second));
-//Led_flash Flash_LED7(.clock(C122_clk), .signal(dacdclip[7]), .LED(leds[7]), .period(half_second));		
 
+//Led_flash Flash_LED7(.clock(C122_clk), .signal(dacdclip[7]), .LED(leds[7]), .period(half_second));		
 
 reg [25:0] counter;
 
@@ -1986,7 +1988,6 @@ begin
 	counter <= counter + 1;
 end
 assign leds[7] = counter[25];
-
 
 
 function integer clogb2;
