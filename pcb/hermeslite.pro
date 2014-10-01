@@ -1,4 +1,4 @@
-update=Sun 24 Aug 2014 08:38:14 PM PDT
+update=Fri 26 Sep 2014 09:36:34 PM PDT
 version=1
 last_client=kicad
 [cvpcb]
@@ -90,5 +90,5 @@ LibName28=atmel
 LibName29=contrib
 LibName30=valves
 LibName31=libs/hermeslite
-LibName34=con-pci_express(pci-e)
+LibName32=EEPROM
 
