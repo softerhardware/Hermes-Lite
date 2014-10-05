@@ -38,8 +38,8 @@ $Descr USLetter 11000 8500
 encoding utf-8
 Sheet 1 1
 Title "Hermes-Lite"
-Date "04 Oct 2014"
-Rev "1.1f"
+Date "05 Oct 2014"
+Rev "1.2"
 Comp "SofterHardware"
 Comment1 "KF7O Steve Haynal"
 Comment2 ""
