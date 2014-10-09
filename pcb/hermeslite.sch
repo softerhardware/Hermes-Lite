@@ -38,7 +38,7 @@ $Descr USLetter 11000 8500
 encoding utf-8
 Sheet 1 1
 Title "Hermes-Lite"
-Date "07 Oct 2014"
+Date "08 Oct 2014"
 Rev "1.2"
 Comp "SofterHardware"
 Comment1 "KF7O Steve Haynal"
@@ -718,17 +718,6 @@ F 2 "" H 1600 7050 60  0000 C CNN
 F 3 "" H 1600 7050 60  0000 C CNN
 	1    1600 7050
 	0    1    1    0   
-$EndComp
-$Comp
-L EEPROM U2
-U 1 1 5421E05F
-P 1150 4350
-F 0 "U2" V 1300 4550 50  0000 C CNN
-F 1 "EEPROM" H 1000 4725 50  0001 C CNN
-F 2 "SMD_Packages:SOT-23-6" H 1150 3875 50  0001 C CNN
-F 3 "DOCUMENTATION" H 1125 3950 50  0001 C CNN
-	1    1150 4350
-	0    -1   -1   0   
 $EndComp
 NoConn ~ 1550 4400
 NoConn ~ 1550 4500
@@ -1797,4 +1786,15 @@ FPGA5V
 Wire Wire Line
 	1750 750  1700 750 
 Connection ~ 1350 750 
+$Comp
+L EEPROM U2
+U 1 1 54362814
+P 1150 4350
+F 0 "U2" V 1300 4550 50  0000 C CNN
+F 1 "EEPROM" H 1000 4725 50  0001 C CNN
+F 2 "MODULE" H 1150 3875 50  0001 C CNN
+F 3 "DOCUMENTATION" H 1125 3950 50  0001 C CNN
+	1    1150 4350
+	0    -1   -1   0   
+$EndComp
 $EndSCHEMATC
