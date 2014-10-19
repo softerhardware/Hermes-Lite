@@ -24,7 +24,6 @@
 // the Hermes-Lite hardware described at http://github.com/softerhardware/Hermes-Lite.
 // It was forked from Hermes V2.5.
 
-
 module Hermes_Lite(
 
 	input altclk,

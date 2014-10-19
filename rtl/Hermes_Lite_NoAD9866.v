@@ -129,21 +129,27 @@ Hermes_clk_lrclk_gen clrgen (.reset(C122_rst), .CLK_IN(C122_clk), .BCLK(C122_cbc
 
 wire 	IF_locked;
 //ifclocks PLL_IF_inst( .inclk0(C122_clk), .c0(IF_clk), .locked(IF_locked));
-testclocks PLL_IF_inst( .inclk0(clk50mhz), .c0(IF_clk), .c1(C122_clk), .c2(_122MHz), .locked(IF_locked));
+testclocks PLL_IF_inst( .inclk0(clk50mhz), .c0(IF_clk), .c1(C122_clk), .c2(_122MHz), .c3(EEPROM_clock), .locked(IF_locked));
 
 
 //----------------------------PHY Clocks-------------------
 
 wire Tx_clock;
-wire Tx_clock_2;
+//wire Tx_clock_2;
 wire C125_locked; 										// high when PLL locked
 wire PHY_data_clock;
 wire PHY_speed;											// 0 = 100T, 1 = 1000T
 wire EEPROM_clock;										// 2.5MHz
 
 
-ethclocks PLL_clocks_inst( .inclk0(PHY_TX_CLOCK), .c0(Tx_clock_2), .c1(EEPROM_clock));
+//ethclocks PLL_clocks_inst( .inclk0(PHY_TX_CLOCK), .c0(Tx_clock_2), .c1(EEPROM_clock));
+// generate Tx_clock_2
+reg Tx_clock_2;
+always @ (posedge PHY_TX_CLOCK) Tx_clock_2 <= ~Tx_clock_2;
+
+
 assign Tx_clock = PHY_TX_CLOCK;
+
 
 
 assign PHY_speed = 1'b0;		// high for 1000T, low for 100T; force 100T for now

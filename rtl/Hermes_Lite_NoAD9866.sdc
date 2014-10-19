@@ -33,6 +33,7 @@ derive_clock_uncertainty
 # internally generated clocks
 #
 create_generated_clock -name PHY_RX_CLOCK_2 -source PHY_RX_CLOCK -divide_by 2 PHY_RX_CLOCK_2
+create_generated_clock -name Tx_clock_2 -source PHY_TX_CLOCK -divide_by 2 Tx_clock_2
 
 
 #*************************************************************************************
@@ -41,14 +42,14 @@ create_generated_clock -name PHY_RX_CLOCK_2 -source PHY_RX_CLOCK -divide_by 2 PH
 # Note: output clock c0 (48.034909 MHz) of PLL_IF_inst is asynchronous with input source clock inclk0 (122.88MHz)
 #
 set_clock_groups -asynchronous -group {PHY_TX_CLOCK \
-					PLL_clocks_inst|altpll_component|auto_generated|pll1|clk[0] \
-					PLL_clocks_inst|altpll_component|auto_generated|pll1|clk[1] \
+					Tx_clock_2 \
 					PHY_RX_CLOCK \
 					PHY_RX_CLOCK_2 \
 					} \
 					-group {PLL_IF_inst|altpll_component|auto_generated|pll1|clk[0]} \
 					-group {AD9866clk} \
 					-group {PLL_IF_inst|altpll_component|auto_generated|pll1|clk[1] PLL_IF_inst|altpll_component|auto_generated|pll1|clk[2]} \
+					-group {PLL_IF_inst|altpll_component|auto_generated|pll1|clk[3]} \
 					-group {ad9866_rxclk}		 
 
 
