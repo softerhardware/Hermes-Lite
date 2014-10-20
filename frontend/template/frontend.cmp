@@ -1,0 +1,10 @@
+Cmp-Mod V01 Created by Cvpcb (2014-08-05 BZR 5054)-product   date = Sat 18 Oct 2014 05:56:08 PM PDT
+
+BeginCmp
+TimeStamp = /54430BA6;
+Reference = CN1;
+ValeurCmp = EDGE;
+IdModule  = HERMESLITE:EDGE;
+EndCmp
+
+EndListe
