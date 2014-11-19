@@ -1,6 +1,14 @@
 Hermes-Lite
 ===========
 
+## Quick Links
+
+ * [Google Groups](https://groups.google.com/forum/#!forum/hermes-lite) discussion forum.
+ * [Hardware](https://github.com/softerhardware/Hermes-Lite/blob/master/pcb/README.md)
+  * Hermes-Lite [schematic](https://github.com/softerhardware/Hermes-Lite/blob/master/pcb/hermeslite.pdf), [BOM](https://github.com/softerhardware/Hermes-Lite/blob/master/pcb/bom.xls) and [PCB](https://oshpark.com/shared_projects/WHfDeB2c).
+  * Basic RF front end [schematic](https://github.com/softerhardware/Hermes-Lite/blob/master/frontend/basic/frontend.pdf), [BOM](https://github.com/softerhardware/Hermes-Lite/blob/master/frontend/basic/bom.xls) and [PCB](https://oshpark.com/shared_projects/K5UywZWT).
+ * [RTL](https://github.com/softerhardware/Hermes-Lite/tree/master/rtl/README.md)
+
 ## Introduction
 
 This is a work in progress to create a low-cost software defined radio HF transceiver. The hardware is based on Analog Devices' [AD9866](http://www.analog.com/en/broadband-products/broadband-codecs/ad9866/products/product.html) which is a 12-bit broadband modem mixed signal front end that has been repurposed as a direct down conversion and direct up conversion SDR transceiver covering 0-36 MHz. A hardware prototype has been built and tested that uses a [BeMicro SDR](http://www.arrownac.com/solutions/bemicro-sdk/) FPGA board for DSP processing. The FPGA firmware is a port of the [Hermes SDR](http://openhpsdr.org/wiki/index.php?title=HERMES) project. The ported firmware preserves enough compatibility with the original Hermes SDR so that existing Hermes front-end software may be used with the Hermes-Lite without modification. Initial receive and transmit tests show good performance and appear later in this README. All software and hardware intellectual property is open source. Contributions and derivatives are encouraged. Please refer to the development section in this README. 
