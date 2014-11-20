@@ -26,7 +26,7 @@ The original Hermes-Lite project is [here](https://github.com/softerhardware/Her
  * Maintain enough compatibility with Hermes to use existing Hermes SDR front-end software with no or minor modification
 
 #### Hermes-Lite v1.2
-![Hermes-Lite](docs/hermeslite1.2.jpg)
+![Hermes-Lite](docs/hermeslite12.jpg)
 
 #### Hermes-Lite v0.9
 ![Hermes-Lite](docs/hermeslite.jpg)
