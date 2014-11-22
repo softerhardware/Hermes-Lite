@@ -8,6 +8,9 @@ Hermes-Lite
   * Hermes-Lite [schematic](https://github.com/softerhardware/Hermes-Lite/blob/master/pcb/hermeslite.pdf), [BOM](https://github.com/softerhardware/Hermes-Lite/blob/master/pcb/bom.xls) and [PCB](https://oshpark.com/shared_projects/WHfDeB2c).
   * Basic RF front end [schematic](https://github.com/softerhardware/Hermes-Lite/blob/master/frontend/basic/frontend.pdf), [BOM](https://github.com/softerhardware/Hermes-Lite/blob/master/frontend/basic/bom.xls) and [PCB](https://oshpark.com/shared_projects/K5UywZWT).
  * [RTL](https://github.com/softerhardware/Hermes-Lite/tree/master/rtl/README.md)
+ * Interesting Forks
+  * [PCB v1.0 and v1.1](https://github.com/frohro/Hermes-Lite)
+  * [Direct Audio Out](https://github.com/ik1xpv/Hermes-Lite)
 
 ## Introduction
 
