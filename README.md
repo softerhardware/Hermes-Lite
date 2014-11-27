@@ -6,7 +6,7 @@ Hermes-Lite
  * [Google Groups](https://groups.google.com/forum/#!forum/hermes-lite) discussion forum.
  * [Hardware](https://github.com/softerhardware/Hermes-Lite/blob/master/pcb/README.md)
   * Hermes-Lite [schematic](https://github.com/softerhardware/Hermes-Lite/blob/master/pcb/hermeslite.pdf), [BOM](https://github.com/softerhardware/Hermes-Lite/blob/master/pcb/bom.xls) and [PCB](https://oshpark.com/shared_projects/WHfDeB2c).
-  * Basic RF front end [schematic](https://github.com/softerhardware/Hermes-Lite/blob/master/frontend/basic/frontend.pdf), [BOM](https://github.com/softerhardware/Hermes-Lite/blob/master/frontend/basic/bom.xls) and [PCB](https://oshpark.com/shared_projects/K5UywZWT).
+  * Basic RF front end [schematic](https://github.com/softerhardware/Hermes-Lite/blob/master/frontend/basic/frontend.pdf), [BOM](https://github.com/softerhardware/Hermes-Lite/blob/master/frontend/basic/bom.xls) and [PCB](https://www.oshpark.com/shared_projects/gq1Qig3Q).
  * [RTL](https://github.com/softerhardware/Hermes-Lite/tree/master/rtl/README.md)
  * Interesting Forks
   * [PCB v1.0 and v1.1](https://github.com/frohro/Hermes-Lite)

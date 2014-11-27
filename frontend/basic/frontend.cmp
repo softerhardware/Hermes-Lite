@@ -1,4 +1,4 @@
-Cmp-Mod V01 Created by Cvpcb (2014-08-05 BZR 5054)-product   date = Sun 19 Oct 2014 12:39:14 PM PDT
+Cmp-Mod V01 Created by Cvpcb (2014-08-05 BZR 5054)-product   date = Tue 25 Nov 2014 08:13:32 PM PST
 
 BeginCmp
 TimeStamp = /544344BB;
@@ -33,6 +33,34 @@ TimeStamp = /54430BA6;
 Reference = CN1;
 ValeurCmp = EDGE;
 IdModule  = HERMESLITE:EDGE;
+EndCmp
+
+BeginCmp
+TimeStamp = /54755307;
+Reference = CN2;
+ValeurCmp = BREAKOUT;
+IdModule  = HERMESLITE:BREAKOUT;
+EndCmp
+
+BeginCmp
+TimeStamp = /547563D3;
+Reference = CN3;
+ValeurCmp = TXL;
+IdModule  = HERMESLITE:JUMPER;
+EndCmp
+
+BeginCmp
+TimeStamp = /54756604;
+Reference = CN4;
+ValeurCmp = AGND;
+IdModule  = HERMESLITE:JUMPER;
+EndCmp
+
+BeginCmp
+TimeStamp = /54756621;
+Reference = CN5;
+ValeurCmp = AGND;
+IdModule  = HERMESLITE:JUMPER;
 EndCmp
 
 BeginCmp
@@ -87,14 +115,14 @@ EndCmp
 BeginCmp
 TimeStamp = /54434023;
 Reference = T1;
-ValeurCmp = TRANSF;
+ValeurCmp = 4:1;
 IdModule  = HERMESLITE:TRANSFREV;
 EndCmp
 
 BeginCmp
 TimeStamp = /54433FF8;
 Reference = T2;
-ValeurCmp = TRANSF;
+ValeurCmp = 8:1;
 IdModule  = HERMESLITE:TRANSFREV;
 EndCmp
 

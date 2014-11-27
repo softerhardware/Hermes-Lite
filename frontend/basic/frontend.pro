@@ -1,4 +1,4 @@
-update=Sat 18 Oct 2014 05:42:36 PM PDT
+update=Wed 19 Nov 2014 10:02:45 PM PST
 version=1
 last_client=kicad
 [cvpcb]
@@ -25,8 +25,6 @@ SolderMaskMinWidth=0.000000000000
 DrawSegmentWidth=0.200000000000
 BoardOutlineThickness=0.100000000000
 ModuleOutlineThickness=0.150000000000
-[general]
-version=1
 [eeschema]
 version=1
 PageLayoutDescrFile=
@@ -72,3 +70,5 @@ LibName28=atmel
 LibName29=contrib
 LibName30=valves
 LibName31=hermeslite
+[general]
+version=1

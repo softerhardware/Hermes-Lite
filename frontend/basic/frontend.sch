@@ -30,14 +30,15 @@ LIBS:atmel
 LIBS:contrib
 LIBS:valves
 LIBS:hermeslite
+LIBS:frontend-cache
 EELAYER 24 0
 EELAYER END
 $Descr USLetter 11000 8500
 encoding utf-8
 Sheet 1 1
 Title "Basic Hermes-Lite RF Frontend"
-Date "19 Oct 2014"
-Rev "0.9"
+Date "27 Nov 2014"
+Rev "1.0"
 Comp "SofterHardware"
 Comment1 "KF7O"
 Comment2 ""
@@ -168,12 +169,12 @@ $EndComp
 $Comp
 L R R1
 U 1 1 5443441E
-P 5100 2450
-F 0 "R1" V 5100 2550 40  0000 C CNN
-F 1 "0" V 5100 2350 40  0000 C CNN
-F 2 "" V 5030 2450 30  0000 C CNN
-F 3 "" H 5100 2450 30  0000 C CNN
-	1    5100 2450
+P 5100 2500
+F 0 "R1" V 5100 2600 40  0000 C CNN
+F 1 "0" V 5100 2400 40  0000 C CNN
+F 2 "" V 5030 2500 30  0000 C CNN
+F 3 "" H 5100 2500 30  0000 C CNN
+	1    5100 2500
 	-1   0    0    1   
 $EndComp
 $Comp
@@ -190,12 +191,12 @@ $EndComp
 $Comp
 L FB FB1
 U 1 1 54434516
-P 4850 2200
-F 0 "FB1" H 4925 2150 39  0000 C CNN
-F 1 "FB" H 4850 2300 60  0001 C CNN
-F 2 "" H 4850 2200 60  0000 C CNN
-F 3 "" H 4850 2200 60  0000 C CNN
-	1    4850 2200
+P 4850 2250
+F 0 "FB1" H 4925 2200 39  0000 C CNN
+F 1 "FB" H 4850 2350 60  0001 C CNN
+F 2 "" H 4850 2250 60  0000 C CNN
+F 3 "" H 4850 2250 60  0000 C CNN
+	1    4850 2250
 	1    0    0    -1  
 $EndComp
 Wire Wire Line
@@ -284,29 +285,15 @@ Wire Wire Line
 	5100 4450 5100 4800
 Connection ~ 5300 4450
 Wire Wire Line
-	5100 2700 5100 3300
-Wire Wire Line
 	5300 2950 5300 3050
 Wire Wire Line
 	5300 3000 5100 3000
 Connection ~ 5100 3000
 Connection ~ 5300 3000
 Wire Wire Line
-	3850 4400 4700 4400
+	3850 4400 4950 4400
 Wire Wire Line
-	4700 4400 4700 4250
-Wire Wire Line
-	4700 4250 5300 4250
-Wire Wire Line
-	3850 4500 4700 4500
-Wire Wire Line
-	4700 4500 4700 4650
-Wire Wire Line
-	4700 4650 5300 4650
-Wire Wire Line
-	4400 2800 5300 2800
-Wire Wire Line
-	4500 3200 5300 3200
+	3850 4500 4950 4500
 Wire Wire Line
 	5100 3500 5100 3550
 Wire Wire Line
@@ -316,33 +303,9 @@ Wire Wire Line
 Wire Wire Line
 	5100 5000 5100 5050
 Wire Wire Line
-	2500 2200 2500 3350
+	3850 4200 4800 4200
 Wire Wire Line
-	2500 2200 4700 2200
-Wire Wire Line
-	5000 2200 5100 2200
-NoConn ~ 2650 2850
-NoConn ~ 2650 2950
-NoConn ~ 2650 3050
-NoConn ~ 2650 3150
-NoConn ~ 2650 3450
-NoConn ~ 2650 3600
-NoConn ~ 3850 2850
-NoConn ~ 3850 2950
-NoConn ~ 3850 3050
-NoConn ~ 3850 3150
-NoConn ~ 3850 3250
-NoConn ~ 3850 3350
-NoConn ~ 3850 3450
-NoConn ~ 3850 3600
-Wire Wire Line
-	3850 4200 4500 4200
-Wire Wire Line
-	4500 4200 4500 3200
-Wire Wire Line
-	3850 4100 4400 4100
-Wire Wire Line
-	4400 4100 4400 2800
+	3850 4100 4700 4100
 $Comp
 L GND #PWR2
 U 1 1 54434F94
@@ -367,11 +330,6 @@ Connection ~ 4000 4300
 Wire Wire Line
 	3850 4600 4000 4600
 Connection ~ 4000 4600
-Wire Wire Line
-	2500 3350 2650 3350
-Wire Wire Line
-	2650 3250 2500 3250
-Connection ~ 2500 3250
 Text Notes 6700 3550 0    60   ~ 0
 Ground Option
 Text Notes 6700 5000 0    60   ~ 0
@@ -381,25 +339,25 @@ Wire Wire Line
 Wire Wire Line
 	2500 3700 2500 4800
 Wire Wire Line
-	2650 3800 2500 3800
+	2350 3800 2650 3800
 Connection ~ 2500 3800
 Wire Wire Line
 	2650 3900 2500 3900
 Connection ~ 2500 3900
 Wire Wire Line
-	2650 4000 2500 4000
+	2350 4000 2650 4000
 Connection ~ 2500 4000
 Wire Wire Line
 	2650 4100 2500 4100
 Connection ~ 2500 4100
 Wire Wire Line
-	2650 4200 2500 4200
+	2350 4200 2650 4200
 Connection ~ 2500 4200
 Wire Wire Line
 	2650 4300 2500 4300
 Connection ~ 2500 4300
 Wire Wire Line
-	2650 4400 2500 4400
+	2350 4400 2650 4400
 Connection ~ 2500 4400
 Wire Wire Line
 	2650 4500 2500 4500
@@ -407,4 +365,151 @@ Connection ~ 2500 4500
 Wire Wire Line
 	2650 4600 2500 4600
 Connection ~ 2500 4600
+Text Notes 5500 5150 0    60   ~ 0
+6T bifilar\n4T\nBN-61-2402
+Text Notes 5500 3700 0    60   ~ 0
+4T bifilar\n6T\nBN-61-2402
+$Comp
+L BREAKOUT CN2
+U 1 1 54755307
+P 3550 1250
+F 0 "CN2" V 3600 250 60  0000 C CNN
+F 1 "BREAKOUT" V 3600 1200 60  0000 C CNN
+F 2 "" H 3550 750 60  0000 C CNN
+F 3 "" H 3550 750 60  0000 C CNN
+	1    3550 1250
+	0    -1   -1   0   
+$EndComp
+Wire Wire Line
+	3850 2850 3850 1850
+Wire Wire Line
+	3850 2950 3950 2950
+Wire Wire Line
+	3950 2950 3950 1850
+Wire Wire Line
+	3850 3050 4050 3050
+Wire Wire Line
+	4050 3050 4050 1850
+Wire Wire Line
+	3850 3150 4150 3150
+Wire Wire Line
+	4150 3150 4150 1850
+Wire Wire Line
+	3850 3250 4250 3250
+Wire Wire Line
+	4250 3250 4250 1850
+Wire Wire Line
+	3850 3350 4350 3350
+Wire Wire Line
+	4350 3350 4350 1850
+Wire Wire Line
+	3850 3450 4450 3450
+Wire Wire Line
+	4450 3450 4450 1850
+Wire Wire Line
+	3850 3600 4550 3600
+Wire Wire Line
+	4550 3600 4550 1850
+Wire Wire Line
+	2650 2450 2650 2950
+Wire Wire Line
+	2650 2450 3750 2450
+Wire Wire Line
+	3750 2450 3750 1850
+Connection ~ 2650 2850
+Wire Wire Line
+	2650 3150 2550 3150
+Wire Wire Line
+	2550 3150 2550 2350
+Wire Wire Line
+	2550 2350 3650 2350
+Wire Wire Line
+	3650 2350 3650 1850
+Wire Wire Line
+	2650 3350 2450 3350
+Wire Wire Line
+	2450 3350 2450 2250
+Wire Wire Line
+	2450 2250 4700 2250
+Wire Wire Line
+	3550 2250 3550 1850
+Wire Wire Line
+	2650 3600 2350 3600
+Wire Wire Line
+	2350 3600 2350 2150
+Wire Wire Line
+	2350 2150 3450 2150
+Wire Wire Line
+	3450 2150 3450 1850
+Wire Wire Line
+	2650 3050 2550 3050
+Connection ~ 2550 3050
+Wire Wire Line
+	2650 3250 2450 3250
+Connection ~ 2450 3250
+Wire Wire Line
+	2650 3450 2350 3450
+Connection ~ 2350 3450
+Wire Wire Line
+	5100 2750 5100 3300
+Wire Wire Line
+	5100 2250 5000 2250
+Connection ~ 3550 2250
+Wire Wire Line
+	4700 4100 4700 2800
+Wire Wire Line
+	4700 2800 5300 2800
+Wire Wire Line
+	4800 4200 4800 3200
+Wire Wire Line
+	4800 3200 5300 3200
+Wire Wire Line
+	4950 4400 4950 4250
+Wire Wire Line
+	4950 4250 5300 4250
+Wire Wire Line
+	4950 4500 4950 4650
+Wire Wire Line
+	4950 4650 5300 4650
+$Comp
+L CONN_2 CN3
+U 1 1 547563D3
+P 4450 3850
+F 0 "CN3" H 4450 3900 40  0000 C CNN
+F 1 "TXL" H 4450 3800 40  0000 C CNN
+F 2 "" H 4450 3850 60  0000 C CNN
+F 3 "" H 4450 3850 60  0000 C CNN
+	1    4450 3850
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	3850 3900 4100 3900
+Wire Wire Line
+	4100 3900 4100 3950
+Wire Wire Line
+	3850 3800 4100 3800
+Wire Wire Line
+	4100 3800 4100 3750
+$Comp
+L CONN_2 CN4
+U 1 1 54756604
+P 2000 3900
+F 0 "CN4" H 2000 3850 40  0000 C CNN
+F 1 "AGND" H 2000 3950 40  0000 C CNN
+F 2 "" H 2000 3900 60  0000 C CNN
+F 3 "" H 2000 3900 60  0000 C CNN
+	1    2000 3900
+	-1   0    0    1   
+$EndComp
+$Comp
+L CONN_2 CN5
+U 1 1 54756621
+P 2000 4300
+F 0 "CN5" H 2000 4250 40  0000 C CNN
+F 1 "AGND" H 2000 4350 40  0000 C CNN
+F 2 "" H 2000 4300 60  0000 C CNN
+F 3 "" H 2000 4300 60  0000 C CNN
+	1    2000 4300
+	-1   0    0    1   
+$EndComp
 $EndSCHEMATC
