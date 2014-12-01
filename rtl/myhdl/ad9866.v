@@ -89,7 +89,11 @@ always @(sen_n, dut1_pc, extrqst, extdata) begin: AD9866_DUT1_COMB
     end
     else if (((dut1_pc == 15) && sen_n)) begin
         start = 1;
-        datain = 1604;
+        datain = 16'h0644;
+    end
+    else if (((dut1_pc == 17) && sen_n)) begin
+        start = 1;
+        datain = 16'h1084;
     end
     else if (((dut1_pc == 30) && sen_n && extrqst)) begin
         start = 1;

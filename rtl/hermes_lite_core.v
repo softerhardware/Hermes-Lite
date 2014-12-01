@@ -24,19 +24,23 @@
 // the Hermes-Lite hardware described at http://github.com/softerhardware/Hermes-Lite.
 // It was forked from Hermes V2.5.
 
+module hermes_lite_core(
 
-module Hermes_Lite(
-
-	input altclk,
 	input AD9866clk,
-	input clk50mhz,
+
+	input IF_clk,
+	input ad9866spiclk,
+	input rstclk,
+	input EEPROM_clock,
+	input IF_locked,
+
  	input extreset,
 	output [7:0] leds, 
 
 	// AD9866
 	output [5:0] ad9866_pga,
 	
-	//inout [11:0] ad9866_adio,
+	inout [11:0] ad9866_adio,
 	//input [5:0] ad9866_rx,
 	//output [5:0] ad9866_tx,
 	
@@ -53,25 +57,46 @@ module Hermes_Lite(
 
 	output ad9866_sclk,
     output ad9866_sdio,
-    //input  ad9866_sdo,
+    input  ad9866_sdo,
     output ad9866_sen_n,
-   
 
-    // Ethernet PHY
+    output ad9866_rst_n,
+ 
+    // MII Ethernet PHY
   	output [3:0]PHY_TX,
   	output PHY_TX_EN,              //PHY Tx enable
   	input  PHY_TX_CLOCK,           //PHY Tx data clock
   	input  [3:0]PHY_RX,     
   	input  RX_DV,                  //PHY has data flag
   	input  PHY_RX_CLOCK,           //PHY Rx data clock
- 
-  	output PHY_RESET_N,
- 
-	inout  PHY_MDIO,               //data line to PHY MDIO
-	output PHY_MDC                //2.5MHz clock to PHY MDIO
-  
+  	output PHY_RESET_N,  
+    inout PHY_MDIO,
+    output PHY_MDC
+
 );
 
+// PARAMETERS
+
+// Ethernet Interface
+parameter MAC;
+parameter IP;
+
+// ADC Oscillator
+parameter CLK_FREQ;
+
+// B57 = 2^57.   M2 = B57/OSC
+localparam M2 = (CLK_FREQ == 61440000) ? 32'd2345624805 : 32'd1954687338;
+// M3 = M2 / 2, used to round the result
+localparam M3 = (CLK_FREQ == 61440000) ? 32'd1172812402 : 32'd977343669;
+
+// Decimation rate
+localparam RATE48 =  (CLK_FREQ == 61440000) ? 6'd20 : 6'd24;
+localparam RATE96 =  (CLK_FREQ == 61440000) ? 6'd10 : 6'd12;
+localparam RATE192 = (CLK_FREQ == 61440000) ? 6'd05 : 6'd06;
+localparam RATE384 = (CLK_FREQ == 61440000) ? 6'd03 : 6'd03; // Doesn't work for 61.44 MHz oscillator
+
+// Number of Receivers
+parameter NR; // number of receivers to implement
 
 wire NCONFIG;
 
@@ -114,22 +139,18 @@ cdc_sync #(1)
 //---------------------------------------------------------
 
 //wire C122_clk = LTC2208_122MHz;
-wire C122_clk; // = AD9866clk;
-wire _122MHz; // = AD9866clk;
+wire C122_clk; //  = AD9866clk;
+wire _122MHz;  // = AD9866clk;
 
-wire IF_clk;
 wire CLRCLK;
 
 wire C122_cbclk, C122_cbrise, C122_cbfall;
-Hermes_clk_lrclk_gen clrgen (.reset(C122_rst), .CLK_IN(C122_clk), .BCLK(C122_cbclk),
+Hermes_clk_lrclk_gen #(.CLK_FREQ(CLK_FREQ)) clrgen (.reset(C122_rst), .CLK_IN(C122_clk), .BCLK(C122_cbclk),
                              .Brise(C122_cbrise), .Bfall(C122_cbfall), .LRCLK(CLRCLK));
 
 
-
-
-wire 	IF_locked;
-//ifclocks PLL_IF_inst( .inclk0(C122_clk), .c0(IF_clk), .locked(IF_locked));
-testclocks PLL_IF_inst( .inclk0(clk50mhz), .c0(IF_clk), .c1(C122_clk), .c2(_122MHz), .c3(EEPROM_clock), .locked(IF_locked));
+assign C122_clk = AD9866clk;
+assign _122MHz = AD9866clk;
 
 
 //----------------------------PHY Clocks-------------------
@@ -139,17 +160,12 @@ wire Tx_clock;
 wire C125_locked; 										// high when PLL locked
 wire PHY_data_clock;
 wire PHY_speed;											// 0 = 100T, 1 = 1000T
-wire EEPROM_clock;										// 2.5MHz
 
-
-//ethclocks PLL_clocks_inst( .inclk0(PHY_TX_CLOCK), .c0(Tx_clock_2), .c1(EEPROM_clock));
-// generate Tx_clock_2
 reg Tx_clock_2;
 always @ (posedge PHY_TX_CLOCK) Tx_clock_2 <= ~Tx_clock_2;
 
-
+//ethclocks_cv PLL_clocks_inst( .inclk0(PHY_TX_CLOCK), .c0(Tx_clock_2), .c1(EEPROM_clock));
 assign Tx_clock = PHY_TX_CLOCK;
-
 
 
 assign PHY_speed = 1'b0;		// high for 1000T, low for 100T; force 100T for now
@@ -161,6 +177,7 @@ always @ (posedge PHY_RX_CLOCK) PHY_RX_CLOCK_2 <= ~PHY_RX_CLOCK_2;
 
 // force 100T for now 
 assign PHY_data_clock = PHY_RX_CLOCK_2;
+
 
 //------------------------------------------------------------
 //  Reset and initialisation
@@ -341,9 +358,9 @@ wire write_IP;
 	
 // Emulate EEPROM
 
-assign This_MAC = {8'h00,8'h1c,8'hc0,8'ha2,8'h22,8'h5c};
+assign This_MAC = MAC;
 //assign AssignIP = {8'd192,8'd168,8'd2,8'd31};
-assign AssignIP = 32'd0;
+assign AssignIP = IP;
 assign MAC_ready = 1'b1;
 assign IP_ready = 1'b1;
 assign IP_write_done = 1'b1;
@@ -597,9 +614,7 @@ reg ping_sent;
 reg [16:0]times_up;			// time out counter so code wont hang here
 reg [1:0] state;
 
-parameter IDLE = 2'd0,
-			  ARP = 2'd1,
-			 PING = 2'd2;
+localparam IDLE = 2'd0, ARP = 2'd1, PING = 2'd2;
 
 always @ (posedge PHY_RX_CLOCK)
 begin
@@ -852,35 +867,77 @@ reg [7:0] dacdclip;
 
 assign temp_DACD = 0;
 
+always @ (posedge C122_clk) 
+begin 
+
+  	temp_ADC <= {{4{ad9866_adio[11]}},ad9866_adio};
+
+    if (ad9866_adio == 12'b011111111111)
+    	ad9866clipp <= 1'b1;
+    else
+    	ad9866clipp <= 1'b0;
+
+
+	if (ad9866_adio == 12'b100000000000)
+    	ad9866clipn <= 1'b1;
+    else
+    	ad9866clipn <= 1'b0;
+
+
+   	if (DACD[13:12] == 2'b01)
+    	dacdclip[7] <= 1'b1;
+    else
+    	dacdclip[7] <= 1'b0;
+
+
+   	if (DACD[13:11] == 3'b001)
+    	dacdclip[6] <= 1'b1;
+    else
+    	dacdclip[6] <= 1'b0;
+
+
+   	if (DACD[13:10] == 4'b0001)
+    	dacdclip[5] <= 1'b1;
+    else
+    	dacdclip[5] <= 1'b0;
+
+
+   	if (DACD[13:9] == 5'b00001)
+    	dacdclip[4] <= 1'b1;
+    else
+    	dacdclip[4] <= 1'b0;
+
+
+   	if (DACD[13:8] == 6'b000001)
+    	dacdclip[3] <= 1'b1;
+    else
+    	dacdclip[3] <= 1'b0;
+
+
+   	if (DACD[13:7] == 7'b0000001)
+    	dacdclip[2] <= 1'b1;
+    else
+    	dacdclip[2] <= 1'b0;
+
+
+   	if (DACD[13:6] == 8'b00000001)
+    	dacdclip[1] <= 1'b1;
+    else
+    	dacdclip[1] <= 1'b0;
+
+
+   	if (DACD[13:6] == 9'b000000001)
+    	dacdclip[0] <= 1'b1;
+    else
+    	dacdclip[0] <= 1'b0;
+
+
+end 
+
 
 // RX/TX port
-//assign ad9866_adio = FPGA_PTT ? DACD[13:2] : 12'bZ;
+assign ad9866_adio = FPGA_PTT ? DACD[13:2] : 12'bZ;
 
-
-reg [3:0] incnt;
-
-always @ (posedge C122_clk)
-  begin
-    case (incnt)
-      4'h0 : temp_ADC = 16'b0000000000000000;
-      4'h1 : temp_ADC = 16'b0010010101011111;
-      4'h2 : temp_ADC = 16'b0100010100001101;
-      4'h3 : temp_ADC = 16'b0101101000111000;
-      4'h4 : temp_ADC = 16'b0110000110101000;
-      4'h5 : temp_ADC = 16'b0101101000111000;
-      4'h6 : temp_ADC = 16'b0100010100001101;
-      4'h7 : temp_ADC = 16'b0010010101011111;
-      4'h8 : temp_ADC = 16'b1000000000000000;
-      4'h9 : temp_ADC = 16'b1101101010100001;
-      4'ha : temp_ADC = 16'b1011101011110011;
-      4'hb : temp_ADC = 16'b1010010111001000;
-      4'hc : temp_ADC = 16'b1001111001011000;
-      4'hd : temp_ADC = 16'b1010010111001000;
-      4'he : temp_ADC = 16'b1011101011110011;
-      4'hf : temp_ADC = 16'b1101101010100001;
-    endcase
-    incnt <= incnt + 4'h1; 
-  end 
 
 
 
@@ -898,13 +955,6 @@ wire  signed [15:0] C122_Q_PWM;
 
 cdc_sync #(32)
 	freq0 (.siga(IF_frequency[0]), .rstb(C122_rst), .clkb(C122_clk), .sigb(C122_frequency_HZ_Tx)); // transfer Tx frequency
-	
-cdc_sync #(32)
-	freq1 (.siga(IF_frequency[1]), .rstb(C122_rst), .clkb(C122_clk), .sigb(C122_frequency_HZ[0])); // transfer Rx1 frequency
-
-//cdc_sync #(32)
-//	freq2 (.siga(IF_frequency[2]), .rstb(C122_rst), .clkb(C122_clk), .sigb(C122_frequency_HZ[1])); // transfer Rx2 frequency
-
 
 cdc_sync #(2)
 	rates (.siga({IF_DFS1,IF_DFS0}), .rstb(C122_rst), .clkb(C122_clk), .sigb({C122_DFS1, C122_DFS0})); // sample rate
@@ -967,8 +1017,6 @@ pulsegen cdc_m   (.sig(IF_CLRCLK), .rst(IF_rst), .clk(IF_clk), .pulse(IF_get_sam
 //                 All DSP code is in the Receiver module
 //------------------------------------------------------------------------------
 
-localparam NR = 1; // number of receivers to implement
-
 reg       [31:0] C122_frequency_HZ [0:NR-1];   // frequency control bits for CORDIC
 reg       [31:0] C122_frequency_HZ_Tx;
 reg       [31:0] C122_last_freq [0:NR-1];
@@ -991,24 +1039,24 @@ wire             test_strobe3;
 	always @ ({C122_DFS1, C122_DFS0})
 	begin 
 		case ({C122_DFS1, C122_DFS0})
-    	0: rate <= 6'd24;     //  48ksps 
-    	1: rate <= 6'd12;     //  96ksps
-    	2: rate <= 6'd06;     //  192ksps
-    	3: rate <= 6'd03;      //  384ksps
-    	default: rate <= 6'd24;    			
+//    	0: rate <= 6'd24;     //  48ksps 
+//    	1: rate <= 6'd12;     //  96ksps
+//    	2: rate <= 6'd06;     //  192ksps
+//    	3: rate <= 6'd03;      //  384ksps    	
+//    	default: rate <= 6'd24;    			
+
+    	0: rate <= RATE48;     //  48ksps 
+    	1: rate <= RATE96;     //  96ksps
+    	2: rate <= RATE192;     //  192ksps
+    	// FIXME: What to do for 384ksps with 61.44 MHZ Xtal?
+    	3: rate <= RATE384;      //  384ksps    	
+    	default: rate <= RATE48;    	
 
 		endcase
 	end 
 
-//localparam M2 = 32'd1172812403;  // B57 = 2^57.   M2 = B57/122880000
-//localparam M3 = 32'd586406201;   // M3 = M2 / 2, used to round the result
-localparam M2 = 32'd1954687338; // Like above but with 73728000 osc
-localparam M3 = 32'd977343669;
-
-
-
+genvar c;
 generate
-  genvar c;
   for (c = 0; c < NR; c = c + 1) // calc freq phase word for 4 freqs (Rx1, Rx2, Rx3, Rx4)
    begin: MDC 
     //  assign C122_ratio[c] = C122_frequency_HZ[c] * M2; // B0 * B57 number = B57 number
@@ -1025,12 +1073,11 @@ generate
           C122_sync_phase_word[c] <= C122_ratio[c][56:25]; // B57 -> B32 number since R is always >= 0  
       end 		
     end
-	 
+
 	cdc_mcp #(48)			// Transfer the receiver data and strobe from C122_clk to IF_clk
 		IQ_sync (.a_data ({rx_I[c], rx_Q[c]}), .a_clk(C122_clk),.b_clk(IF_clk), .a_data_rdy(strobe[c]),
 				.a_rst(C122_rst), .b_rst(IF_rst), .b_data(IF_M_IQ_Data[c]), .b_data_ack(IF_M_IQ_Data_rdy[c]));
 
-/*				
 	receiver receiver_inst(
 	//control
 	.clock(C122_clk),
@@ -1042,11 +1089,14 @@ generate
 	//output
 	.out_data_I(rx_I[c]),
 	.out_data_Q(rx_Q[c]),
-	.test_strobe3(test_strobe3)
+	.test_strobe3()
 	);
-*/				
-  end
+
+	cdc_sync #(32)
+		freq (.siga(IF_frequency[c+1]), .rstb(C122_rst), .clkb(C122_clk), .sigb(C122_frequency_HZ[c])); // transfer Rx1 frequency
+end
 endgenerate
+
 
 //wire [15:0] select_input;
 //wire [31:0] select_frequency;
@@ -1054,19 +1104,19 @@ endgenerate
 //assign select_frequency = FPGA_PTT ? C122_sync_phase_word_Tx : C122_sync_phase_word[0]; 	// Rx5 freq on Rx and Tx freq on Tx
 
 
-receiver receiver_inst0(   // Rx1
+//receiver receiver_inst0(   // Rx1
 	//control
-	.clock(C122_clk),
-	.rate(rate),
-	.frequency(C122_sync_phase_word[0]),
-	.out_strobe(strobe[0]),
+//	.clock(C122_clk),
+//	.rate(rate),
+//	.frequency(C122_sync_phase_word[0]),
+//	.out_strobe(strobe[0]),
 	//input
-	.in_data(temp_ADC),
+//	.in_data(temp_ADC),
 	//output
-	.out_data_I(rx_I[0]),
-	.out_data_Q(rx_Q[0]),
-	.test_strobe3()
-	);
+//	.out_data_I(rx_I[0]),
+//	.out_data_Q(rx_Q[0]),
+//	.test_strobe3()
+//	);
 
 //receiver receiver_inst1(	// Rx2
 	//control
@@ -1925,26 +1975,22 @@ assign clean_dash = 0;
 
 
 // AD9866 Instance
-wire ad9866_sdo;
-assign ad9866_sdo = 1'b0;
-ad9866 ad9866_inst(.reset(IF_rst),.clk(IF_clk),.sclk(ad9866_sclk),.sdio(ad9866_sdio),.sdo(ad9866_sdo),.sen_n(ad9866_sen_n),.dataout(),.extrqst(ad9866rqst),.extdata(ad9866data));
+ad9866 ad9866_inst(.reset(~ad9866_rst_n),.clk(ad9866spiclk),.sclk(ad9866_sclk),.sdio(ad9866_sdio),.sdo(ad9866_sdo),.sen_n(ad9866_sen_n),.dataout(),.extrqst(ad9866rqst),.extdata(ad9866data));
 
 
-parameter half_second = 10000000; // at 48MHz clock rate
+localparam half_second = 10000000; // at 48MHz clock rate
 
 	
-//Led_flash Flash_LED0(.clock(C122_clk), .signal(FPGA_PTT), .LED(leds[0]), .period(half_second));
-assign leds[0] = FPGA_PTT;
-
-Led_flash Flash_LED1(.clock(C122_clk), .signal(RX_DV), .LED(leds[1]), .period(half_second));
+Led_flash Flash_LED0(.clock(C122_clk), .signal(ad9866clipp), .LED(leds[0]), .period(half_second));
+Led_flash Flash_LED1(.clock(C122_clk), .signal(ad9866clipn), .LED(leds[1]), .period(half_second));
 
 //Led_flash Flash_LED0(.clock(C122_clk), .signal(dacdclip[0]), .LED(leds[0]), .period(half_second));
 //Led_flash Flash_LED1(.clock(C122_clk), .signal(dacdclip[1]), .LED(leds[1]), .period(half_second));
-Led_flash Flash_LED2(.clock(C122_clk), .signal(this_MAC), .LED(leds[2]), .period(half_second));
-Led_flash Flash_LED3(.clock(C122_clk), .signal(PHY_TX_EN), .LED(leds[3]), .period(half_second));
-Led_flash Flash_LED4(.clock(C122_clk), .signal(IF_SYNC_state == SYNC_RX_1_2), .LED(leds[4]), .period(half_second));	
-//Led_flash Flash_LED5(.clock(C122_clk), .signal(dacdclip[5]), .LED(leds[5]), .period(half_second));
-//Led_flash Flash_LED6(.clock(C122_clk), .signal(dacdclip[6]), .LED(leds[6]), .period(half_second));
+Led_flash Flash_LED2(.clock(C122_clk), .signal(dacdclip[2]), .LED(leds[2]), .period(half_second));
+Led_flash Flash_LED3(.clock(C122_clk), .signal(dacdclip[3]), .LED(leds[3]), .period(half_second));
+Led_flash Flash_LED4(.clock(C122_clk), .signal(dacdclip[4]), .LED(leds[4]), .period(half_second));	
+Led_flash Flash_LED5(.clock(C122_clk), .signal(dacdclip[5]), .LED(leds[5]), .period(half_second));
+Led_flash Flash_LED6(.clock(C122_clk), .signal(dacdclip[6]), .LED(leds[6]), .period(half_second));
 //Led_flash Flash_LED7(.clock(C122_clk), .signal(dacdclip[7]), .LED(leds[7]), .period(half_second));		
 
 
@@ -1956,7 +2002,15 @@ begin
 end
 assign leds[7] = counter[25];
 
-assign leds[6:5] = Hermes_atten[4:3];
+
+
+reg [15:0] resetcounter;
+always @ (posedge rstclk or negedge extreset)
+	if (~extreset) resetcounter <= 16'h00;
+	else if (~resetcounter[15]) resetcounter <= resetcounter + 16'h01;
+
+assign ad9866_rst_n = resetcounter[15];
+
 
 
 function integer clogb2;

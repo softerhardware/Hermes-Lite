@@ -26,7 +26,6 @@
 
 module Hermes_Lite(
 
-	input altclk,
 	input AD9866clk,
 	input clk50mhz,
  	input extreset,
@@ -936,8 +935,8 @@ cdc_sync #(32)
 cdc_sync #(32)
 	freq1 (.siga(IF_frequency[1]), .rstb(C122_rst), .clkb(C122_clk), .sigb(C122_frequency_HZ[0])); // transfer Rx1 frequency
 
-cdc_sync #(32)
-	freq2 (.siga(IF_frequency[2]), .rstb(C122_rst), .clkb(C122_clk), .sigb(C122_frequency_HZ[1])); // transfer Rx2 frequency
+//cdc_sync #(32)
+//	freq2 (.siga(IF_frequency[2]), .rstb(C122_rst), .clkb(C122_clk), .sigb(C122_frequency_HZ[1])); // transfer Rx2 frequency
 
 
 cdc_sync #(2)
@@ -1001,7 +1000,7 @@ pulsegen cdc_m   (.sig(IF_CLRCLK), .rst(IF_rst), .clk(IF_clk), .pulse(IF_get_sam
 //                 All DSP code is in the Receiver module
 //------------------------------------------------------------------------------
 
-localparam NR = 2; // number of receivers to implement
+localparam NR = 1; // number of receivers to implement
 
 reg       [31:0] C122_frequency_HZ [0:NR-1];   // frequency control bits for CORDIC
 reg       [31:0] C122_frequency_HZ_Tx;
@@ -1025,20 +1024,30 @@ wire             test_strobe3;
 	always @ ({C122_DFS1, C122_DFS0})
 	begin 
 		case ({C122_DFS1, C122_DFS0})
-    	0: rate <= 6'd24;     //  48ksps 
-    	1: rate <= 6'd12;     //  96ksps
-    	2: rate <= 6'd06;     //  192ksps
-    	3: rate <= 6'd03;      //  384ksps
-    	default: rate <= 6'd24;    			
+//    	0: rate <= 6'd24;     //  48ksps 
+//    	1: rate <= 6'd12;     //  96ksps
+//    	2: rate <= 6'd06;     //  192ksps
+//    	3: rate <= 6'd03;      //  384ksps    	
+//    	default: rate <= 6'd24;    			
+
+    	0: rate <= 6'd20;     //  48ksps 
+    	1: rate <= 6'd10;     //  96ksps
+    	2: rate <= 6'd05;     //  192ksps
+    	// FIXME: What to do for 384ksps with 61.44 MHZ Xtal?
+    	3: rate <= 6'd03;      //  384ksps    	
+    	default: rate <= 6'd20;    	
 
 		endcase
 	end 
 
 //localparam M2 = 32'd1172812403;  // B57 = 2^57.   M2 = B57/122880000
 //localparam M3 = 32'd586406201;   // M3 = M2 / 2, used to round the result
-localparam M2 = 32'd1954687338; // Like above but with 73728000 osc
-localparam M3 = 32'd977343669;
 
+//localparam M2 = 32'd1954687338; // Like above but with 73728000 osc
+//localparam M3 = 32'd977343669;
+
+localparam M2 = 32'd2345624805; // Like above but with 61440000 osc
+localparam M3 = 32'd1172812402;
 
 
 generate
@@ -1102,19 +1111,19 @@ receiver receiver_inst0(   // Rx1
 	.test_strobe3()
 	);
 
-receiver receiver_inst1(	// Rx2
+//receiver receiver_inst1(	// Rx2
 	//control
-	.clock(C122_clk),
-	.rate(rate),
-	.frequency(C122_sync_phase_word[1]),
-	.out_strobe(strobe[1]),
+//	.clock(C122_clk),
+//	.rate(rate),
+//	.frequency(C122_sync_phase_word[1]),
+//	.out_strobe(strobe[1]),
 	//input
-	.in_data(temp_ADC),
+//	.in_data(temp_ADC),
 	//output
-	.out_data_I(rx_I[1]),
-	.out_data_Q(rx_Q[1]),
-	.test_strobe3()
-	);
+//	.out_data_I(rx_I[1]),
+//	.out_data_Q(rx_Q[1]),
+//	.test_strobe3()
+//	);
 
 
 

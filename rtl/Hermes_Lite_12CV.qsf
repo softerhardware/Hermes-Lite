@@ -23,16 +23,14 @@
 # and any changes you make may be lost or overwritten.
 
 
-set_global_assignment -name DEVICE EP4CE22F17C7
-set_global_assignment -name FAMILY "Cyclone IV E"
+set_global_assignment -name DEVICE 5CEFA2F23I7
+set_global_assignment -name FAMILY "Cyclone V"
 set_global_assignment -name TOP_LEVEL_ENTITY Hermes_Lite
 set_global_assignment -name ORIGINAL_QUARTUS_VERSION 14.0
-set_global_assignment -name PROJECT_CREATION_TIME_DATE "20:48:47  SEPTEMBER 09, 2014"
+set_global_assignment -name PROJECT_CREATION_TIME_DATE "12:01:06  NOVEMBER 30, 2014"
 set_global_assignment -name LAST_QUARTUS_VERSION 14.0
-set_global_assignment -name MIN_CORE_JUNCTION_TEMP 0
-set_global_assignment -name MAX_CORE_JUNCTION_TEMP 85
-set_global_assignment -name DEVICE_FILTER_PACKAGE FBGA
-set_global_assignment -name DEVICE_FILTER_PIN_COUNT 256
+set_global_assignment -name MIN_CORE_JUNCTION_TEMP "-40"
+set_global_assignment -name MAX_CORE_JUNCTION_TEMP 100
 set_global_assignment -name USE_CONFIGURATION_DEVICE ON
 set_global_assignment -name FORCE_CONFIGURATION_VCCIO ON
 set_global_assignment -name RESERVE_ALL_UNUSED_PINS_WEAK_PULLUP "AS INPUT TRI-STATED"
@@ -42,21 +40,6 @@ set_global_assignment -name POWER_BOARD_THERMAL_MODEL "NONE (CONSERVATIVE)"
 set_global_assignment -name STRATIX_DEVICE_IO_STANDARD "3.3-V LVCMOS"
 set_global_assignment -name VERILOG_INPUT_VERSION SYSTEMVERILOG_2005
 set_global_assignment -name VERILOG_SHOW_LMF_MAPPING_MESSAGES OFF
-set_location_assignment PIN_E15 -to PHY_RX_CLOCK
-set_location_assignment PIN_J15 -to PHY_TX[2]
-set_location_assignment PIN_J16 -to PHY_TX[1]
-set_location_assignment PIN_G16 -to PHY_TX[0]
-set_location_assignment PIN_F14 -to PHY_RESET_N
-set_location_assignment PIN_D16 -to PHY_RX[0]
-set_location_assignment PIN_K16 -to PHY_TX[3]
-set_location_assignment PIN_R14 -to PHY_MDC
-set_location_assignment PIN_T15 -to PHY_MDIO
-set_location_assignment PIN_E16 -to PHY_TX_CLOCK
-set_location_assignment PIN_G15 -to PHY_TX_EN
-set_location_assignment PIN_F13 -to PHY_RX[3]
-set_location_assignment PIN_F16 -to PHY_RX[2]
-set_location_assignment PIN_F15 -to PHY_RX[1]
-set_location_assignment PIN_B16 -to RX_DV
 set_global_assignment -name CYCLONEII_RESERVE_NCEO_AFTER_CONFIGURATION "USE AS REGULAR IO"
 set_global_assignment -name GENERATE_RBF_FILE ON
 set_global_assignment -name CRC_ERROR_OPEN_DRAIN OFF
@@ -79,50 +62,10 @@ set_global_assignment -name PHYSICAL_SYNTHESIS_REGISTER_RETIMING ON
 set_global_assignment -name STATE_MACHINE_PROCESSING "USER-ENCODED"
 set_global_assignment -name SEARCH_PATH Polyphase_FIR/ -tag from_archive
 set_global_assignment -name SMART_RECOMPILE ON
-set_global_assignment -name DEVICE_FILTER_SPEED_GRADE 7
-set_location_assignment PIN_T9 -to AD9866clk
-set_location_assignment PIN_E1 -to clk50mhz
-set_location_assignment PIN_C2 -to extreset
-set_location_assignment PIN_B1 -to leds[7]
-set_location_assignment PIN_D1 -to leds[6]
-set_location_assignment PIN_L13 -to leds[5]
-set_location_assignment PIN_R10 -to leds[4]
-set_location_assignment PIN_P15 -to leds[3]
-set_location_assignment PIN_P9 -to leds[2]
-set_location_assignment PIN_K5 -to leds[1]
-set_location_assignment PIN_N15 -to leds[0]
-set_location_assignment PIN_K15 -to ad9866_sclk
-set_location_assignment PIN_T7 -to ad9866_sdio
-set_location_assignment PIN_J14 -to ad9866_sdo
-set_location_assignment PIN_M10 -to ad9866_sen_n
-set_location_assignment PIN_K2 -to altclk
 set_global_assignment -name RESERVE_DATA0_AFTER_CONFIGURATION "USE AS REGULAR IO"
 set_global_assignment -name RESERVE_DATA1_AFTER_CONFIGURATION "USE AS REGULAR IO"
 set_global_assignment -name RESERVE_FLASH_NCE_AFTER_CONFIGURATION "USE AS REGULAR IO"
 set_global_assignment -name RESERVE_DCLK_AFTER_CONFIGURATION "USE AS REGULAR IO"
-set_location_assignment PIN_K1 -to ad9866_pga[5]
-set_location_assignment PIN_N5 -to ad9866_pga[4]
-set_location_assignment PIN_R1 -to ad9866_pga[3]
-set_location_assignment PIN_N6 -to ad9866_pga[2]
-set_location_assignment PIN_P2 -to ad9866_pga[1]
-set_location_assignment PIN_M8 -to ad9866_pga[0]
-set_location_assignment PIN_P11 -to ad9866_rxclk
-set_location_assignment PIN_J13 -to ad9866_adio[11]
-set_location_assignment PIN_F2 -to ad9866_adio[10]
-set_location_assignment PIN_L16 -to ad9866_adio[9]
-set_location_assignment PIN_F1 -to ad9866_adio[8]
-set_location_assignment PIN_N14 -to ad9866_adio[7]
-set_location_assignment PIN_G1 -to ad9866_adio[6]
-set_location_assignment PIN_G2 -to ad9866_adio[5]
-set_location_assignment PIN_T10 -to ad9866_adio[4]
-set_location_assignment PIN_J1 -to ad9866_adio[3]
-set_location_assignment PIN_L3 -to ad9866_adio[2]
-set_location_assignment PIN_L4 -to ad9866_adio[1]
-set_location_assignment PIN_N1 -to ad9866_adio[0]
-set_location_assignment PIN_P3 -to ad9866_rxen
-set_location_assignment PIN_L2 -to ad9866_txclk
-set_location_assignment PIN_P16 -to ad9866_txen
-set_location_assignment PIN_T3 -to ad9866_rst_n
 set_global_assignment -name PARTITION_NETLIST_TYPE SOURCE -section_id Top
 set_global_assignment -name PARTITION_COLOR 16764057 -section_id Top
 set_global_assignment -name LL_ROOT_REGION ON -section_id "Root Region"
@@ -136,8 +79,62 @@ set_instance_assignment -name CLOCK_SETTINGS CLRCOUT -to CLRCOUT
 set_instance_assignment -name CLOCK_SETTINGS TLV2208_125Mhz -to LTC2208_125Mhz
 set_instance_assignment -name CLOCK_SETTINGS OSC_10MHz -to OSC_10MHZ
 set_instance_assignment -name GLOBAL_SIGNAL "GLOBAL CLOCK" -to PHY_CLK125
-set_global_assignment -name SDC_FILE Hermes_Lite_SDK.sdc
-set_global_assignment -name VERILOG_FILE Hermes_Lite_SDK.v
+set_global_assignment -name PROJECT_OUTPUT_DIRECTORY build
+set_location_assignment PIN_N1 -to leds[7]
+set_location_assignment PIN_AA2 -to leds[6]
+set_location_assignment PIN_Y3 -to leds[5]
+set_location_assignment PIN_AA1 -to leds[4]
+set_location_assignment PIN_W2 -to leds[3]
+set_location_assignment PIN_U2 -to leds[2]
+set_location_assignment PIN_N2 -to leds[1]
+set_location_assignment PIN_U1 -to leds[0]
+set_location_assignment PIN_M16 -to PHY_MDC
+set_location_assignment PIN_N16 -to PHY_MDIO
+set_location_assignment PIN_R11 -to rmii_tx[1]
+set_location_assignment PIN_U11 -to rmii_tx[0]
+set_location_assignment PIN_T10 -to rmii_rx[1]
+set_location_assignment PIN_R9 -to rmii_rx[0]
+set_location_assignment PIN_U12 -to rmii_tx_en
+set_location_assignment PIN_U10 -to rmii_osc
+set_location_assignment PIN_T9 -to rmii_crs_dv
+set_location_assignment PIN_H13 -to clk50mhz
+set_location_assignment PIN_H18 -to extreset
+set_instance_assignment -name IO_STANDARD "1.5 V" -to extreset
+set_global_assignment -name ACTIVE_SERIAL_CLOCK FREQ_100MHZ
+set_global_assignment -name STRATIXV_CONFIGURATION_SCHEME "ACTIVE SERIAL X1"
+set_location_assignment PIN_Y16 -to ad9866_pga[5]
+set_location_assignment PIN_Y15 -to ad9866_pga[4]
+set_location_assignment PIN_AA15 -to ad9866_pga[3]
+set_location_assignment PIN_AB15 -to ad9866_pga[2]
+set_location_assignment PIN_Y14 -to ad9866_pga[1]
+set_location_assignment PIN_AA14 -to ad9866_pga[0]
+set_location_assignment PIN_N9 -to ad9866_rxclk
+set_location_assignment PIN_U22 -to ad9866_adio[11]
+set_location_assignment PIN_V21 -to ad9866_adio[10]
+set_location_assignment PIN_W21 -to ad9866_adio[9]
+set_location_assignment PIN_W22 -to ad9866_adio[8]
+set_location_assignment PIN_Y21 -to ad9866_adio[7]
+set_location_assignment PIN_Y22 -to ad9866_adio[6]
+set_location_assignment PIN_AA22 -to ad9866_adio[5]
+set_location_assignment PIN_AB21 -to ad9866_adio[4]
+set_location_assignment PIN_AB22 -to ad9866_adio[3]
+set_location_assignment PIN_AA20 -to ad9866_adio[2]
+set_location_assignment PIN_Y20 -to ad9866_adio[1]
+set_location_assignment PIN_AB20 -to ad9866_adio[0]
+set_location_assignment PIN_Y19 -to ad9866_rxen
+set_location_assignment PIN_AA18 -to ad9866_txclk
+set_location_assignment PIN_AA19 -to ad9866_txen
+set_location_assignment PIN_V15 -to AD9866clk
+##set_location_assignment PIN_V13 -to altclk
+set_location_assignment PIN_AA17 -to ad9866_sclk
+set_location_assignment PIN_AB18 -to ad9866_sdio
+set_location_assignment PIN_Y17 -to ad9866_sdo
+set_location_assignment PIN_AB17 -to ad9866_sen_n
+set_location_assignment PIN_M9 -to clk
+set_location_assignment PIN_U13 -to ad9866_rst_n
+set_global_assignment -name VHDL_FILE RMII2MII_conv.vhd
+set_global_assignment -name SDC_FILE Hermes_Lite_CV.sdc
+set_global_assignment -name VERILOG_FILE Hermes_Lite_CV.v
 set_global_assignment -name VERILOG_FILE hermes_lite_core.v
 set_global_assignment -name VERILOG_FILE myhdl/ad9866.v
 set_global_assignment -name VERILOG_FILE Polyphase_FIR/firfilt.v
@@ -194,13 +191,12 @@ set_global_assignment -name VERILOG_FILE receiver.v
 set_global_assignment -name VERILOG_FILE SPI.v
 set_global_assignment -name QIP_FILE SP_fifo.qip
 set_global_assignment -name QIP_FILE PHY_fifo.qip
-set_global_assignment -name QIP_FILE ifclocks.qip
-set_global_assignment -name VERILOG_FILE ifclocks.v
 set_global_assignment -name QIP_FILE ASMI.qip
 set_global_assignment -name QIP_FILE EPCS_fifo.qip
 set_global_assignment -name QIP_FILE Tx_fifo.qip
 set_global_assignment -name QIP_FILE PHY_Rx_fifo.qip
-set_global_assignment -name PROJECT_OUTPUT_DIRECTORY build
-set_parameter -name CLK_FREQ 73728000
-set_instance_assignment -name PARTITION_HIERARCHY root_partition -to | -section_id Top
+set_global_assignment -name QIP_FILE ifclocks_cv.qip
+set_global_assignment -name SIP_FILE ifclocks_cv.sip
 set_parameter -name NR 2
+set_parameter -name CLK_FREQ 61440000
+set_instance_assignment -name PARTITION_HIERARCHY root_partition -to | -section_id Top
