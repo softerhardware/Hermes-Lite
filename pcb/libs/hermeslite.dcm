@@ -15,6 +15,11 @@ D Diode schottky
 K DEV DIODE
 $ENDCMP
 #
+$CMP EDGECONN_6X2
+D Symbole general de connecteur
+K CONN
+$ENDCMP
+#
 $CMP SATA22
 D Symbole general de connexion
 K CONN
