@@ -5,7 +5,9 @@ This is a work in progress to create a low-cost software defined radio HF transc
 
  * [Wiki](https://github.com/softerhardware/Hermes-Lite/wiki) for documentation.
  * [Google Groups](https://groups.google.com/forum/#!forum/hermes-lite) for discussion.
- * [GitHub](https://github.com/softerhardware/Hermes-Lite/edit/master/README.md) for all open source hardware, software and firmware.
+ * [GitHub](https://github.com/softerhardware/Hermes-Lite) for all open source hardware, software and firmware.
+  * Hermes-Lite [schematic](https://github.com/softerhardware/Hermes-Lite/blob/master/pcb/hermeslite.pdf), [BOM](https://github.com/softerhardware/Hermes-Lite/blob/master/pcb/bom.xls) and [PCB](https://oshpark.com/shared_projects/WHfDeB2c).
+  * Basic RF front end [schematic](https://github.com/softerhardware/Hermes-Lite/blob/master/frontend/basic/frontend.pdf), [BOM](https://github.com/softerhardware/Hermes-Lite/blob/master/frontend/basic/bom.xls) and [PCB](https://www.oshpark.com/shared_projects/gq1Qig3Q).
  * [GitHub Issues](https://github.com/softerhardware/Hermes-Lite/issues) to track all bugs, feature requests and planning.
 
  
