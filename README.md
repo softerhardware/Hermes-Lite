@@ -1,26 +1,20 @@
 Hermes-Lite
 ===========
 
-## Quick Links
+This is a work in progress to create a low-cost software defined radio HF transceiver based on a [broadband modem chip](http://www.analog.com/en/broadband-products/broadband-codecs/ad9866/products/product.html) and the [Hermes SDR](http://openhpsdr.org/wiki/index.php?title=HERMES) project.
 
- * [Google Groups](https://groups.google.com/forum/#!forum/hermes-lite) discussion forum.
- * [Hardware](https://github.com/softerhardware/Hermes-Lite/blob/master/pcb/README.md)
+ * [Wiki](https://github.com/softerhardware/Hermes-Lite/wiki) for documentation.
+ * [Google Groups](https://groups.google.com/forum/#!forum/hermes-lite) for discussion.
+ * [GitHub](https://github.com/softerhardware/Hermes-Lite) for all open source hardware, software and firmware.
   * Hermes-Lite [schematic](https://github.com/softerhardware/Hermes-Lite/blob/master/pcb/hermeslite.pdf), [BOM](https://github.com/softerhardware/Hermes-Lite/blob/master/pcb/bom.xls) and [PCB](https://oshpark.com/shared_projects/WHfDeB2c).
   * Basic RF front end [schematic](https://github.com/softerhardware/Hermes-Lite/blob/master/frontend/basic/frontend.pdf), [BOM](https://github.com/softerhardware/Hermes-Lite/blob/master/frontend/basic/bom.xls) and [PCB](https://www.oshpark.com/shared_projects/gq1Qig3Q).
- * [RTL](https://github.com/softerhardware/Hermes-Lite/tree/master/rtl/README.md)
- * Interesting Forks
-  * [PCB v1.0 and v1.1](https://github.com/frohro/Hermes-Lite)
-  * [Direct Audio Out](https://github.com/ik1xpv/Hermes-Lite)
+ * [GitHub Issues](https://github.com/softerhardware/Hermes-Lite/issues) to track all bugs, feature requests and planning.
 
+ 
 ## Introduction
 
-This is a work in progress to create a low-cost software defined radio HF transceiver. The hardware is based on Analog Devices' [AD9866](http://www.analog.com/en/broadband-products/broadband-codecs/ad9866/products/product.html) which is a 12-bit broadband modem mixed signal front end that has been repurposed as a direct down conversion and direct up conversion SDR transceiver covering 0-36 MHz. A hardware prototype has been built and tested that uses a [BeMicro SDR](http://www.arrownac.com/solutions/bemicro-sdk/) FPGA board for DSP processing. The FPGA firmware is a port of the [Hermes SDR](http://openhpsdr.org/wiki/index.php?title=HERMES) project. The ported firmware preserves enough compatibility with the original Hermes SDR so that existing Hermes front-end software may be used with the Hermes-Lite without modification. Initial receive and transmit tests show good performance and appear later in this README. All software and hardware intellectual property is open source. Contributions and derivatives are encouraged. Please refer to the development section in this README. 
+The hardware is based on Analog Devices' [AD9866](http://www.analog.com/en/broadband-products/broadband-codecs/ad9866/products/product.html) which is a 12-bit broadband modem mixed signal front end that has been repurposed as a direct down conversion and direct up conversion SDR transceiver covering 0-36 MHz. A hardware prototype has been built and tested that uses a [BeMicro SDK](http://www.arrownac.com/solutions/bemicro-sdk/) FPGA board for DSP processing. The FPGA firmware is a port of the [Hermes SDR](http://openhpsdr.org/wiki/index.php?title=HERMES) project. The ported firmware preserves enough compatibility with the original Hermes SDR so that existing Hermes front-end software may be used with the Hermes-Lite without modification. Initial receive and transmit tests show good performance and appear later in this README. All software and hardware intellectual property is open source. Contributions and derivatives are encouraged. Please follow the standard ["Fork and Pull"](https://help.github.com/articles/using-pull-requests/) model and introduce yourself on [Google Groups](https://groups.google.com/forum/#!forum/hermes-lite).
 
-Thank you to N9VV for posting [screencast1](http://www.screencast.com/t/HGJk74dE) and [screencast2](http://www.screencast.com/t/Q3MsL02y).
-
-A development discussion forum is on [Google Groups](https://groups.google.com/forum/#!forum/hermes-lite). 
-
-The original Hermes-Lite project is [here](https://github.com/softerhardware/Hermes-Lite/edit/master/README.md).
 
 #### Project Goals
  * 0-30MHz (HF) transceiver with decent performance
@@ -33,12 +27,6 @@ The original Hermes-Lite project is [here](https://github.com/softerhardware/Her
 
 #### Hermes-Lite v0.9
 ![Hermes-Lite](docs/hermeslite.jpg)
-
-## Development
-
-Discussion regarding development takes place on the [Hermes-Lite Google Group](https://groups.google.com/forum/#!forum/hermes-lite). Bugs and future enhancments are captured in the [github issues](https://github.com/softerhardware/Hermes-Lite/issues). Also, refer to the README files in the fpga and pcb subdirectories.
-
-If you are interested in helping with development, please fork this project on github. Once you think you have significant contributions, issue a pull request. I will review your changes and may include them in this repository. Also, I am happy to see other forks of this project gain traction and possibly become the "main" repository. More power to you if you build a better Hermes-Lite! I do not plan to have a single central repository with multiple committers. 
 
 
 ## Receive Experiments
