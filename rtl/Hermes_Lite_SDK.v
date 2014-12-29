@@ -20,6 +20,7 @@
 
 module Hermes_Lite(
 
+	input exp_present,
 	input AD9866clk,
 	input clk50mhz,
  	input extreset,
@@ -54,7 +55,7 @@ module Hermes_Lite(
 // PARAMETERS
 
 // Ethernet Interface
-parameter MAC = {8'h00,8'h1c,8'hc0,8'ha2,8'h22,8'h5c};
+parameter MAC = {8'h00,8'h1c,8'hc0,8'ha2,8'h22,8'h5d};
 parameter IP = {8'd0,8'd0,8'd0,8'd0};
 
 // ADC Oscillator
@@ -62,15 +63,25 @@ parameter IP = {8'd0,8'd0,8'd0,8'd0};
 parameter CLK_FREQ = 61440000;
 
 // Number of Receivers
-parameter NR = 1; // number of receivers to implement
+parameter NR = 2; // number of receivers to implement
 
 // IF Clocks
 wire IF_clk;
-wire ad9866spiclk;
-wire rstclk;
-wire EEPROM_clock;
+wire slowclk;
+wire testAD9866clk;
+wire iAD9866clk;
 wire IF_locked;
-ifclocks PLL_IF_inst( .inclk0(clk50mhz), .c0(IF_clk), .c1(ad9866spiclk), .c2(rstclk), .c3(EEPROM_clock), .locked(IF_locked));
+ifclocks PLL_IF_inst( .inclk0(clk50mhz), .c0(IF_clk), .c1(testAD9866clk), .c2(slowclk), .locked(IF_locked));
+
+// PLL clk must be on input 2 or 3
+clkmux_sdk clkmux (
+	.inclk0x(AD9866clk),
+	.inclk1x(1'b0),
+	.inclk2x(testAD9866clk),
+	.clkselect({~exp_present,1'b0}),
+	.outclk(iAD9866clk)
+);
+
 
 // Hermes Lite Core
 hermes_lite_core #(
@@ -81,12 +92,13 @@ hermes_lite_core #(
 	) 
 
 	hermes_lite_core_inst(
-	.AD9866clk(AD9866clk),
+	.exp_present(exp_present),		
+	.AD9866clk(iAD9866clk),
 
 	.IF_clk(IF_clk),
-	.ad9866spiclk(ad9866spiclk),
-	.rstclk(rstclk),
-	.EEPROM_clock(EEPROM_clock),
+	.ad9866spiclk(IF_clk),
+	.rstclk(slowclk),
+	.EEPROM_clock(slowclk),
 	.IF_locked(IF_locked),
 
  	.extreset(extreset),

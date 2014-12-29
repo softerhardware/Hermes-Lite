@@ -26,6 +26,7 @@
 
 module hermes_lite_core(
 
+	input exp_present,
 	input AD9866clk,
 
 	input IF_clk,
@@ -860,85 +861,156 @@ assign ad9866_txclk = C122_clk;
 
 reg [15:0]temp_ADC;
 reg [15:0] temp_DACD; // for pre-distortion Tx tests
-reg ad9866clipp;
-reg ad9866clipn;
-reg [7:0] dacdclip;
-
+//reg ad9866clipp;
+//reg ad9866clipn;
+//reg ad9866nearclipp;
+//reg ad9866nearclipn;
 
 assign temp_DACD = 0;
 
-always @ (posedge C122_clk) 
-begin 
+// always @ (posedge C122_clk) 
+// begin 
 
-  	temp_ADC <= {{4{ad9866_adio[11]}},ad9866_adio};
+//     if (ad9866_adio == 12'b011111111111)
+//     	ad9866clipp <= 1'b1;
+//     else
+//     	ad9866clipp <= 1'b0;
 
-    if (ad9866_adio == 12'b011111111111)
-    	ad9866clipp <= 1'b1;
-    else
-    	ad9866clipp <= 1'b0;
+// 	if (ad9866_adio == 12'b100000000000)
+//     	ad9866clipn <= 1'b1;
+//     else
+//     	ad9866clipn <= 1'b0;
 
+//     // Near clips occur just over 1 dB from full range
+//     // 2**12 = 4096
+//     // (6.02*12)+1.76 = 74
+//     // 2**11.8074 = 3584
+//     // 4096-3584 = 512 (256 from positive and 256 from negtive clips)
+//     // (6.02*11.8074)+1.76 = 72.84
+//     // 74 - 72.84 = ~1.16 dB from full range
+//     if (ad9866_adio[11:8] == 4'b0111)
+//     	ad9866nearclipp <= 1'b1;
+//     else
+//     	ad9866nearclipp <= 1'b0;
 
-	if (ad9866_adio == 12'b100000000000)
-    	ad9866clipn <= 1'b1;
-    else
-    	ad9866clipn <= 1'b0;
-
-
-   	if (DACD[13:12] == 2'b01)
-    	dacdclip[7] <= 1'b1;
-    else
-    	dacdclip[7] <= 1'b0;
-
-
-   	if (DACD[13:11] == 3'b001)
-    	dacdclip[6] <= 1'b1;
-    else
-    	dacdclip[6] <= 1'b0;
-
-
-   	if (DACD[13:10] == 4'b0001)
-    	dacdclip[5] <= 1'b1;
-    else
-    	dacdclip[5] <= 1'b0;
+// 	if (ad9866_adio[11:8] == 4'b1000)
+//     	ad9866nearclipn <= 1'b1;
+//     else
+//     	ad9866nearclipn <= 1'b0;
 
 
-   	if (DACD[13:9] == 5'b00001)
-    	dacdclip[4] <= 1'b1;
-    else
-    	dacdclip[4] <= 1'b0;
+//     if (ad9866_adio[11:8] == 4'b0111)
+//     	ad9866nearclipp <= 1'b1;
+//     else
+//     	ad9866nearclipp <= 1'b0;
+
+// 	if (ad9866_adio[11:8] == 4'b1000)
+//     	ad9866nearclipn <= 1'b1;
+//     else
+//     	ad9866nearclipn <= 1'b0;
 
 
-   	if (DACD[13:8] == 6'b000001)
-    	dacdclip[3] <= 1'b1;
-    else
-    	dacdclip[3] <= 1'b0;
+// end 
 
 
-   	if (DACD[13:7] == 7'b0000001)
-    	dacdclip[2] <= 1'b1;
-    else
-    	dacdclip[2] <= 1'b0;
+wire ad9866clipp = (ad9866_adio == 12'b011111111111);
+wire ad9866clipn = (ad9866_adio == 12'b100000000000);
 
+// Near clips occur just over 1 dB from full range
+// 2**12 = 4096
+// (6.02*12)+1.76 = 74
+// 2**11.8074 = 3584
+// 4096-3584 = 512 (256 from positive and 256 from negtive clips)
+// (6.02*11.8074)+1.76 = 72.84
+// 74 - 72.84 = ~1.16 dB from full range
+wire ad9866nearclip = (ad9866_adio[11:8] == 4'b0111) | (ad9866_adio[11:8] == 4'b1000);
 
-   	if (DACD[13:6] == 8'b00000001)
-    	dacdclip[1] <= 1'b1;
-    else
-    	dacdclip[1] <= 1'b0;
-
-
-   	if (DACD[13:6] == 9'b000000001)
-    	dacdclip[0] <= 1'b1;
-    else
-    	dacdclip[0] <= 1'b0;
-
-
-end 
+// Like above but 2**11.585 = (4096-1024) = 3072
+wire ad9866goodlvlp = (ad9866_adio[11:9] == 4'b011);
+wire ad9866goodlvln = (ad9866_adio[11:9] == 4'b100);
 
 
 // RX/TX port
 assign ad9866_adio = FPGA_PTT ? DACD[13:2] : 12'bZ;
 
 
+
+// Test sine wave
+reg [3:0] incnt;
+always @ (posedge C122_clk)
+  begin
+  	if (exp_present)
+		temp_ADC <= {{4{ad9866_adio[11]}},ad9866_adio};
+	else begin
+	    case (incnt)
+			4'h0 : temp_ADC = 16'b0000000000000000;
+			4'h1 : temp_ADC = 16'b0010010101011111;
+			4'h2 : temp_ADC = 16'b0100010100001101;
+			4'h3 : temp_ADC = 16'b0101101000111000;
+			4'h4 : temp_ADC = 16'b0110000110101000;
+			4'h5 : temp_ADC = 16'b0101101000111000;
+			4'h6 : temp_ADC = 16'b0100010100001101;
+			4'h7 : temp_ADC = 16'b0010010101011111;
+			4'h8 : temp_ADC = 16'b1000000000000000;
+			4'h9 : temp_ADC = 16'b1101101010100001;
+			4'ha : temp_ADC = 16'b1011101011110011;
+			4'hb : temp_ADC = 16'b1010010111001000;
+			4'hc : temp_ADC = 16'b1001111001011000;
+			4'hd : temp_ADC = 16'b1010010111001000;
+			4'he : temp_ADC = 16'b1011101011110011;
+			4'hf : temp_ADC = 16'b1101101010100001;
+	    endcase
+	end
+    incnt <= incnt + 4'h1; 
+  end 
+
+// AGC
+
+reg agc_nearclip;
+reg agc_goodlvl;
+reg [25:0] agc_delaycnt;
+reg [5:0] agc_value;
+wire agc_clrnearclip;
+wire agc_clrgoodlvl;
+
+always @(posedge C122_clk)
+begin
+	if (agc_clrnearclip) agc_nearclip <= 1'b0;
+	else if (ad9866nearclip) agc_nearclip <= 1'b1;
+end
+
+always @(posedge C122_clk)
+begin
+	if (agc_clrgoodlvl) agc_goodlvl <= 1'b0;
+	else if (ad9866goodlvlp | ad9866goodlvln) agc_goodlvl <= 1'b1;
+end
+
+// Used for heartbeat too
+always @(posedge C122_clk)
+begin
+	agc_delaycnt <= agc_delaycnt + 1;
+end
+
+always @(posedge C122_clk)
+begin
+	if (C122_rst) 
+		agc_value <= 6'b011111;
+	// Decrease gain if near clip seen
+	else if ( agc_clrnearclip & agc_nearclip & (agc_value != 6'b000000) ) 
+		agc_value <= agc_value - 6'h01;
+	// Increase if not in the sweet spot of seeing agc_nearclip
+	// But no more than ~26dB (38) as that is the place of diminishing returns re the datasheet
+	else if ( agc_clrgoodlvl & ~agc_goodlvl & (agc_value <= 6'b100110) )
+		agc_value <= agc_value + 6'h01;
+end
+
+// tp = 1.0/61.44e6
+// 2**26 * tp = 1.0922 seconds
+// PGA settling time is less than 500 ns
+// Do decrease possible every 2 us (2**7 * tp)
+assign agc_clrnearclip = (agc_delaycnt[6:0] == 7'b1111111);
+// Do increase possible every 136 ms, 1us before/after a possible descrease
+assign agc_clrgoodlvl = (agc_delaycnt[22:0] == 23'b11011111111111110111111);
 
 
 //------------------------------------------------------------------------------
@@ -1835,7 +1907,7 @@ assign ad9866rqst = 1'b0;
 assign ad9866data = 16'h00;
 
 // Hack to use IF_DITHER to switch highest bit of attenuation
-assign ad9866_pga = {~IF_DITHER, ~Hermes_atten};
+assign ad9866_pga = ~IF_RAND ? agc_value : {~IF_DITHER, ~Hermes_atten};
 
 
 //---------------------------------------------------------
@@ -1977,30 +2049,20 @@ assign clean_dash = 0;
 // AD9866 Instance
 ad9866 ad9866_inst(.reset(~ad9866_rst_n),.clk(ad9866spiclk),.sclk(ad9866_sclk),.sdio(ad9866_sdio),.sdo(ad9866_sdo),.sen_n(ad9866_sen_n),.dataout(),.extrqst(ad9866rqst),.extdata(ad9866data));
 
-
+// Really 0.16 seconds at Hermes-Lite 61.44 MHz clock
 localparam half_second = 10000000; // at 48MHz clock rate
 
 	
 Led_flash Flash_LED0(.clock(C122_clk), .signal(ad9866clipp), .LED(leds[0]), .period(half_second));
-Led_flash Flash_LED1(.clock(C122_clk), .signal(ad9866clipn), .LED(leds[1]), .period(half_second));
+Led_flash Flash_LED1(.clock(C122_clk), .signal(ad9866goodlvlp), .LED(leds[1]), .period(half_second));
+Led_flash Flash_LED2(.clock(C122_clk), .signal(ad9866goodlvln), .LED(leds[2]), .period(half_second));
+Led_flash Flash_LED3(.clock(C122_clk), .signal(ad9866clipn), .LED(leds[3]), .period(half_second));
 
-//Led_flash Flash_LED0(.clock(C122_clk), .signal(dacdclip[0]), .LED(leds[0]), .period(half_second));
-//Led_flash Flash_LED1(.clock(C122_clk), .signal(dacdclip[1]), .LED(leds[1]), .period(half_second));
-Led_flash Flash_LED2(.clock(C122_clk), .signal(dacdclip[2]), .LED(leds[2]), .period(half_second));
-Led_flash Flash_LED3(.clock(C122_clk), .signal(dacdclip[3]), .LED(leds[3]), .period(half_second));
-Led_flash Flash_LED4(.clock(C122_clk), .signal(dacdclip[4]), .LED(leds[4]), .period(half_second));	
-Led_flash Flash_LED5(.clock(C122_clk), .signal(dacdclip[5]), .LED(leds[5]), .period(half_second));
-Led_flash Flash_LED6(.clock(C122_clk), .signal(dacdclip[6]), .LED(leds[6]), .period(half_second));
-//Led_flash Flash_LED7(.clock(C122_clk), .signal(dacdclip[7]), .LED(leds[7]), .period(half_second));		
+Led_flash Flash_LED4(.clock(IF_clk), .signal(this_MAC), .LED(leds[4]), .period(half_second));
+Led_flash Flash_LED5(.clock(IF_clk), .signal(PHY_TX_EN), .LED(leds[5]), .period(half_second));
+Led_flash Flash_LED6(.clock(IF_clk), .signal(IF_SYNC_state == SYNC_RX_1_2), .LED(leds[6]), .period(half_second));	
 
-
-reg [25:0] counter;
-
-always @ (posedge C122_clk)
-begin
-	counter <= counter + 1;
-end
-assign leds[7] = counter[25];
+assign leds[7] = agc_delaycnt[25];
 
 
 

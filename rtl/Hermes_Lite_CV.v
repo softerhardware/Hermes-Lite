@@ -20,10 +20,11 @@
 
 module Hermes_Lite(
 
+	input exp_present,
 	input AD9866clk,
 	input clk,
  	input extreset,
-	output [7:0] leds, 
+	output [7:0] leds,
 
 	// AD9866
 	output [5:0] ad9866_pga,
@@ -41,7 +42,7 @@ module Hermes_Lite(
     // RMII Ethernet PHY
     output [1:0] rmii_tx,
     output rmii_tx_en,
-    inout [1:0] rmii_rx,
+    input [1:0] rmii_rx,
     input rmii_osc,
     input rmii_crs_dv,
     inout PHY_MDIO,
@@ -59,22 +60,22 @@ parameter IP = {8'd0,8'd0,8'd0,8'd0};
 parameter CLK_FREQ = 61440000;
 
 // Number of Receivers
-parameter NR = 1; // number of receivers to implement
+parameter NR = 2; // number of receivers to implement
 
 
-// IF Clocks
+
+// Clocks
 wire IF_clk;
-wire ad9866spiclk;
-wire rstclk;
-wire EEPROM_clock;
+wire slowclk;
+wire testAD9866clk;
+wire iAD9866clk;
 wire IF_locked;
 ifclocks_cv ifclocks_cv_inst(
 	.refclk(clk),
 	.rst(1'b0),
 	.outclk_0(IF_clk),
-	.outclk_1(ad9866spiclk),
-	.outclk_2(rstclk),
-	.outclk_3(EEPROM_clock),
+	.outclk_1(testAD9866clk),
+	.outclk_2(slowclk),
 	.locked(IF_locked)
 	);
 
@@ -110,6 +111,15 @@ RMII2MII_rev2 RMII2MII_inst(
 	.phy_resetn()
 );
 
+// PLL clk must me on input 2 or 3
+clkmux_cv clkmux (
+	.inclk0x(AD9866clk),
+	.inclk1x(AD9866clk),
+	.inclk2x(testAD9866clk),
+	.clkselect({~exp_present,1'b0}),
+	.outclk(iAD9866clk)
+);
+
 // Hermes Lite Core
 hermes_lite_core #(
 	.MAC(MAC),
@@ -119,12 +129,13 @@ hermes_lite_core #(
 	) 
 
 	hermes_lite_core_inst(
-	.AD9866clk(AD9866clk),
+	.exp_present(exp_present),
+	.AD9866clk(iAD9866clk),
 
 	.IF_clk(IF_clk),
-	.ad9866spiclk(ad9866spiclk),
-	.rstclk(rstclk),
-	.EEPROM_clock(EEPROM_clock),
+	.ad9866spiclk(IF_clk),
+	.rstclk(slowclk),
+	.EEPROM_clock(slowclk),
 	.IF_locked(IF_locked),
 
  	.extreset(extreset),

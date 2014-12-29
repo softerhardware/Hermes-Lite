@@ -12,7 +12,7 @@ ENTITY RMII2MII_rev2 IS
 	( 
 		clk : IN STD_LOGIC;
 		resetn : IN STD_LOGIC;
-		phy_RXD : INOUT STD_LOGIC_VECTOR(1 downto 0);
+		phy_RXD : IN STD_LOGIC_VECTOR(1 downto 0);
 		phy_CRS : IN STD_LOGIC;
 		mac_RXD : OUT STD_LOGIC_VECTOR(3 downto 0);
 		mac_RX_CLK : OUT STD_LOGIC;
@@ -95,16 +95,16 @@ begin
 			rxd_intern	<= "00";
 			rxd_intern2	<= "00";
 			phy_resetn	<= '0';
-			phy_RXD		<= "00";
+			-- phy_RXD		<= "00";
 	elsif rising_edge(clk) then
 			phy_resetn	<= '1';
-			phy_RXD		<= "ZZ";
+			-- phy_RXD		<= "ZZ";
 			crs_intern	<= phy_CRS;
 			crs_intern2	<= crs_intern;
 			rxd_intern	<= phy_RXD;
 			rxd_intern2	<= rxd_intern;
-	else
-		phy_RXD		<= "ZZ";
+	--else
+	--	phy_RXD		<= "ZZ";
 	end if; 
 end process p_in;
 
