@@ -58,6 +58,7 @@ parameter IP = {8'd0,8'd0,8'd0,8'd0};
 // ADC Oscillator
 //61440000 or 73728000
 parameter CLK_FREQ = 61440000;
+//parameter CLK_FREQ = 73728000;
 
 // Number of Receivers
 parameter NR = 2; // number of receivers to implement
