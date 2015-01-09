@@ -186,7 +186,7 @@ end
 
 //  If you enable wren in the MegaFunction then it must be set to 1 in order to write, protect or erase.
 
-ASMI  ASMI_inst(.addr(address),.sector_erase(sector_erase), .busy(busy), .clkin(clock),
+ASMI  ASMI_inst(.reset(1'b0), .addr(address),.sector_erase(sector_erase), .busy(busy), .clkin(clock),
     						   .wren(write_enable), .sector_protect(0),
 							   .datain(datain), .write(write), .shift_bytes(shift_bytes)); 
 

@@ -34,32 +34,29 @@
 //agreement for further details.
 
 
-//altasmi_parallel CBX_AUTO_BLACKBOX="ALL" DATA_WIDTH="STANDARD" DEVICE_FAMILY="Cyclone IV E" ENABLE_SIM="FALSE" EPCS_TYPE="EPCS16" PAGE_SIZE=256 PORT_BULK_ERASE="PORT_USED" PORT_DIE_ERASE="PORT_UNUSED" PORT_EN4B_ADDR="PORT_UNUSED" PORT_EX4B_ADDR="PORT_UNUSED" PORT_FAST_READ="PORT_UNUSED" PORT_ILLEGAL_ERASE="PORT_USED" PORT_ILLEGAL_WRITE="PORT_USED" PORT_RDID_OUT="PORT_UNUSED" PORT_READ_ADDRESS="PORT_UNUSED" PORT_READ_DUMMYCLK="PORT_UNUSED" PORT_READ_RDID="PORT_UNUSED" PORT_READ_SID="PORT_USED" PORT_READ_STATUS="PORT_UNUSED" PORT_SECTOR_ERASE="PORT_USED" PORT_SECTOR_PROTECT="PORT_USED" PORT_SHIFT_BYTES="PORT_USED" PORT_WREN="PORT_USED" PORT_WRITE="PORT_USED" USE_ASMIBLOCK="ON" USE_EAB="ON" WRITE_DUMMY_CLK=0 addr bulk_erase busy clkin data_valid datain dataout epcs_id illegal_erase illegal_write rden read read_sid reset sector_erase sector_protect shift_bytes wren write INTENDED_DEVICE_FAMILY="Cyclone IV E" ALTERA_INTERNAL_OPTIONS=SUPPRESS_DA_RULE_INTERNAL=C106
+//altasmi_parallel CBX_AUTO_BLACKBOX="ALL" DATA_WIDTH="STANDARD" DEVICE_FAMILY="Cyclone IV E" ENABLE_SIM="FALSE" EPCS_TYPE="EPCS16" PAGE_SIZE=256 PORT_BULK_ERASE="PORT_UNUSED" PORT_DIE_ERASE="PORT_UNUSED" PORT_EN4B_ADDR="PORT_UNUSED" PORT_EX4B_ADDR="PORT_UNUSED" PORT_FAST_READ="PORT_UNUSED" PORT_ILLEGAL_ERASE="PORT_USED" PORT_ILLEGAL_WRITE="PORT_USED" PORT_RDID_OUT="PORT_UNUSED" PORT_READ_ADDRESS="PORT_UNUSED" PORT_READ_DUMMYCLK="PORT_UNUSED" PORT_READ_RDID="PORT_UNUSED" PORT_READ_SID="PORT_UNUSED" PORT_READ_STATUS="PORT_UNUSED" PORT_SECTOR_ERASE="PORT_USED" PORT_SECTOR_PROTECT="PORT_USED" PORT_SHIFT_BYTES="PORT_USED" PORT_WREN="PORT_USED" PORT_WRITE="PORT_USED" USE_ASMIBLOCK="ON" USE_EAB="ON" WRITE_DUMMY_CLK=0 addr busy clkin data_valid datain dataout illegal_erase illegal_write rden read reset sector_erase sector_protect shift_bytes wren write INTENDED_DEVICE_FAMILY="Cyclone IV E" ALTERA_INTERNAL_OPTIONS=SUPPRESS_DA_RULE_INTERNAL=C106
 //VERSION_BEGIN 14.1 cbx_a_gray2bin 2014:12:03:18:04:04:SJ cbx_a_graycounter 2014:12:03:18:04:04:SJ cbx_altasmi_parallel 2014:12:03:18:04:04:SJ cbx_altdpram 2014:12:03:18:04:04:SJ cbx_altsyncram 2014:12:03:18:04:04:SJ cbx_arriav 2014:12:03:18:04:03:SJ cbx_cyclone 2014:12:03:18:04:04:SJ cbx_cycloneii 2014:12:03:18:04:04:SJ cbx_fifo_common 2014:12:03:18:04:04:SJ cbx_lpm_add_sub 2014:12:03:18:04:04:SJ cbx_lpm_compare 2014:12:03:18:04:04:SJ cbx_lpm_counter 2014:12:03:18:04:04:SJ cbx_lpm_decode 2014:12:03:18:04:04:SJ cbx_lpm_mux 2014:12:03:18:04:04:SJ cbx_mgl 2014:12:03:18:06:09:SJ cbx_nightfury 2014:12:03:18:04:04:SJ cbx_scfifo 2014:12:03:18:04:04:SJ cbx_stratix 2014:12:03:18:04:04:SJ cbx_stratixii 2014:12:03:18:04:04:SJ cbx_stratixiii 2014:12:03:18:04:04:SJ cbx_stratixv 2014:12:03:18:04:04:SJ cbx_util_mgl 2014:12:03:18:04:04:SJ cbx_zippleback 2014:12:03:22:21:52:SJ  VERSION_END
 // synthesis VERILOG_INPUT_VERSION VERILOG_2001
 // altera message_off 10463
 
 
-//synthesis_resources = a_graycounter 5 cycloneii_asmiblock 1 lpm_compare 2 lpm_counter 2 lut 76 mux21 1 reg 131 
+//synthesis_resources = a_graycounter 5 cycloneii_asmiblock 1 lpm_compare 2 lpm_counter 2 lut 70 mux21 1 reg 120 
 //synopsys translate_off
 `timescale 1 ps / 1 ps
 //synopsys translate_on
 (* ALTERA_ATTRIBUTE = {"SUPPRESS_DA_RULE_INTERNAL=C106"} *)
-module  ASMI_altasmi_parallel_86s2
+module  ASMI_altasmi_parallel_vvp2
 	( 
 	addr,
-	bulk_erase,
 	busy,
 	clkin,
 	data_valid,
 	datain,
 	dataout,
-	epcs_id,
 	illegal_erase,
 	illegal_write,
 	rden,
 	read,
-	read_sid,
 	reset,
 	sector_erase,
 	sector_protect,
@@ -67,18 +64,15 @@ module  ASMI_altasmi_parallel_86s2
 	wren,
 	write) /* synthesis synthesis_clearbox=2 */;
 	input   [23:0]  addr;
-	input   bulk_erase;
 	output   busy;
 	input   clkin;
 	output   data_valid;
 	input   [7:0]  datain;
 	output   [7:0]  dataout;
-	output   [7:0]  epcs_id;
 	output   illegal_erase;
 	output   illegal_write;
 	input   rden;
 	input   read;
-	input   read_sid;
 	input   reset;
 	input   sector_erase;
 	input   sector_protect;
@@ -88,10 +82,8 @@ module  ASMI_altasmi_parallel_86s2
 `ifndef ALTERA_RESERVED_QIS
 // synopsys translate_off
 `endif
-	tri0   bulk_erase;
 	tri0   [7:0]  datain;
 	tri0   read;
-	tri0   read_sid;
 	tri0   reset;
 	tri0   sector_erase;
 	tri0   sector_protect;
@@ -117,15 +109,12 @@ module  ASMI_altasmi_parallel_86s2
 	reg	[7:0]	asmi_opcode_reg;
 	wire	[7:0]	wire_asmi_opcode_reg_ena;
 	reg	buf_empty_reg;
-	reg	bulk_erase_reg;
-	wire	wire_bulk_erase_reg_ena;
 	reg	busy_det_reg;
 	reg	clr_read_reg;
 	reg	clr_read_reg2;
 	reg	clr_rstat_reg;
 	reg	clr_secprot_reg;
 	reg	clr_secprot_reg1;
-	reg	clr_sid_reg;
 	reg	clr_write_reg;
 	reg	clr_write_reg2;
 	reg	cnt_bfend_reg;
@@ -144,7 +133,6 @@ module  ASMI_altasmi_parallel_86s2
 	wire	wire_end_rbyte_reg_ena;
 	wire	wire_end_rbyte_reg_sclr;
 	reg	end_read_reg;
-	reg	[7:0]	epcs_id_reg2;
 	reg	ill_erase_reg;
 	reg	ill_write_reg;
 	reg	illegal_write_prot_reg;
@@ -165,8 +153,6 @@ module  ASMI_altasmi_parallel_86s2
 	wire	[7:0]	wire_read_dout_reg_ena;
 	reg	read_reg;
 	wire	wire_read_reg_ena;
-	reg	read_sid_reg;
-	wire	wire_read_sid_reg_ena;
 	reg	sec_erase_reg;
 	wire	wire_sec_erase_reg_ena;
 	reg	sec_prot_reg;
@@ -215,7 +201,6 @@ module  ASMI_altasmi_parallel_86s2
 	wire  bp2_wire;
 	wire  bp3_wire;
 	wire  buf_empty;
-	wire  bulk_erase_wire;
 	wire  busy_wire;
 	wire  clkin_wire;
 	wire  clr_addmsb_wire;
@@ -330,7 +315,6 @@ module  ASMI_altasmi_parallel_86s2
 	wire  shift_opcode;
 	wire  shift_opdata;
 	wire  shift_pgwr_data;
-	wire  sid_load;
 	wire  st_busy_wire;
 	wire  stage2_wire;
 	wire  stage3_wire;
@@ -714,17 +698,6 @@ module  ASMI_altasmi_parallel_86s2
 		else  buf_empty_reg <= wire_cmpr5_aeb;
 	// synopsys translate_off
 	initial
-		bulk_erase_reg = 0;
-	// synopsys translate_on
-	always @ ( posedge clkin_wire or  posedge reset)
-		if (reset == 1'b1) bulk_erase_reg <= 1'b0;
-		else if  (wire_bulk_erase_reg_ena == 1'b1) 
-			if (clr_write_wire == 1'b1) bulk_erase_reg <= 1'b0;
-			else  bulk_erase_reg <= bulk_erase;
-	assign
-		wire_bulk_erase_reg_ena = (((~ busy_wire) & wren_wire) | clr_write_wire);
-	// synopsys translate_off
-	initial
 		busy_det_reg = 0;
 	// synopsys translate_on
 	always @ ( negedge clkin_wire or  posedge reset)
@@ -765,13 +738,6 @@ module  ASMI_altasmi_parallel_86s2
 	always @ ( posedge clkin_wire or  posedge reset)
 		if (reset == 1'b1) clr_secprot_reg1 <= 1'b0;
 		else  clr_secprot_reg1 <= clr_secprot_reg;
-	// synopsys translate_off
-	initial
-		clr_sid_reg = 0;
-	// synopsys translate_on
-	always @ ( negedge clkin_wire or  posedge reset)
-		if (reset == 1'b1) clr_sid_reg <= 1'b0;
-		else  clr_sid_reg <= end_ophdly;
 	// synopsys translate_off
 	initial
 		clr_write_reg = 0;
@@ -877,13 +843,6 @@ module  ASMI_altasmi_parallel_86s2
 	always @ ( negedge clkin_wire or  posedge reset)
 		if (reset == 1'b1) end_read_reg <= 1'b0;
 		else  end_read_reg <= ((((~ rden_wire) & (do_read | do_fast_read)) & data_valid_wire) & end_read_byte);
-	// synopsys translate_off
-	initial
-		epcs_id_reg2 = 0;
-	// synopsys translate_on
-	always @ ( negedge clkin_wire or  posedge reset)
-		if (reset == 1'b1) epcs_id_reg2 <= 8'b0;
-		else if  (sid_load == 1'b1)   epcs_id_reg2 <= {read_dout_reg[7:0]};
 	// synopsys translate_off
 	initial
 		ill_erase_reg = 0;
@@ -1151,17 +1110,6 @@ module  ASMI_altasmi_parallel_86s2
 			else  read_reg <= read;
 	assign
 		wire_read_reg_ena = (((~ busy_wire) & rden_wire) | clr_read_wire);
-	// synopsys translate_off
-	initial
-		read_sid_reg = 0;
-	// synopsys translate_on
-	always @ ( posedge clkin_wire or  posedge reset)
-		if (reset == 1'b1) read_sid_reg <= 1'b0;
-		else if  (wire_read_sid_reg_ena == 1'b1) 
-			if (clr_sid_wire == 1'b1) read_sid_reg <= 1'b0;
-			else  read_sid_reg <= read_sid;
-	assign
-		wire_read_sid_reg_ena = ((~ busy_wire) | clr_sid_wire);
 	// synopsys translate_off
 	initial
 		sec_erase_reg = 0;
@@ -1613,13 +1561,12 @@ module  ASMI_altasmi_parallel_86s2
 		addr_reg_overdie = {24{1'b0}},
 		b4addr_opcode = {8{1'b0}},
 		be_write_prot = ((do_bulk_erase | do_die_erase) & (((bp3_wire | bp2_wire) | bp1_wire) | bp0_wire)),
-		berase_opcode = 8'b11000111,
+		berase_opcode = {8{1'b0}},
 		bp0_wire = statreg_int[2],
 		bp1_wire = statreg_int[3],
 		bp2_wire = statreg_int[4],
 		bp3_wire = statreg_int[6],
 		buf_empty = buf_empty_reg,
-		bulk_erase_wire = bulk_erase_reg,
 		busy = busy_wire,
 		busy_wire = ((((((((((((((do_read_rdid | do_read_sid) | do_read) | do_fast_read) | do_write) | do_sec_prot) | do_read_stat) | do_sec_erase) | do_bulk_erase) | do_die_erase) | do_4baddr) | do_read_volatile) | do_fread_epcq) | do_read_nonvolatile) | do_ex4baddr),
 		clkin_wire = clkin,
@@ -1630,7 +1577,7 @@ module  ASMI_altasmi_parallel_86s2
 		clr_rstat_wire = clr_rstat_reg,
 		clr_secprot_wire = clr_secprot_reg,
 		clr_secprot_wire1 = clr_secprot_reg1,
-		clr_sid_wire = clr_sid_reg,
+		clr_sid_wire = 1'b0,
 		clr_write_wire = clr_write_reg,
 		clr_write_wire2 = clr_write_reg2,
 		cnt_bfend_wire_in = ((wire_gen_cntr_q[2] & (~ wire_gen_cntr_q[1])) & wire_gen_cntr_q[0]),
@@ -1642,7 +1589,7 @@ module  ASMI_altasmi_parallel_86s2
 		dataout_wire = {{4{1'b0}}},
 		derase_opcode = {8{1'b0}},
 		do_4baddr = 1'b0,
-		do_bulk_erase = (((((((((~ do_read_nonvolatile) & (~ read_rdid_wire)) & (~ read_sid_wire)) & (~ sec_protect_wire)) & (~ (read_wire | fast_read_wire))) & (~ write_wire)) & (~ read_status_wire)) & (~ sec_erase_wire)) & bulk_erase_wire),
+		do_bulk_erase = 1'b0,
 		do_die_erase = 1'b0,
 		do_ex4baddr = 1'b0,
 		do_fast_read = 1'b0,
@@ -1653,7 +1600,7 @@ module  ASMI_altasmi_parallel_86s2
 		do_read = ((((~ read_rdid_wire) & (~ read_sid_wire)) & (~ sec_protect_wire)) & read_wire),
 		do_read_nonvolatile = 1'b0,
 		do_read_rdid = 1'b0,
-		do_read_sid = (((~ do_read_nonvolatile) & (~ read_rdid_wire)) & read_sid_wire),
+		do_read_sid = 1'b0,
 		do_read_stat = ((((((((((~ do_read_nonvolatile) & (~ read_rdid_wire)) & (~ read_sid_wire)) & (~ sec_protect_wire)) & (~ (read_wire | fast_read_wire))) & (~ write_wire)) & read_status_wire) | do_write_rstat) | do_sprot_rstat) | do_write_volatile_rstat),
 		do_read_volatile = 1'b0,
 		do_sec_erase = ((((((((~ do_read_nonvolatile) & (~ read_rdid_wire)) & (~ read_sid_wire)) & (~ sec_protect_wire)) & (~ (read_wire | fast_read_wire))) & (~ write_wire)) & (~ read_status_wire)) & sec_erase_wire),
@@ -1686,7 +1633,6 @@ module  ASMI_altasmi_parallel_86s2
 		end_read = end_read_reg,
 		end_read_byte = (end_rbyte_reg & (~ addr_overdie)),
 		end_wrstage = end_operation,
-		epcs_id = {epcs_id_reg2[7:0]},
 		exb4addr_opcode = {8{1'b0}},
 		fast_read_opcode = {8{1'b0}},
 		fast_read_wire = 1'b0,
@@ -1721,13 +1667,13 @@ module  ASMI_altasmi_parallel_86s2
 		read_data_reg_in_wire = {read_dout_reg[7:0]},
 		read_opcode = 8'b00000011,
 		read_rdid_wire = 1'b0,
-		read_sid_wire = read_sid_reg,
+		read_sid_wire = 1'b0,
 		read_status_wire = 1'b0,
 		read_wire = read_reg,
 		rflagstat_opcode = 8'b00000101,
 		rnvdummyclk_opcode = {8{1'b0}},
-		rsid_opcode = 8'b10101011,
-		rsid_sdoin = (do_read_sid & stage3_wire),
+		rsid_opcode = {8{1'b0}},
+		rsid_sdoin = 1'b0,
 		rstat_opcode = 8'b00000101,
 		scein_wire = (~ ncs_reg),
 		sdoin_wire = to_sdoin_wire,
@@ -1740,7 +1686,6 @@ module  ASMI_altasmi_parallel_86s2
 		shift_opcode = shift_op_reg,
 		shift_opdata = stage2_wire,
 		shift_pgwr_data = shftpgwr_data_reg,
-		sid_load = (end_ophdly & do_read_sid),
 		st_busy_wire = statreg_int[0],
 		stage2_wire = stage2_reg,
 		stage3_wire = stage3_reg,
@@ -1758,7 +1703,7 @@ module  ASMI_altasmi_parallel_86s2
 		write_sdoin = ((((do_write & stage4_wire) & wire_wrstage_cntr_q[1]) & wire_wrstage_cntr_q[0]) & pgwrbuf_dataout[7]),
 		write_wire = write_reg,
 		wrvolatile_opcode = {8{1'b0}};
-endmodule //ASMI_altasmi_parallel_86s2
+endmodule //ASMI_altasmi_parallel_vvp2
 //VALID FILE
 
 
@@ -1767,12 +1712,10 @@ endmodule //ASMI_altasmi_parallel_86s2
 // synopsys translate_on
 module ASMI (
 	addr,
-	bulk_erase,
 	clkin,
 	datain,
 	rden,
 	read,
-	read_sid,
 	reset,
 	sector_erase,
 	sector_protect,
@@ -1782,17 +1725,14 @@ module ASMI (
 	busy,
 	data_valid,
 	dataout,
-	epcs_id,
 	illegal_erase,
 	illegal_write)/* synthesis synthesis_clearbox = 2 */;
 
 	input	[23:0]  addr;
-	input	  bulk_erase;
 	input	  clkin;
 	input	[7:0]  datain;
 	input	  rden;
 	input	  read;
-	input	  read_sid;
 	input	  reset;
 	input	  sector_erase;
 	input	  sector_protect;
@@ -1802,31 +1742,26 @@ module ASMI (
 	output	  busy;
 	output	  data_valid;
 	output	[7:0]  dataout;
-	output	[7:0]  epcs_id;
 	output	  illegal_erase;
 	output	  illegal_write;
 
 	wire  sub_wire0;
 	wire  sub_wire1;
 	wire [7:0] sub_wire2;
-	wire [7:0] sub_wire3;
+	wire  sub_wire3;
 	wire  sub_wire4;
-	wire  sub_wire5;
 	wire  busy = sub_wire0;
 	wire  data_valid = sub_wire1;
 	wire [7:0] dataout = sub_wire2[7:0];
-	wire [7:0] epcs_id = sub_wire3[7:0];
-	wire  illegal_erase = sub_wire4;
-	wire  illegal_write = sub_wire5;
+	wire  illegal_erase = sub_wire3;
+	wire  illegal_write = sub_wire4;
 
-	ASMI_altasmi_parallel_86s2	ASMI_altasmi_parallel_86s2_component (
+	ASMI_altasmi_parallel_vvp2	ASMI_altasmi_parallel_vvp2_component (
 				.addr (addr),
-				.bulk_erase (bulk_erase),
 				.clkin (clkin),
 				.datain (datain),
 				.rden (rden),
 				.read (read),
-				.read_sid (read_sid),
 				.reset (reset),
 				.sector_erase (sector_erase),
 				.sector_protect (sector_protect),
@@ -1836,11 +1771,10 @@ module ASMI (
 				.busy (sub_wire0),
 				.data_valid (sub_wire1),
 				.dataout (sub_wire2),
-				.epcs_id (sub_wire3),
-				.illegal_erase (sub_wire4),
-				.illegal_write (sub_wire5))/* synthesis synthesis_clearbox=2
+				.illegal_erase (sub_wire3),
+				.illegal_write (sub_wire4))/* synthesis synthesis_clearbox=2
 	 clearbox_macroname = ALTASMI_PARALLEL
-	 clearbox_defparam = "data_width=STANDARD;enable_sim=FALSE;epcs_type=EPCS16;intended_device_family=Cyclone IV E;lpm_hint=UNUSED;lpm_type=altasmi_parallel;page_size=256;port_bulk_erase=PORT_USED;port_die_erase=PORT_UNUSED;port_en4b_addr=PORT_UNUSED;port_ex4b_addr=PORT_UNUSED;port_fast_read=PORT_UNUSED;port_illegal_erase=PORT_USED;port_illegal_write=PORT_USED;port_rdid_out=PORT_UNUSED;port_read_address=PORT_UNUSED;port_read_dummyclk=PORT_UNUSED;port_read_rdid=PORT_UNUSED;port_read_sid=PORT_USED;port_read_status=PORT_UNUSED;port_sector_erase=PORT_USED;port_sector_protect=PORT_USED;port_shift_bytes=PORT_USED;port_wren=PORT_USED;port_write=PORT_USED;use_asmiblock=ON;use_eab=ON;write_dummy_clk=0;" */;
+	 clearbox_defparam = "data_width=STANDARD;enable_sim=FALSE;epcs_type=EPCS16;intended_device_family=Cyclone IV E;lpm_hint=UNUSED;lpm_type=altasmi_parallel;page_size=256;port_bulk_erase=PORT_UNUSED;port_die_erase=PORT_UNUSED;port_en4b_addr=PORT_UNUSED;port_ex4b_addr=PORT_UNUSED;port_fast_read=PORT_UNUSED;port_illegal_erase=PORT_USED;port_illegal_write=PORT_USED;port_rdid_out=PORT_UNUSED;port_read_address=PORT_UNUSED;port_read_dummyclk=PORT_UNUSED;port_read_rdid=PORT_UNUSED;port_read_sid=PORT_UNUSED;port_read_status=PORT_UNUSED;port_sector_erase=PORT_USED;port_sector_protect=PORT_USED;port_shift_bytes=PORT_USED;port_wren=PORT_USED;port_write=PORT_USED;use_asmiblock=ON;use_eab=ON;write_dummy_clk=0;" */;
 
 endmodule
 
@@ -1856,7 +1790,7 @@ endmodule
 // Retrieval info: CONSTANT: LPM_HINT STRING "UNUSED"
 // Retrieval info: CONSTANT: LPM_TYPE STRING "altasmi_parallel"
 // Retrieval info: CONSTANT: PAGE_SIZE NUMERIC "256"
-// Retrieval info: CONSTANT: PORT_BULK_ERASE STRING "PORT_USED"
+// Retrieval info: CONSTANT: PORT_BULK_ERASE STRING "PORT_UNUSED"
 // Retrieval info: CONSTANT: PORT_DIE_ERASE STRING "PORT_UNUSED"
 // Retrieval info: CONSTANT: PORT_EN4B_ADDR STRING "PORT_UNUSED"
 // Retrieval info: CONSTANT: PORT_EX4B_ADDR STRING "PORT_UNUSED"
@@ -1867,7 +1801,7 @@ endmodule
 // Retrieval info: CONSTANT: PORT_READ_ADDRESS STRING "PORT_UNUSED"
 // Retrieval info: CONSTANT: PORT_READ_DUMMYCLK STRING "PORT_UNUSED"
 // Retrieval info: CONSTANT: PORT_READ_RDID STRING "PORT_UNUSED"
-// Retrieval info: CONSTANT: PORT_READ_SID STRING "PORT_USED"
+// Retrieval info: CONSTANT: PORT_READ_SID STRING "PORT_UNUSED"
 // Retrieval info: CONSTANT: PORT_READ_STATUS STRING "PORT_UNUSED"
 // Retrieval info: CONSTANT: PORT_SECTOR_ERASE STRING "PORT_USED"
 // Retrieval info: CONSTANT: PORT_SECTOR_PROTECT STRING "PORT_USED"
@@ -1879,8 +1813,6 @@ endmodule
 // Retrieval info: CONSTANT: WRITE_DUMMY_CLK NUMERIC "0"
 // Retrieval info: USED_PORT: addr 0 0 24 0 INPUT NODEFVAL "addr[23..0]"
 // Retrieval info: CONNECT: @addr 0 0 24 0 addr 0 0 24 0
-// Retrieval info: USED_PORT: bulk_erase 0 0 0 0 INPUT NODEFVAL "bulk_erase"
-// Retrieval info: CONNECT: @bulk_erase 0 0 0 0 bulk_erase 0 0 0 0
 // Retrieval info: USED_PORT: busy 0 0 0 0 OUTPUT NODEFVAL "busy"
 // Retrieval info: CONNECT: busy 0 0 0 0 @busy 0 0 0 0
 // Retrieval info: USED_PORT: clkin 0 0 0 0 INPUT NODEFVAL "clkin"
@@ -1891,8 +1823,6 @@ endmodule
 // Retrieval info: CONNECT: @datain 0 0 8 0 datain 0 0 8 0
 // Retrieval info: USED_PORT: dataout 0 0 8 0 OUTPUT NODEFVAL "dataout[7..0]"
 // Retrieval info: CONNECT: dataout 0 0 8 0 @dataout 0 0 8 0
-// Retrieval info: USED_PORT: epcs_id 0 0 8 0 OUTPUT NODEFVAL "epcs_id[7..0]"
-// Retrieval info: CONNECT: epcs_id 0 0 8 0 @epcs_id 0 0 8 0
 // Retrieval info: USED_PORT: illegal_erase 0 0 0 0 OUTPUT NODEFVAL "illegal_erase"
 // Retrieval info: CONNECT: illegal_erase 0 0 0 0 @illegal_erase 0 0 0 0
 // Retrieval info: USED_PORT: illegal_write 0 0 0 0 OUTPUT NODEFVAL "illegal_write"
@@ -1901,8 +1831,6 @@ endmodule
 // Retrieval info: CONNECT: @rden 0 0 0 0 rden 0 0 0 0
 // Retrieval info: USED_PORT: read 0 0 0 0 INPUT NODEFVAL "read"
 // Retrieval info: CONNECT: @read 0 0 0 0 read 0 0 0 0
-// Retrieval info: USED_PORT: read_sid 0 0 0 0 INPUT NODEFVAL "read_sid"
-// Retrieval info: CONNECT: @read_sid 0 0 0 0 read_sid 0 0 0 0
 // Retrieval info: USED_PORT: reset 0 0 0 0 INPUT NODEFVAL "reset"
 // Retrieval info: CONNECT: @reset 0 0 0 0 reset 0 0 0 0
 // Retrieval info: USED_PORT: sector_erase 0 0 0 0 INPUT NODEFVAL "sector_erase"
@@ -1918,7 +1846,7 @@ endmodule
 // Retrieval info: GEN_FILE: TYPE_NORMAL ASMI.v TRUE FALSE
 // Retrieval info: GEN_FILE: TYPE_NORMAL ASMI.qip TRUE FALSE
 // Retrieval info: GEN_FILE: TYPE_NORMAL ASMI.bsf FALSE TRUE
-// Retrieval info: GEN_FILE: TYPE_NORMAL ASMI_inst.v FALSE TRUE
+// Retrieval info: GEN_FILE: TYPE_NORMAL ASMI_inst.v TRUE TRUE
 // Retrieval info: GEN_FILE: TYPE_NORMAL ASMI_bb.v FALSE TRUE
 // Retrieval info: GEN_FILE: TYPE_NORMAL ASMI.inc FALSE TRUE
 // Retrieval info: GEN_FILE: TYPE_NORMAL ASMI.cmp FALSE TRUE

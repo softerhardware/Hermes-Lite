@@ -861,60 +861,54 @@ assign ad9866_txclk = C122_clk;
 
 reg [15:0]temp_ADC;
 reg [15:0] temp_DACD; // for pre-distortion Tx tests
-//reg ad9866clipp;
-//reg ad9866clipn;
-//reg ad9866nearclipp;
-//reg ad9866nearclipn;
+reg ad9866clipp, ad9866clipn;
+reg ad9866nearclip;
+reg ad9866goodlvlp, ad9866goodlvln;
 
 assign temp_DACD = 0;
 
-// always @ (posedge C122_clk) 
-// begin 
+always @ (posedge C122_clk) 
+begin 
 
-//     if (ad9866_adio == 12'b011111111111)
-//     	ad9866clipp <= 1'b1;
-//     else
-//     	ad9866clipp <= 1'b0;
+    if (ad9866_adio == 12'b011111111111)
+    	ad9866clipp <= 1'b1;
+    else
+    	ad9866clipp <= 1'b0;
 
-// 	if (ad9866_adio == 12'b100000000000)
-//     	ad9866clipn <= 1'b1;
-//     else
-//     	ad9866clipn <= 1'b0;
+	if (ad9866_adio == 12'b100000000000)
+    	ad9866clipn <= 1'b1;
+    else
+    	ad9866clipn <= 1'b0;
 
-//     // Near clips occur just over 1 dB from full range
-//     // 2**12 = 4096
-//     // (6.02*12)+1.76 = 74
-//     // 2**11.8074 = 3584
-//     // 4096-3584 = 512 (256 from positive and 256 from negtive clips)
-//     // (6.02*11.8074)+1.76 = 72.84
-//     // 74 - 72.84 = ~1.16 dB from full range
-//     if (ad9866_adio[11:8] == 4'b0111)
-//     	ad9866nearclipp <= 1'b1;
-//     else
-//     	ad9866nearclipp <= 1'b0;
-
-// 	if (ad9866_adio[11:8] == 4'b1000)
-//     	ad9866nearclipn <= 1'b1;
-//     else
-//     	ad9866nearclipn <= 1'b0;
+    // Near clips occur just over 1 dB from full range
+    // 2**12 = 4096
+    // (6.02*12)+1.76 = 74
+    // 2**11.8074 = 3584
+    // 4096-3584 = 512 (256 from positive and 256 from negtive clips)
+    // (6.02*11.8074)+1.76 = 72.84
+    // 74 - 72.84 = ~1.16 dB from full range
+    if ((ad9866_adio[11:8] == 4'b0111) | (ad9866_adio[11:8] == 4'b1000))
+    	ad9866nearclip <= 1'b1;
+    else
+    	ad9866nearclip <= 1'b0;
 
 
-//     if (ad9866_adio[11:8] == 4'b0111)
-//     	ad9866nearclipp <= 1'b1;
-//     else
-//     	ad9866nearclipp <= 1'b0;
+    if (ad9866_adio[11:9] == 3'b011)
+    	ad9866goodlvlp <= 1'b1;
+    else
+    	ad9866goodlvlp <= 1'b0;
 
-// 	if (ad9866_adio[11:8] == 4'b1000)
-//     	ad9866nearclipn <= 1'b1;
-//     else
-//     	ad9866nearclipn <= 1'b0;
-
-
-// end 
+	if (ad9866_adio[11:9] == 3'b100)
+    	ad9866goodlvln <= 1'b1;
+    else
+    	ad9866goodlvln <= 1'b0;
 
 
-wire ad9866clipp = (ad9866_adio == 12'b011111111111);
-wire ad9866clipn = (ad9866_adio == 12'b100000000000);
+end 
+
+
+//wire ad9866clipp = (ad9866_adio == 12'b011111111111);
+//wire ad9866clipn = (ad9866_adio == 12'b100000000000);
 
 // Near clips occur just over 1 dB from full range
 // 2**12 = 4096
@@ -923,11 +917,12 @@ wire ad9866clipn = (ad9866_adio == 12'b100000000000);
 // 4096-3584 = 512 (256 from positive and 256 from negtive clips)
 // (6.02*11.8074)+1.76 = 72.84
 // 74 - 72.84 = ~1.16 dB from full range
-wire ad9866nearclip = (ad9866_adio[11:8] == 4'b0111) | (ad9866_adio[11:8] == 4'b1000);
+//wire ad9866nearclip = (ad9866_adio[11:8] == 4'b0111) | (ad9866_adio[11:8] == 4'b1000);
+
 
 // Like above but 2**11.585 = (4096-1024) = 3072
-wire ad9866goodlvlp = (ad9866_adio[11:9] == 4'b011);
-wire ad9866goodlvln = (ad9866_adio[11:9] == 4'b100);
+//wire ad9866goodlvlp = (ad9866_adio[11:9] == 4'b011);
+//wire ad9866goodlvln = (ad9866_adio[11:9] == 4'b100);
 
 
 // RX/TX port
@@ -1907,7 +1902,7 @@ assign ad9866rqst = 1'b0;
 assign ad9866data = 16'h00;
 
 // Hack to use IF_DITHER to switch highest bit of attenuation
-assign ad9866_pga = ~IF_RAND ? agc_value : {~IF_DITHER, ~Hermes_atten};
+assign ad9866_pga = IF_RAND ? agc_value : {~IF_DITHER, ~Hermes_atten};
 
 
 //---------------------------------------------------------
