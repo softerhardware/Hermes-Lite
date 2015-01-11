@@ -22,11 +22,16 @@ The hardware is based on Analog Devices' [AD9866](http://www.analog.com/en/broad
  * Cost of less than $150 (cost includes FPGA board) for hobbyist who build their own
  * Maintain enough compatibility with Hermes to use existing Hermes SDR front-end software with no or minor modification
 
+
+
+#### Hermes-Lite v1.21
+![Hermes-Lite121](docs/hermeslite121.jpg)
+
 #### Hermes-Lite v1.2
-![Hermes-Lite](docs/hermeslite12.jpg)
+![Hermes-Lite12](docs/hermeslite12.jpg)
 
 #### Hermes-Lite v0.9
-![Hermes-Lite](docs/hermeslite.jpg)
+![Hermes-Lite09](docs/hermeslite.jpg)
 
 
 ## Receive Experiments
