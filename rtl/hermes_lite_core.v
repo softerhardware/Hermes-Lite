@@ -27,7 +27,8 @@
 module hermes_lite_core(
 
 	input exp_present,
-	input AD9866clk,
+	input AD9866clkX1,
+	input AD9866clkX2,
 
 	input IF_clk,
 	input ad9866spiclk,
@@ -83,18 +84,19 @@ parameter MAC;
 parameter IP;
 
 // ADC Oscillator
-parameter CLK_FREQ;
+parameter CLK_FREQ = 61440000;
 
 // B57 = 2^57.   M2 = B57/OSC
-localparam M2 = (CLK_FREQ == 61440000) ? 32'd2345624805 : 32'd1954687338;
+localparam M2 = 32'd2345624805;
+
 // M3 = M2 / 2, used to round the result
-localparam M3 = (CLK_FREQ == 61440000) ? 32'd1172812402 : 32'd977343669;
+localparam M3 = 32'd1172812402;
 
 // Decimation rate
-localparam RATE48 =  (CLK_FREQ == 61440000) ? 6'd20 : 6'd24;
-localparam RATE96 =  (CLK_FREQ == 61440000) ? 6'd10 : 6'd12;
-localparam RATE192 = (CLK_FREQ == 61440000) ? 6'd05 : 6'd06;
-localparam RATE384 = (CLK_FREQ == 61440000) ? 6'd03 : 6'd03; // Doesn't work for 61.44 MHz oscillator
+localparam RATE48 = 6'd16;
+localparam RATE96 =  6'd08;
+localparam RATE192 = 6'd04;
+localparam RATE384 = 6'd02;
 
 // Number of Receivers
 parameter NR; // number of receivers to implement
@@ -133,25 +135,17 @@ assign PHY_RESET_N = 1'b1;  						// Allow PYH to run for now
 
 // transfer IF_rst to 122.88MHz clock domain to generate C122_rst
 cdc_sync #(1)
-	reset_C122 (.siga(IF_rst), .rstb(IF_rst), .clkb(C122_clk), .sigb(C122_rst)); // 122.88MHz clock domain reset
+	reset_C122 (.siga(IF_rst), .rstb(IF_rst), .clkb(AD9866clkX1), .sigb(C122_rst)); // 122.88MHz clock domain reset
 	
 //---------------------------------------------------------
 //		CLOCKS
 //---------------------------------------------------------
 
-//wire C122_clk = LTC2208_122MHz;
-wire C122_clk; //  = AD9866clk;
-wire _122MHz;  // = AD9866clk;
-
 wire CLRCLK;
 
 wire C122_cbclk, C122_cbrise, C122_cbfall;
-Hermes_clk_lrclk_gen #(.CLK_FREQ(CLK_FREQ)) clrgen (.reset(C122_rst), .CLK_IN(C122_clk), .BCLK(C122_cbclk),
+Hermes_clk_lrclk_gen #(.CLK_FREQ(CLK_FREQ)) clrgen (.reset(C122_rst), .CLK_IN(AD9866clkX1), .BCLK(C122_cbclk),
                              .Brise(C122_cbrise), .Bfall(C122_cbfall), .LRCLK(CLRCLK));
-
-
-assign C122_clk = AD9866clk;
-assign _122MHz = AD9866clk;
 
 
 //----------------------------PHY Clocks-------------------
@@ -739,12 +733,12 @@ wire sp_fifo_wrreq;
 wire have_sp_data;
 
 
-SP_fifo  SPF (.aclr(C122_rst | !run), .wrclk (C122_clk), .rdclk(Tx_clock_2), 
+SP_fifo  SPF (.aclr(C122_rst | !run), .wrclk (AD9866clkX1), .rdclk(Tx_clock_2), 
              .wrreq (sp_fifo_wrreq), .data (temp_ADC), .rdreq (sp_fifo_rdreq),
              .q(sp_fifo_rddata), .wrfull(sp_fifo_wrfull), .wrempty(sp_fifo_wrempty)); 					 
 					 
 					 
-sp_rcv_ctrl SPC (.clk(C122_clk), .reset(C122_rst), .sp_fifo_wrempty(sp_fifo_wrempty),
+sp_rcv_ctrl SPC (.clk(AD9866clkX1), .reset(C122_rst), .sp_fifo_wrempty(sp_fifo_wrempty),
                  .sp_fifo_wrfull(sp_fifo_wrfull), .write(sp_fifo_wrreq), .have_sp_data(have_sp_data));	
 				 
 // the wideband data is presented too fast for the PC to swallow so slow down to 12500/4096 = 3kHz
@@ -819,8 +813,8 @@ assign IF_mic_Data = 0;
 assign ad9866_txen = FPGA_PTT;
 assign ad9866_rxen = ~FPGA_PTT;
 
-assign ad9866_rxclk = C122_clk;
-assign ad9866_txclk = C122_clk;
+assign ad9866_rxclk = AD9866clkX1;
+assign ad9866_txclk = AD9866clkX1;
 
 
 // Code for Full duplex
@@ -833,7 +827,7 @@ assign ad9866_txclk = C122_clk;
 
 //reg [11:0] adio;
 
-// Create adio from rxclk, assume it is in sync with C122_clk...
+// Create adio from rxclk, assume it is in sync with AD9866clkX1...
 
 //always @(posedge ad9866_rxclk)
 //begin
@@ -867,7 +861,7 @@ reg [15:0] temp_DACD; // for pre-distortion Tx tests
 
 assign temp_DACD = 0;
 
-// always @ (posedge C122_clk) 
+// always @ (posedge AD9866clkX1) 
 // begin 
 
 //     if (ad9866_adio == 12'b011111111111)
@@ -932,7 +926,7 @@ assign ad9866_adio = FPGA_PTT ? DACD[13:2] : 12'bZ;
 
 // Test sine wave
 reg [3:0] incnt;
-always @ (posedge C122_clk)
+always @ (posedge AD9866clkX1)
   begin
   	if (exp_present)
 		temp_ADC <= {{4{ad9866_adio[11]}},ad9866_adio};
@@ -968,25 +962,25 @@ reg [5:0] agc_value;
 wire agc_clrnearclip;
 wire agc_clrgoodlvl;
 
-always @(posedge C122_clk)
+always @(posedge AD9866clkX1)
 begin
 	if (agc_clrnearclip) agc_nearclip <= 1'b0;
 	else if (ad9866nearclip) agc_nearclip <= 1'b1;
 end
 
-always @(posedge C122_clk)
+always @(posedge AD9866clkX1)
 begin
 	if (agc_clrgoodlvl) agc_goodlvl <= 1'b0;
 	else if (ad9866goodlvlp | ad9866goodlvln) agc_goodlvl <= 1'b1;
 end
 
 // Used for heartbeat too
-always @(posedge C122_clk)
+always @(posedge AD9866clkX1)
 begin
 	agc_delaycnt <= agc_delaycnt + 1;
 end
 
-always @(posedge C122_clk)
+always @(posedge AD9866clkX1)
 begin
 	if (C122_rst) 
 		agc_value <= 6'b011111;
@@ -1021,16 +1015,16 @@ wire  signed [15:0] C122_I_PWM;
 wire  signed [15:0] C122_Q_PWM;
 
 cdc_sync #(32)
-	freq0 (.siga(IF_frequency[0]), .rstb(C122_rst), .clkb(C122_clk), .sigb(C122_frequency_HZ_Tx)); // transfer Tx frequency
+	freq0 (.siga(IF_frequency[0]), .rstb(C122_rst), .clkb(AD9866clkX1), .sigb(C122_frequency_HZ_Tx)); // transfer Tx frequency
 
 cdc_sync #(2)
-	rates (.siga({IF_DFS1,IF_DFS0}), .rstb(C122_rst), .clkb(C122_clk), .sigb({C122_DFS1, C122_DFS0})); // sample rate
+	rates (.siga({IF_DFS1,IF_DFS0}), .rstb(C122_rst), .clkb(AD9866clkX1), .sigb({C122_DFS1, C122_DFS0})); // sample rate
 	
 cdc_sync #(16)
-    Tx_I  (.siga(IF_I_PWM), .rstb(C122_rst), .clkb(_122MHz), .sigb(C122_I_PWM )); // Tx I data
+    Tx_I  (.siga(IF_I_PWM), .rstb(C122_rst), .clkb(AD9866clkX1), .sigb(C122_I_PWM )); // Tx I data
     
 cdc_sync #(16)
-    Tx_Q  (.siga(IF_Q_PWM), .rstb(C122_rst), .clkb(_122MHz), .sigb(C122_Q_PWM)); // Tx Q data
+    Tx_Q  (.siga(IF_Q_PWM), .rstb(C122_rst), .clkb(AD9866clkX1), .sigb(C122_Q_PWM)); // Tx Q data
     
    
 
@@ -1106,16 +1100,10 @@ wire             test_strobe3;
 	always @ ({C122_DFS1, C122_DFS0})
 	begin 
 		case ({C122_DFS1, C122_DFS0})
-//    	0: rate <= 6'd24;     //  48ksps 
-//    	1: rate <= 6'd12;     //  96ksps
-//    	2: rate <= 6'd06;     //  192ksps
-//    	3: rate <= 6'd03;      //  384ksps    	
-//    	default: rate <= 6'd24;    			
 
     	0: rate <= RATE48;     //  48ksps 
     	1: rate <= RATE96;     //  96ksps
     	2: rate <= RATE192;     //  192ksps
-    	// FIXME: What to do for 384ksps with 61.44 MHZ Xtal?
     	3: rate <= RATE384;      //  384ksps    	
     	default: rate <= RATE48;    	
 
@@ -1131,7 +1119,7 @@ generate
    // Note: We add 1/2 M2 (M3) so that we end up with a rounded 32 bit integer below.
     assign C122_ratio[c] = C122_frequency_HZ[c] * M2 + M3; // B0 * B57 number = B57 number 
 
-    always @ (posedge C122_clk)
+    always @ (posedge AD9866clkX1)
     begin
       if (C122_cbrise) // time between C122_cbrise is enough for ratio calculation to settle
       begin
@@ -1141,13 +1129,13 @@ generate
       end 		
     end
 
-	cdc_mcp #(48)			// Transfer the receiver data and strobe from C122_clk to IF_clk
-		IQ_sync (.a_data ({rx_I[c], rx_Q[c]}), .a_clk(C122_clk),.b_clk(IF_clk), .a_data_rdy(strobe[c]),
+	cdc_mcp #(48)			// Transfer the receiver data and strobe from AD9866clkX1 to IF_clk
+		IQ_sync (.a_data ({rx_I[c], rx_Q[c]}), .a_clk(AD9866clkX1),.b_clk(IF_clk), .a_data_rdy(strobe[c]),
 				.a_rst(C122_rst), .b_rst(IF_rst), .b_data(IF_M_IQ_Data[c]), .b_data_ack(IF_M_IQ_Data_rdy[c]));
 
 	receiver receiver_inst(
 	//control
-	.clock(C122_clk),
+	.clock(AD9866clkX1),
 	.rate(rate),
 	.frequency(C122_sync_phase_word[c]),
 	.out_strobe(strobe[c]),
@@ -1160,45 +1148,9 @@ generate
 	);
 
 	cdc_sync #(32)
-		freq (.siga(IF_frequency[c+1]), .rstb(C122_rst), .clkb(C122_clk), .sigb(C122_frequency_HZ[c])); // transfer Rx1 frequency
+		freq (.siga(IF_frequency[c+1]), .rstb(C122_rst), .clkb(AD9866clkX1), .sigb(C122_frequency_HZ[c])); // transfer Rx1 frequency
 end
 endgenerate
-
-
-//wire [15:0] select_input;
-//wire [31:0] select_frequency;
-//assign select_input = FPGA_PTT ?  temp_DACD : temp_ADC;												// ADC on Rx and DAC on Tx
-//assign select_frequency = FPGA_PTT ? C122_sync_phase_word_Tx : C122_sync_phase_word[0]; 	// Rx5 freq on Rx and Tx freq on Tx
-
-
-//receiver receiver_inst0(   // Rx1
-	//control
-//	.clock(C122_clk),
-//	.rate(rate),
-//	.frequency(C122_sync_phase_word[0]),
-//	.out_strobe(strobe[0]),
-	//input
-//	.in_data(temp_ADC),
-	//output
-//	.out_data_I(rx_I[0]),
-//	.out_data_Q(rx_Q[0]),
-//	.test_strobe3()
-//	);
-
-//receiver receiver_inst1(	// Rx2
-	//control
-//	.clock(C122_clk),
-//	.rate(rate),
-//	.frequency(C122_sync_phase_word[1]),
-//	.out_strobe(strobe[1]),
-	//input
-//	.in_data(temp_ADC),
-	//output
-//	.out_data_I(rx_I[1]),
-//	.out_data_Q(rx_Q[1]),
-//	.test_strobe3()
-//	);
-
 
 
 // calc frequency phase word for Tx
@@ -1206,7 +1158,7 @@ endgenerate
 // Note: We add 1/2 M2 (M3) so that we end up with a rounded 32 bit integer below.
 assign C122_ratio_Tx = C122_frequency_HZ_Tx * M2 + M3; 
 
-always @ (posedge C122_clk)
+always @ (posedge AD9866clkX1)
 begin
   if (C122_cbrise)
   begin
@@ -1289,7 +1241,7 @@ reg signed [15:0]C122_fir_i;
 reg signed [15:0]C122_fir_q;
 
 // latch I&Q data on strobe from FIR
-always @ (posedge _122MHz)
+always @ (posedge AD9866clkX1)
 begin 
 	if (req1) begin 
 		C122_fir_i = C122_I_PWM;
@@ -1304,10 +1256,10 @@ wire req1, req2;
 wire [19:0] y1_r, y1_i; 
 wire [15:0] y2_r, y2_i;
 
-FirInterp8_1024 fi (_122MHz, req2, req1, C122_fir_i, C122_fir_q, y1_r, y1_i);  // req2 enables an output sample, req1 requests next input sample.
+FirInterp8_1024 fi (AD9866clkX1, req2, req1, C122_fir_i, C122_fir_q, y1_r, y1_i);  // req2 enables an output sample, req1 requests next input sample.
 
-// GBITS reduced to 31
-CicInterpM5 #(.RRRR(192), .IBITS(20), .OBITS(16), .GBITS(31)) in2 ( _122MHz, 1'd1, req2, y1_r, y1_i, y2_r, y2_i);
+// GBITS reduced to 30
+CicInterpM5 #(.RRRR(160), .IBITS(20), .OBITS(16), .GBITS(30)) in2 ( AD9866clkX1, 1'd1, req2, y1_r, y1_i, y2_r, y2_i);
 
 
 
@@ -1332,7 +1284,7 @@ assign                  Q = VNA ? 0 : y2_r; 					// taking into account CORDICs 
 // NOTE:  I and Q inputs reversed to give correct sideband out 
 
 cpl_cordic #(.OUT_WIDTH(16))
- 		cordic_inst (.clock(_122MHz), .frequency(C122_phase_word_Tx), .in_data_I(I),			
+ 		cordic_inst (.clock(AD9866clkX1), .frequency(C122_phase_word_Tx), .in_data_I(I),			
 		.in_data_Q(Q), .out_data_I(C122_cordic_i_out), .out_data_Q());		
 			 	 
 /* 
@@ -1351,7 +1303,7 @@ cpl_cordic #(.OUT_WIDTH(16))
 
 reg [13:0] DACD;
 
-always @ (negedge _122MHz)
+always @ (negedge AD9866clkX1)
 	DACD <= C122_cordic_i_out[13:0];   //gain of 4
 
 
@@ -1366,7 +1318,7 @@ always @ (negedge _122MHz)
 // level set by the PC then DAC_ALC will be high, otherwise low.  
 
 //reg [7:0] PWM_count;
-//always @ (posedge _122MHz)
+//always @ (posedge AD9866clkX1)
 //begin 
 //	PWM_count <= PWM_count + 1'b1;
 //	if (IF_Drive_Level >= PWM_count)
@@ -2048,10 +2000,10 @@ ad9866 ad9866_inst(.reset(~ad9866_rst_n),.clk(ad9866spiclk),.sclk(ad9866_sclk),.
 localparam half_second = 10000000; // at 48MHz clock rate
 
 	
-Led_flash Flash_LED0(.clock(C122_clk), .signal(ad9866clipp), .LED(leds[0]), .period(half_second));
-Led_flash Flash_LED1(.clock(C122_clk), .signal(ad9866goodlvlp), .LED(leds[1]), .period(half_second));
-Led_flash Flash_LED2(.clock(C122_clk), .signal(ad9866goodlvln), .LED(leds[2]), .period(half_second));
-Led_flash Flash_LED3(.clock(C122_clk), .signal(ad9866clipn), .LED(leds[3]), .period(half_second));
+Led_flash Flash_LED0(.clock(AD9866clkX1), .signal(ad9866clipp), .LED(leds[0]), .period(half_second));
+Led_flash Flash_LED1(.clock(AD9866clkX1), .signal(ad9866goodlvlp), .LED(leds[1]), .period(half_second));
+Led_flash Flash_LED2(.clock(AD9866clkX1), .signal(ad9866goodlvln), .LED(leds[2]), .period(half_second));
+Led_flash Flash_LED3(.clock(AD9866clkX1), .signal(ad9866clipn), .LED(leds[3]), .period(half_second));
 
 Led_flash Flash_LED4(.clock(IF_clk), .signal(this_MAC), .LED(leds[4]), .period(half_second));
 Led_flash Flash_LED5(.clock(IF_clk), .signal(PHY_TX_EN), .LED(leds[5]), .period(half_second));

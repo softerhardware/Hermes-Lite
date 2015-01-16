@@ -88,13 +88,13 @@ clkmux_sdk clkmux (
 hermes_lite_core #(
 	.MAC(MAC),
 	.IP(IP),
-	.CLK_FREQ(CLK_FREQ),
 	.NR(NR)
 	) 
 
 	hermes_lite_core_inst(
 	.exp_present(exp_present),		
-	.AD9866clk(iAD9866clk),
+	.AD9866clkX1(iAD9866clk),
+	.AD9866clkX2(iAD9866clk),
 
 	.IF_clk(IF_clk),
 	.ad9866spiclk(IF_clk),

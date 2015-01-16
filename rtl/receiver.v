@@ -80,7 +80,7 @@ wire signed [23:0] cic_outdata_I2;
 wire signed [23:0] cic_outdata_Q2;
 
 //I channel
-cic #(.STAGES(3), .DECIMATION(8), .IN_WIDTH(22), .ACC_WIDTH(31), .OUT_WIDTH(18))      
+cic #(.STAGES(3), .DECIMATION(10), .IN_WIDTH(22), .ACC_WIDTH(31), .OUT_WIDTH(18))      
   cic_inst_I2(
     .clock(clock),
     .in_strobe(1'b1),
@@ -91,7 +91,7 @@ cic #(.STAGES(3), .DECIMATION(8), .IN_WIDTH(22), .ACC_WIDTH(31), .OUT_WIDTH(18))
 
 
 //Q channel
-cic #(.STAGES(3), .DECIMATION(8), .IN_WIDTH(22), .ACC_WIDTH(31), .OUT_WIDTH(18))  
+cic #(.STAGES(3), .DECIMATION(10), .IN_WIDTH(22), .ACC_WIDTH(31), .OUT_WIDTH(18))  
   cic_inst_Q2(
     .clock(clock),
     .in_strobe(1'b1),

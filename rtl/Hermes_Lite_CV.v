@@ -55,11 +55,6 @@ module Hermes_Lite(
 parameter MAC = {8'h00,8'h1c,8'hc0,8'ha2,8'h22,8'h5c};
 parameter IP = {8'd0,8'd0,8'd0,8'd0};
 
-// ADC Oscillator
-//61440000 or 73728000
-parameter CLK_FREQ = 61440000;
-//parameter CLK_FREQ = 73728000;
-
 // Number of Receivers
 parameter NR = 2; // number of receivers to implement
 
@@ -69,8 +64,9 @@ parameter NR = 2; // number of receivers to implement
 wire IF_clk;
 wire slowclk;
 wire testAD9866clk;
+wire AD9866clkX1, AD9866clkX2;
 wire iAD9866clk;
-wire IF_locked;
+wire IF_locked, AD9866_locked;
 ifclocks_cv ifclocks_cv_inst(
 	.refclk(clk),
 	.rst(1'b0),
@@ -80,6 +76,14 @@ ifclocks_cv ifclocks_cv_inst(
 	.locked(IF_locked)
 	);
 
+	// Multiply by 2
+ad9866clk_cv ad9866clk_cv_inst(
+	.refclk(iAD9866clk),
+	.rst(1'b0),
+	.outclk_0(AD9866clkX2),
+	.outclk_1(AD9866clkX1),
+	.locked(AD9866_locked)
+	);
 
 // RMII2MII Conversion
 wire [3:0] PHY_TX;
@@ -125,19 +129,19 @@ clkmux_cv clkmux (
 hermes_lite_core #(
 	.MAC(MAC),
 	.IP(IP),
-	.CLK_FREQ(CLK_FREQ),
 	.NR(NR)
 	) 
 
 	hermes_lite_core_inst(
 	.exp_present(exp_present),
-	.AD9866clk(iAD9866clk),
+	.AD9866clkX1(AD9866clkX1),
+	.AD9866clkX2(AD9866clkX2),
 
 	.IF_clk(IF_clk),
 	.ad9866spiclk(IF_clk),
 	.rstclk(slowclk),
 	.EEPROM_clock(slowclk),
-	.IF_locked(IF_locked),
+	.IF_locked(IF_locked & AD9866_locked),
 
  	.extreset(extreset),
 	.leds(leds), 

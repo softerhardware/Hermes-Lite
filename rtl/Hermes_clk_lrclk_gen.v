@@ -35,7 +35,7 @@ module Hermes_clk_lrclk_gen (reset, CLK_IN, BCLK, Brise, Bfall, LRCLK, LRrise, L
 localparam BCLK_DIV = (CLK_FREQ/48000/64);
 localparam BCLK_00 = 32;
 
-parameter CLK_FREQ  = 73728000; // 122880000;   // frequency of incoming clock
+parameter CLK_FREQ  = 122880000;   // frequency of incoming clock
 
 input   wire          reset;       // reset
 input   wire          CLK_IN;

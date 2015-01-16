@@ -129,6 +129,7 @@ localparam GROWTH40 = 27;
 
 // math.log(growth,2) * 5
 localparam GROWTH24 = 23;
+localparam GROWTH16 = 20;
 localparam GROWTH12 = 18;
 localparam GROWTH6 = 13;
 localparam GROWTH3 = 8;
@@ -164,6 +165,9 @@ localparam LSB6 =  (IN_WIDTH + GROWTH6) - OUT_WIDTH;
 localparam MSB12 =  (IN_WIDTH + GROWTH12) - 1;       
 localparam LSB12 =  (IN_WIDTH + GROWTH12) - OUT_WIDTH;
 
+localparam MSB16 =  (IN_WIDTH + GROWTH16) - 1;       
+localparam LSB16 =  (IN_WIDTH + GROWTH16) - OUT_WIDTH;
+
 localparam MSB24 =  (IN_WIDTH + GROWTH24) - 1;  
 localparam LSB24 =  (IN_WIDTH + GROWTH24) - OUT_WIDTH;      
 
@@ -179,7 +183,8 @@ always @(posedge clock)
      6: out_data <= comb_data[STAGES][MSB6:LSB6]   + comb_data[STAGES][LSB6-1];     
 	   8: out_data <= comb_data[STAGES][MSB8:LSB8]   + comb_data[STAGES][LSB8-1];
 	  10: out_data <= comb_data[STAGES][MSB10:LSB10] + comb_data[STAGES][LSB10-1];
-    12: out_data <= comb_data[STAGES][MSB12:LSB12] + comb_data[STAGES][LSB12-1];    
+    12: out_data <= comb_data[STAGES][MSB12:LSB12] + comb_data[STAGES][LSB12-1]; 
+    16: out_data <= comb_data[STAGES][MSB16:LSB16] + comb_data[STAGES][LSB16-1];        
 	  20: out_data <= comb_data[STAGES][MSB20:LSB20] + comb_data[STAGES][LSB20-1];
     24: out_data <= comb_data[STAGES][MSB24:LSB24] + comb_data[STAGES][LSB24-1];    
 	  40: out_data <= comb_data[STAGES][MSB40:LSB40] + comb_data[STAGES][LSB40-1];
