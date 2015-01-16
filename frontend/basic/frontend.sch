@@ -37,7 +37,7 @@ $Descr USLetter 11000 8500
 encoding utf-8
 Sheet 1 1
 Title "Basic Hermes-Lite RF Frontend"
-Date "27 Nov 2014"
+Date "11 Jan 2015"
 Rev "1.0"
 Comp "SofterHardware"
 Comment1 "KF7O"
@@ -61,7 +61,7 @@ L TRANSF T2
 U 1 1 54433FF8
 P 5700 4450
 F 0 "T2" H 5700 4150 70  0000 C CNN
-F 1 "8:1" H 5700 4750 70  0000 C CNN
+F 1 "9:1" H 5700 4750 70  0000 C CNN
 F 2 "" H 5700 4450 60  0000 C CNN
 F 3 "" H 5700 4450 60  0000 C CNN
 	1    5700 4450
@@ -72,7 +72,7 @@ L TRANSF T1
 U 1 1 54434023
 P 5700 3000
 F 0 "T1" H 5700 2700 70  0000 C CNN
-F 1 "4:1" H 5700 3300 70  0000 C CNN
+F 1 "1.8:1" H 5700 3300 70  0000 C CNN
 F 2 "" H 5700 3000 60  0000 C CNN
 F 3 "" H 5700 3000 60  0000 C CNN
 	1    5700 3000
@@ -366,9 +366,9 @@ Wire Wire Line
 	2650 4600 2500 4600
 Connection ~ 2500 4600
 Text Notes 5500 5150 0    60   ~ 0
-6T bifilar\n4T\nBN-61-2402
+6T bifilar (2x8 in)\n4T (6 in)\nBN-61-2402
 Text Notes 5500 3700 0    60   ~ 0
-4T bifilar\n6T\nBN-61-2402
+4T bifilar (2x6 in)\n6T (10 in)\nBN-61-2402
 $Comp
 L BREAKOUT CN2
 U 1 1 54755307
