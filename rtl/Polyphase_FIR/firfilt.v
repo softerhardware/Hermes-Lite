@@ -50,6 +50,7 @@
 
 module firX8R8 (	
 	input clock,
+	input clockX2,
 	input x_avail,									// new sample is available
 	input signed [MBITS-1:0] x_real,			// x is the sample input
 	input signed [MBITS-1:0] x_imag,
@@ -149,14 +150,14 @@ module firX8R8 (
 	// at end of sequence indicate new data is available
 	assign y_avail = (wstate == 8);
 
-	fir256 #("coefL8A.mif", ABITS, TAPS) A (clock, waddr, weA, x_real, x_imag, RaccA, IaccA);
-	fir256 #("coefL8B.mif", ABITS, TAPS) B (clock, waddr, weB, x_real, x_imag, RaccB, IaccB);
-	fir256 #("coefL8C.mif", ABITS, TAPS) C (clock, waddr, weC, x_real, x_imag, RaccC, IaccC);
-	fir256 #("coefL8D.mif", ABITS, TAPS) D (clock, waddr, weD, x_real, x_imag, RaccD, IaccD);
-	fir256 #("coefL8E.mif", ABITS, TAPS) E (clock, waddr, weE, x_real, x_imag, RaccE, IaccE);
-	fir256 #("coefL8F.mif", ABITS, TAPS) F (clock, waddr, weF, x_real, x_imag, RaccF, IaccF);
-	fir256 #("coefL8G.mif", ABITS, TAPS) G (clock, waddr, weG, x_real, x_imag, RaccG, IaccG);
-	fir256 #("coefL8H.mif", ABITS, TAPS) H (clock, waddr, weH, x_real, x_imag, RaccH, IaccH);
+	fir256 #("coefL8A.mif", ABITS, TAPS) A (clock, clockX2, waddr, weA, x_real, x_imag, RaccA, IaccA);
+	fir256 #("coefL8B.mif", ABITS, TAPS) B (clock, clockX2, waddr, weB, x_real, x_imag, RaccB, IaccB);
+	fir256 #("coefL8C.mif", ABITS, TAPS) C (clock, clockX2, waddr, weC, x_real, x_imag, RaccC, IaccC);
+	fir256 #("coefL8D.mif", ABITS, TAPS) D (clock, clockX2, waddr, weD, x_real, x_imag, RaccD, IaccD);
+	fir256 #("coefL8E.mif", ABITS, TAPS) E (clock, clockX2, waddr, weE, x_real, x_imag, RaccE, IaccE);
+	fir256 #("coefL8F.mif", ABITS, TAPS) F (clock, clockX2, waddr, weF, x_real, x_imag, RaccF, IaccF);
+	fir256 #("coefL8G.mif", ABITS, TAPS) G (clock, clockX2, waddr, weG, x_real, x_imag, RaccG, IaccG);
+	fir256 #("coefL8H.mif", ABITS, TAPS) H (clock, clockX2, waddr, weH, x_real, x_imag, RaccH, IaccH);
 	
 endmodule
 
@@ -171,6 +172,7 @@ endmodule
 module fir256(
 
 	input clock,
+	input clockX2,
 	input [ADDRBITS-1:0] waddr,							// memory write address
 	input we,													// memory write enable
 	input signed [MBITS-1:0] x_real,						// sample to write
@@ -196,13 +198,15 @@ module fir256(
 	reg signed [MBITS*2-1:0] RmultSum, ImultSum;		// multiplier result
 	reg [ADDRBITS:0] counter;								// count TAPS samples
 
+	reg fir_step;										// Pipeline register for fir
+
 	assign q_real = reg_q[MBITS*2-1:MBITS];
 	assign q_imag = reg_q[MBITS-1:0];
 
 	firromH #(MifFile) rom (caddr, clock, coef);		// coefficient ROM 18 X 256
 	firram36 ram (clock, {x_real, x_imag}, raddr, waddr, we, q);  	// sample RAM 36 X 256;  36 bit == 18 bits I and 18 bits Q
 	
-	always @(posedge clock)
+	always @(posedge clockX2)
 	begin
 		if (we)		// Wait until a new sample is written to memory
 			begin
@@ -213,17 +217,28 @@ module fir256(
 				Iaccum <= 0;
 				Rmult <= 0;
 				Imult <= 0;
+				fir_step <= 1'b1;
 			end
 		else
 			begin		// main pipeline here
 				if (counter < (TAPS[ADDRBITS:0] + 2))
 				begin
-					Rmult <= q_real * reg_coef;
-					Imult <= q_imag * reg_coef;
-					Raccum <= Raccum + Rmult[35:12] + Rmult[11];  // truncate 36 bits down to 24 bits to prevent DC spur
-					Iaccum <= Iaccum + Imult[35:12] + Imult[11];
+					if (fir_step)
+					begin
+						Rmult <= q_real * reg_coef;
+						Raccum <= Raccum + Rmult[35:12] + Rmult[11];  // truncate 36 bits down to 24 bits to prevent DC spur
+						fir_step <= 1'b0;
+					end
+					else 
+					begin
+						Imult <= q_imag * reg_coef;
+						Iaccum <= Iaccum + Imult[35:12] + Imult[11];
+						fir_step <= 1'b1;
+					end
 				end
-				if (counter > 0)
+
+
+				if (~fir_step & (counter > 0))
 				begin
 					counter <= counter - 1'd1;
 					raddr <= raddr - 1'd1;						// move to prior sample

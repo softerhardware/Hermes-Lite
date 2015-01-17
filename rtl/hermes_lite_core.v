@@ -1136,6 +1136,7 @@ generate
 	receiver receiver_inst(
 	//control
 	.clock(AD9866clkX1),
+	.clockX2(AD9866clkX2),
 	.rate(rate),
 	.frequency(C122_sync_phase_word[c]),
 	.out_strobe(strobe[c]),

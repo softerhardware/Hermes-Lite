@@ -31,6 +31,7 @@ Boston, MA  02110-1301, USA.
 
 module receiver(
   input clock,                  //122.88 MHz
+  input clockX2,
   input [5:0] rate,             //48k....960k
   input [31:0] frequency,
   output out_strobe,
@@ -133,7 +134,7 @@ varcic #(.STAGES(5), .IN_WIDTH(18), .ACC_WIDTH(45), .OUT_WIDTH(18))
 
 		
 				
-firX8R8 fir2 (clock, decimB_avail, decimB_real, decimB_imag, out_strobe, out_data_I2, out_data_Q2);
+firX8R8 fir2 (clock, clockX2, decimB_avail, decimB_real, decimB_imag, out_strobe, out_data_I2, out_data_Q2);
   
   
 assign test_strobe3 = out_strobe;
