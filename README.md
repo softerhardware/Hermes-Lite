@@ -9,6 +9,7 @@ This is a work in progress to create a low-cost software defined radio HF transc
   * Hermes-Lite [schematic](https://github.com/softerhardware/Hermes-Lite/blob/master/pcb/hermeslite.pdf), [BOM](https://github.com/softerhardware/Hermes-Lite/blob/master/pcb/bom.xls) and [PCB](https://www.oshpark.com/shared_projects/x3Bsq2i3).
   * Basic RF front end [schematic](https://github.com/softerhardware/Hermes-Lite/blob/master/frontend/basic/frontend.pdf), [BOM](https://github.com/softerhardware/Hermes-Lite/blob/master/frontend/basic/bom.xls) and [PCB](https://www.oshpark.com/shared_projects/gq1Qig3Q).
  * [GitHub Issues](https://github.com/softerhardware/Hermes-Lite/issues) to track all bugs, feature requests and planning.
+ * [Tindie](https://www.tindie.com/products/SofterHardware/hermes-lite-sdr-amateur-radio-printed-circuit-board-set-pcb/) to purchase bare board sets and kits.
 
  
 ## Introduction
