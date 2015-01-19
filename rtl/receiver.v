@@ -44,14 +44,13 @@ module receiver(
 wire signed [21:0] cordic_outdata_I;
 wire signed [21:0] cordic_outdata_Q;
 
-// gain adjustment, reduce by 6dB to match previous receiver code.
+// gain adjustment, Hermes reduced by 6dB to match previous receiver code.
+// Hermes-Lite increase by 6dB to adjust for 12-bid ADC
 wire signed [23:0] out_data_I2;
 wire signed [23:0] out_data_Q2;
 
-assign out_data_I = (out_data_I2 >>> 1);
-assign out_data_Q = (out_data_Q2 >>> 1);
-
-
+assign out_data_I = (out_data_I2 << 1);
+assign out_data_Q = (out_data_Q2 << 1);
 
 
 //------------------------------------------------------------------------------

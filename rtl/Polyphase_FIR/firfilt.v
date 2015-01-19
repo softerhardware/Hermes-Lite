@@ -138,7 +138,7 @@ module firX8R8 (
 	
 	
 	// Enable each FIR in sequence
-   assign weA 		= (x_avail && wstate == 0);
+	assign weA 		= (x_avail && wstate == 0);
 	assign weB 		= (x_avail && wstate == 1);
 	assign weC 		= (x_avail && wstate == 2);
 	assign weD 		= (x_avail && wstate == 3);
@@ -198,7 +198,7 @@ module fir256(
 	reg signed [MBITS*2-1:0] RmultSum, ImultSum;		// multiplier result
 	reg [ADDRBITS:0] counter;								// count TAPS samples
 
-	reg fir_step;										// Pipeline register for fir
+	//reg fir_step;										// Pipeline register for fir
 
 	assign q_real = reg_q[MBITS*2-1:MBITS];
 	assign q_imag = reg_q[MBITS-1:0];
@@ -206,7 +206,7 @@ module fir256(
 	firromH #(MifFile) rom (caddr, clock, coef);		// coefficient ROM 18 X 256
 	firram36 ram (clock, {x_real, x_imag}, raddr, waddr, we, q);  	// sample RAM 36 X 256;  36 bit == 18 bits I and 18 bits Q
 	
-	always @(posedge clockX2)
+	always @(posedge clock)
 	begin
 		if (we)		// Wait until a new sample is written to memory
 			begin
@@ -217,28 +217,29 @@ module fir256(
 				Iaccum <= 0;
 				Rmult <= 0;
 				Imult <= 0;
-				fir_step <= 1'b1;
+				//fir_step <= 1'b1;
 			end
 		else
 			begin		// main pipeline here
 				if (counter < (TAPS[ADDRBITS:0] + 2))
 				begin
-					if (fir_step)
-					begin
+					//if (fir_step)
+					//begin
 						Rmult <= q_real * reg_coef;
 						Raccum <= Raccum + Rmult[35:12] + Rmult[11];  // truncate 36 bits down to 24 bits to prevent DC spur
-						fir_step <= 1'b0;
-					end
-					else 
-					begin
+						//fir_step <= 1'b0;
+					//end
+					//else 
+					//begin
 						Imult <= q_imag * reg_coef;
 						Iaccum <= Iaccum + Imult[35:12] + Imult[11];
-						fir_step <= 1'b1;
-					end
+						//fir_step <= 1'b1;
+					//end
 				end
 
 
-				if (~fir_step & (counter > 0))
+				//if (~fir_step & (counter > 0))
+				if (counter > 0)
 				begin
 					counter <= counter - 1'd1;
 					raddr <= raddr - 1'd1;						// move to prior sample

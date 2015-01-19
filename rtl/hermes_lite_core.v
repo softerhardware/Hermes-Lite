@@ -63,6 +63,8 @@ module hermes_lite_core(
     output ad9866_sen_n,
 
     output ad9866_rst_n,
+
+    output exp_ptt_n,
  
     // MII Ethernet PHY
   	output [3:0]PHY_TX,
@@ -922,7 +924,7 @@ wire ad9866goodlvln = (ad9866_adio[11:9] == 3'b100);
 // RX/TX port
 assign ad9866_adio = FPGA_PTT ? DACD[13:2] : 12'bZ;
 
-
+assign exp_ptt_n = ~FPGA_PTT;
 
 // Test sine wave
 reg [3:0] incnt;

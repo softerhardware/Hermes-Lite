@@ -26,6 +26,8 @@ module Hermes_Lite(
  	input extreset,
 	output [7:0] leds, 
 
+	output exp_ptt_n,
+
 	// AD9866
 	output [5:0] ad9866_pga,
 	inout [11:0] ad9866_adio,
@@ -58,11 +60,6 @@ module Hermes_Lite(
 parameter MAC = {8'h00,8'h1c,8'hc0,8'ha2,8'h22,8'h5d};
 parameter IP = {8'd0,8'd0,8'd0,8'd0};
 
-// ADC Oscillator
-//61440000 or 73728000
-parameter CLK_FREQ = 61440000;
-//parameter CLK_FREQ = 73728000;
-
 // Number of Receivers
 parameter NR = 2; // number of receivers to implement
 
@@ -70,9 +67,20 @@ parameter NR = 2; // number of receivers to implement
 wire IF_clk;
 wire slowclk;
 wire testAD9866clk;
+wire AD9866clkX1, AD9866clkX2;
 wire iAD9866clk;
-wire IF_locked;
+wire IF_locked, AD9866_locked;
 ifclocks PLL_IF_inst( .inclk0(clk50mhz), .c0(IF_clk), .c1(testAD9866clk), .c2(slowclk), .locked(IF_locked));
+
+	// Multiply by 2
+ad9866clk_sdk ad9866clk_sdk_inst(
+	.inclk0(iAD9866clk),
+	.c0(AD9866clkX2),
+	.c1(AD9866clkX1),
+	.locked(AD9866_locked)
+	);
+
+
 
 // PLL clk must be on input 2 or 3
 clkmux_sdk clkmux (
@@ -92,18 +100,20 @@ hermes_lite_core #(
 	) 
 
 	hermes_lite_core_inst(
-	.exp_present(exp_present),		
-	.AD9866clkX1(iAD9866clk),
-	.AD9866clkX2(iAD9866clk),
+	.exp_present(exp_present),
+	.AD9866clkX1(AD9866clkX1),
+	.AD9866clkX2(AD9866clkX2),
 
 	.IF_clk(IF_clk),
 	.ad9866spiclk(IF_clk),
 	.rstclk(slowclk),
 	.EEPROM_clock(slowclk),
-	.IF_locked(IF_locked),
+	.IF_locked(IF_locked & AD9866_locked),
 
  	.extreset(extreset),
 	.leds(leds), 
+
+	.exp_ptt_n(exp_ptt_n),
 
 	// AD9866
 	.ad9866_pga(ad9866_pga),

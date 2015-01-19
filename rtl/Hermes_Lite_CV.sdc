@@ -31,9 +31,12 @@ create_generated_clock -divide_by 2 -source [get_ports rmii_osc] -name PHY_TX_CL
 create_generated_clock -divide_by 2 -source {RMII2MII_rev2:RMII2MII_inst|rx_clk} -name PHY_RX_CLOCK_2 {hermes_lite_core:hermes_lite_core_inst|PHY_RX_CLOCK_2}
 create_generated_clock -divide_by 2 -source {RMII2MII_rev2:RMII2MII_inst|tx_clk} -name Tx_clock_2 {hermes_lite_core:hermes_lite_core_inst|Tx_clock_2}
 
-create_generated_clock -source {ad9866clk_cv_inst|ad9866clk_cv_inst|altera_pll_i|general[0].gpll~FRACTIONAL_PLL|refclkin} -master_clock AD9866clk -divide_by 2 -multiply_by 10 -duty_cycle 50.00 -name {ad9866clk_cv_inst|ad9866clk_cv_inst|altera_pll_i|general[0].gpll~FRACTIONAL_PLL|vcoph[0]} {ad9866clk_cv_inst|ad9866clk_cv_inst|altera_pll_i|general[0].gpll~FRACTIONAL_PLL|vcoph[0]}
+create_generated_clock -source {ad9866clk_cv_inst|ad9866clk_cv_inst|altera_pll_i|general[0].gpll~FRACTIONAL_PLL|refclkin} -master_clock AD9866clk -divide_by 2 -multiply_by 12 -duty_cycle 50.00 -name {ad9866clk_cv_inst|ad9866clk_cv_inst|altera_pll_i|general[0].gpll~FRACTIONAL_PLL|vcoph[0]} {ad9866clk_cv_inst|ad9866clk_cv_inst|altera_pll_i|general[0].gpll~FRACTIONAL_PLL|vcoph[0]}
 
-create_generated_clock -source {ad9866clk_cv_inst|ad9866clk_cv_inst|altera_pll_i|general[1].gpll~PLL_OUTPUT_COUNTER|vco0ph[0]} -divide_by 5 -duty_cycle 50.00 -name AD9866clkX1 {ad9866clk_cv_inst|ad9866clk_cv_inst|altera_pll_i|general[1].gpll~PLL_OUTPUT_COUNTER|divclk}
+create_generated_clock -source {ad9866clk_cv_inst|ad9866clk_cv_inst|altera_pll_i|general[1].gpll~PLL_OUTPUT_COUNTER|vco0ph[0]} -divide_by 6 -duty_cycle 50.00 -name AD9866clkX1 {ad9866clk_cv_inst|ad9866clk_cv_inst|altera_pll_i|general[1].gpll~PLL_OUTPUT_COUNTER|divclk}
+
+create_generated_clock -source {ad9866clk_cv_inst|ad9866clk_cv_inst|altera_pll_i|general[0].gpll~PLL_OUTPUT_COUNTER|vco0ph[0]} -divide_by 3 -duty_cycle 50.00 -name AD9866clkX2 {ad9866clk_cv_inst|ad9866clk_cv_inst|altera_pll_i|general[0].gpll~PLL_OUTPUT_COUNTER|divclk}
+
 
 create_generated_clock -source {ifclocks_cv_inst|ifclocks_cv_inst|altera_pll_i|general[0].gpll~FRACTIONAL_PLL|refclkin} -divide_by 2 -multiply_by 92 -duty_cycle 50.00 -name {ifclocks_cv_inst|ifclocks_cv_inst|altera_pll_i|general[0].gpll~FRACTIONAL_PLL|vcoph[0]} {ifclocks_cv_inst|ifclocks_cv_inst|altera_pll_i|general[0].gpll~FRACTIONAL_PLL|vcoph[0]}
 
@@ -60,7 +63,7 @@ set_clock_groups -asynchronous -group {rmii_osc \
 					-group { testAD9866clk } \
 					-group { slowclk } \
 					-group { AD9866clk } \
-					-group { AD9866clkX1 }
+					-group { AD9866clkX1 AD9866clkX2 }
 
 ## set input delays
 set_input_delay -clock { rmii_osc } 9 [get_ports {rmii_crs_dv}]

@@ -23,14 +23,14 @@
 # and any changes you make may be lost or overwritten.
 
 
-set_global_assignment -name DEVICE 5CEFA2F23C8
+set_global_assignment -name DEVICE 5CEFA2F23I7
 set_global_assignment -name FAMILY "Cyclone V"
 set_global_assignment -name TOP_LEVEL_ENTITY Hermes_Lite
 set_global_assignment -name ORIGINAL_QUARTUS_VERSION 14.0
 set_global_assignment -name PROJECT_CREATION_TIME_DATE "12:01:06  NOVEMBER 30, 2014"
-set_global_assignment -name LAST_QUARTUS_VERSION 14.0
-set_global_assignment -name MIN_CORE_JUNCTION_TEMP 0
-set_global_assignment -name MAX_CORE_JUNCTION_TEMP 85
+set_global_assignment -name LAST_QUARTUS_VERSION 14.1.0
+set_global_assignment -name MIN_CORE_JUNCTION_TEMP "-40"
+set_global_assignment -name MAX_CORE_JUNCTION_TEMP 100
 set_global_assignment -name USE_CONFIGURATION_DEVICE ON
 set_global_assignment -name FORCE_CONFIGURATION_VCCIO ON
 set_global_assignment -name RESERVE_ALL_UNUSED_PINS_WEAK_PULLUP "AS INPUT TRI-STATED"
@@ -133,6 +133,7 @@ set_location_assignment PIN_AB17 -to ad9866_sen_n
 set_location_assignment PIN_M9 -to clk
 set_location_assignment PIN_U13 -to ad9866_rst_n
 set_location_assignment PIN_P19 -to exp_present
+set_location_assignment PIN_U16 -to exp_ptt_n
 set_global_assignment -name VHDL_FILE RMII2MII_conv.vhd
 set_global_assignment -name SDC_FILE Hermes_Lite_CV.sdc
 set_global_assignment -name VERILOG_FILE Hermes_Lite_CV.v
