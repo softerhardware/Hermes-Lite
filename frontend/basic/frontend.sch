@@ -37,7 +37,7 @@ $Descr USLetter 11000 8500
 encoding utf-8
 Sheet 1 1
 Title "Basic Hermes-Lite RF Frontend"
-Date "11 Jan 2015"
+Date "20 Jan 2015"
 Rev "1.0"
 Comp "SofterHardware"
 Comment1 "KF7O"
