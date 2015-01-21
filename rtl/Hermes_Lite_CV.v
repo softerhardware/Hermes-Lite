@@ -26,6 +26,7 @@ module Hermes_Lite(
  	input extreset,
 	output [7:0] leds,
 	output exp_ptt_n,
+	output [6:0] userout,
 
 	// AD9866
 	output [5:0] ad9866_pga,
@@ -147,6 +148,7 @@ hermes_lite_core #(
  	.extreset(extreset),
 	.leds(leds), 
 	.exp_ptt_n(exp_ptt_n),
+	.userout(userout),
 
 	// AD9866
 	.ad9866_pga(ad9866_pga),

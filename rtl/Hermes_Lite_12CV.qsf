@@ -134,6 +134,13 @@ set_location_assignment PIN_M9 -to clk
 set_location_assignment PIN_U13 -to ad9866_rst_n
 set_location_assignment PIN_P19 -to exp_present
 set_location_assignment PIN_U16 -to exp_ptt_n
+set_location_assignment PIN_U17 -to userout[0]
+set_location_assignment PIN_V18 -to userout[1]
+set_location_assignment PIN_W19 -to userout[2]
+set_location_assignment PIN_V19 -to userout[3]
+set_location_assignment PIN_V20 -to userout[4]
+set_location_assignment PIN_U20 -to userout[5]
+set_location_assignment PIN_P18 -to userout[6]
 set_global_assignment -name VHDL_FILE RMII2MII_conv.vhd
 set_global_assignment -name SDC_FILE Hermes_Lite_CV.sdc
 set_global_assignment -name VERILOG_FILE Hermes_Lite_CV.v

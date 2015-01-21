@@ -124,6 +124,13 @@ set_location_assignment PIN_T9 -to AD9866clk
 set_location_assignment PIN_T3 -to ad9866_rst_n
 set_location_assignment PIN_N9 -to exp_present
 set_location_assignment PIN_N11 -to exp_ptt_n
+set_location_assignment PIN_P14 -to userout[0]
+set_location_assignment PIN_N12 -to userout[1]
+set_location_assignment PIN_L14 -to userout[2]
+set_location_assignment PIN_L15 -to userout[3]
+set_location_assignment PIN_K15 -to userout[4]
+set_location_assignment PIN_J14 -to userout[5]
+set_location_assignment PIN_T7 -to userout[6]
 set_global_assignment -name PARTITION_NETLIST_TYPE SOURCE -section_id Top
 set_global_assignment -name PARTITION_COLOR 16764057 -section_id Top
 set_global_assignment -name LL_ROOT_REGION ON -section_id "Root Region"

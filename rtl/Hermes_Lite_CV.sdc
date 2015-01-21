@@ -71,5 +71,5 @@ set_input_delay -clock { rmii_osc } 9 [get_ports {rmii_rx[*]}]
 
 
 # set output delays
-set_output_delay -clock { rmii_osc } 7.5 [get_ports {rmii_tx_en}]
-set_output_delay -clock { rmii_osc } 7.5 [get_ports {rmii_tx[*]}] 
+set_output_delay -clock { rmii_osc } 9.5 [get_ports {rmii_tx_en}]
+set_output_delay -clock { rmii_osc } 9.5 [get_ports {rmii_tx[*]}] 
