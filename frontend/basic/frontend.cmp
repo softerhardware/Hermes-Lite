@@ -1,4 +1,4 @@
-Cmp-Mod V01 Created by Cvpcb (2014-08-05 BZR 5054)-product   date = Tue 25 Nov 2014 08:13:32 PM PST
+Cmp-Mod V01 Created by Cvpcb (2014-10-27 BZR 5228)-product   date = 22/01/2015 09:58:37
 
 BeginCmp
 TimeStamp = /544344BB;
@@ -43,24 +43,38 @@ IdModule  = HERMESLITE:BREAKOUT;
 EndCmp
 
 BeginCmp
-TimeStamp = /547563D3;
+TimeStamp = /54C1676B;
 Reference = CN3;
-ValeurCmp = TXL;
+ValeurCmp = CONN_01X02;
 IdModule  = HERMESLITE:JUMPER;
 EndCmp
 
 BeginCmp
-TimeStamp = /54756604;
+TimeStamp = /54C16573;
 Reference = CN4;
-ValeurCmp = AGND;
+ValeurCmp = CONN_01X02;
 IdModule  = HERMESLITE:JUMPER;
 EndCmp
 
 BeginCmp
-TimeStamp = /54756621;
+TimeStamp = /54C16718;
 Reference = CN5;
-ValeurCmp = AGND;
+ValeurCmp = CONN_01X02;
 IdModule  = HERMESLITE:JUMPER;
+EndCmp
+
+BeginCmp
+TimeStamp = /54C10BCA;
+Reference = CN6;
+ValeurCmp = CONN_01X02;
+IdModule  = Pin_Headers:Pin_Header_Straight_1x02;
+EndCmp
+
+BeginCmp
+TimeStamp = /54C10FDE;
+Reference = CN7;
+ValeurCmp = CONN_01X02;
+IdModule  = Pin_Headers:Pin_Header_Straight_1x02;
 EndCmp
 
 BeginCmp
@@ -106,6 +120,27 @@ IdModule  = HERMESLITE:BNCRA;
 EndCmp
 
 BeginCmp
+TimeStamp = /54C12177;
+Reference = P5;
+ValeurCmp = CONN_01X10;
+IdModule  = Pin_Headers:Pin_Header_Straight_1x10;
+EndCmp
+
+BeginCmp
+TimeStamp = /54C13A7B;
+Reference = Q1;
+ValeurCmp = 2N3904;
+IdModule  = SMD_Packages:SOT-23;
+EndCmp
+
+BeginCmp
+TimeStamp = /54C127DA;
+Reference = Q2;
+ValeurCmp = 2N7002;
+IdModule  = SMD_Packages:SOT-23-GDS;
+EndCmp
+
+BeginCmp
 TimeStamp = /5443441E;
 Reference = R1;
 ValeurCmp = 0;
@@ -113,17 +148,38 @@ IdModule  = SMD_Packages:SMD-0805;
 EndCmp
 
 BeginCmp
+TimeStamp = /54C13C43;
+Reference = R2;
+ValeurCmp = 4.99k;
+IdModule  = SMD_Packages:SMD-0805;
+EndCmp
+
+BeginCmp
+TimeStamp = /54C13EF2;
+Reference = R3;
+ValeurCmp = 4.99k;
+IdModule  = SMD_Packages:SMD-0805;
+EndCmp
+
+BeginCmp
 TimeStamp = /54434023;
 Reference = T1;
-ValeurCmp = 4:1;
+ValeurCmp = 1.8:1;
 IdModule  = HERMESLITE:TRANSFREV;
 EndCmp
 
 BeginCmp
 TimeStamp = /54433FF8;
 Reference = T2;
-ValeurCmp = 8:1;
+ValeurCmp = 9:1;
 IdModule  = HERMESLITE:TRANSFREV;
+EndCmp
+
+BeginCmp
+TimeStamp = /54C111AD;
+Reference = U1;
+ValeurCmp = ULN2003A;
+IdModule  = Housings_SOIC:SOIC-16_7.5x10.3mm_Pitch1.27mm;
 EndCmp
 
 EndListe
