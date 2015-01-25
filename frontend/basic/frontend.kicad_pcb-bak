@@ -8,7 +8,7 @@
     (drawings 9)
     (tracks 348)
     (zones 0)
-    (modules 69)
+    (modules 70)
     (nets 42)
   )
 
@@ -1047,6 +1047,17 @@
     (pad 1 thru_hole circle (at 0 0) (size 1.8 1.8) (drill 0.9) (layers *.Cu *.Mask F.SilkS))
   )
 
+  (module HERMESLITE:HOLE (layer F.Cu) (tedit 547562C4) (tstamp 54757BCA)
+    (at 129.54 81.28)
+    (fp_text reference HOLE (at 0 1.4) (layer F.SilkS) hide
+      (effects (font (size 1 1) (thickness 0.15)))
+    )
+    (fp_text value VAL** (at 0 2) (layer F.SilkS) hide
+      (effects (font (size 1 1) (thickness 0.15)))
+    )
+    (pad 1 thru_hole circle (at 0 0) (size 1.8 1.8) (drill 0.9) (layers *.Cu *.Mask F.SilkS))
+  )
+
   (module HERMESLITE:HOLE (layer F.Cu) (tedit 547562C4) (tstamp 54757BD3)
     (at 132.08 81.28)
     (fp_text reference HOLE (at 0 1.4) (layer F.SilkS) hide
@@ -1871,7 +1882,7 @@
   (segment (start 121.7 96.1) (end 121.7 96) (width 0.4) (layer F.Cu) (net 19))
   (via (at 125.9 91.8) (size 0.889) (layers F.Cu B.Cu) (net 19))
   (segment (start 121.7 96) (end 125.9 91.8) (width 0.4) (layer F.Cu) (net 19) (tstamp 54C136BB))
-  (segment (start 123.2 89.34768) (end 121.3475 91.20018) (width 0.4) (layer B.Cu) (net 19) (tstamp 54C1397B))
+  (segment (start 123.2 89.34768) (end 121.3475 91.20018) (width 0.4) (layer B.Cu) (net 19) (tstamp 54C1397B) (status 800000))
   (segment (start 123.2 89.3) (end 123.2 89.34768) (width 0.4) (layer B.Cu) (net 19) (tstamp 54C1397A))
   (segment (start 123.3 89.2) (end 123.2 89.3) (width 0.4) (layer B.Cu) (net 19) (tstamp 54C13979))
   (via (at 123.3 89.2) (size 0.889) (layers F.Cu B.Cu) (net 19))
