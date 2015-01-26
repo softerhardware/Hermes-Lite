@@ -50,7 +50,6 @@
 
 module firX8R8 (	
 	input clock,
-	input clockX2,
 	input x_avail,									// new sample is available
 	input signed [MBITS-1:0] x_real,			// x is the sample input
 	input signed [MBITS-1:0] x_imag,
@@ -150,14 +149,14 @@ module firX8R8 (
 	// at end of sequence indicate new data is available
 	assign y_avail = (wstate == 8);
 
-	fir256 #("coefL8A.mif", ABITS, TAPS) A (clock, clockX2, waddr, weA, x_real, x_imag, RaccA, IaccA);
-	fir256 #("coefL8B.mif", ABITS, TAPS) B (clock, clockX2, waddr, weB, x_real, x_imag, RaccB, IaccB);
-	fir256 #("coefL8C.mif", ABITS, TAPS) C (clock, clockX2, waddr, weC, x_real, x_imag, RaccC, IaccC);
-	fir256 #("coefL8D.mif", ABITS, TAPS) D (clock, clockX2, waddr, weD, x_real, x_imag, RaccD, IaccD);
-	fir256 #("coefL8E.mif", ABITS, TAPS) E (clock, clockX2, waddr, weE, x_real, x_imag, RaccE, IaccE);
-	fir256 #("coefL8F.mif", ABITS, TAPS) F (clock, clockX2, waddr, weF, x_real, x_imag, RaccF, IaccF);
-	fir256 #("coefL8G.mif", ABITS, TAPS) G (clock, clockX2, waddr, weG, x_real, x_imag, RaccG, IaccG);
-	fir256 #("coefL8H.mif", ABITS, TAPS) H (clock, clockX2, waddr, weH, x_real, x_imag, RaccH, IaccH);
+	fir256 #("coefL8A.mif", ABITS, TAPS) A (clock, waddr, weA, x_real, x_imag, RaccA, IaccA);
+	fir256 #("coefL8B.mif", ABITS, TAPS) B (clock, waddr, weB, x_real, x_imag, RaccB, IaccB);
+	fir256 #("coefL8C.mif", ABITS, TAPS) C (clock, waddr, weC, x_real, x_imag, RaccC, IaccC);
+	fir256 #("coefL8D.mif", ABITS, TAPS) D (clock, waddr, weD, x_real, x_imag, RaccD, IaccD);
+	fir256 #("coefL8E.mif", ABITS, TAPS) E (clock, waddr, weE, x_real, x_imag, RaccE, IaccE);
+	fir256 #("coefL8F.mif", ABITS, TAPS) F (clock, waddr, weF, x_real, x_imag, RaccF, IaccF);
+	fir256 #("coefL8G.mif", ABITS, TAPS) G (clock, waddr, weG, x_real, x_imag, RaccG, IaccG);
+	fir256 #("coefL8H.mif", ABITS, TAPS) H (clock, waddr, weH, x_real, x_imag, RaccH, IaccH);
 	
 endmodule
 
@@ -172,7 +171,6 @@ endmodule
 module fir256(
 
 	input clock,
-	input clockX2,
 	input [ADDRBITS-1:0] waddr,							// memory write address
 	input we,													// memory write enable
 	input signed [MBITS-1:0] x_real,						// sample to write

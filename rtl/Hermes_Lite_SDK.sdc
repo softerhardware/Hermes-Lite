@@ -21,7 +21,8 @@ create_clock -period 25.000MHz	  [get_ports PHY_TX_CLOCK]				-name PHY_TX_CLOCK
 create_clock -period 25.000MHz    [get_ports PHY_RX_CLOCK] 				-name PHY_RX_CLOCK
 
 
-##derive_pll_clocks 
+derive_pll_clocks 
+derive_clock_uncertainty
 
 
 #*************************************************************************************
@@ -31,19 +32,6 @@ create_clock -period 25.000MHz    [get_ports PHY_RX_CLOCK] 				-name PHY_RX_CLOC
 #
 create_generated_clock -divide_by 2 -source PHY_RX_CLOCK -name PHY_RX_CLOCK_2 {hermes_lite_core:hermes_lite_core_inst|PHY_RX_CLOCK_2}
 create_generated_clock -divide_by 2 -source PHY_TX_CLOCK -name Tx_clock_2 {hermes_lite_core:hermes_lite_core_inst|Tx_clock_2}
-
-create_generated_clock -source {ad9866clk_sdk_inst|altpll_component|auto_generated|pll1|inclk[0]} -master_clock AD9866clk -divide_by 1 -multiply_by 1 -duty_cycle 50.00 -name AD9866clkX1 {ad9866clk_sdk_inst|altpll_component|auto_generated|pll1|clk[1]}
-
-create_generated_clock -source {ad9866clk_sdk_inst|altpll_component|auto_generated|pll1|inclk[0]} -master_clock AD9866clk -divide_by 1 -multiply_by 2 -duty_cycle 50.00 -name AD9866clkX2 {ad9866clk_sdk_inst|altpll_component|auto_generated|pll1|clk[0]}
-
-create_generated_clock -source {PLL_IF_inst|altpll_component|auto_generated|pll1|inclk[0]} -divide_by 230 -multiply_by 221 -duty_cycle 50.00 -name IF_clk  {PLL_IF_inst|altpll_component|auto_generated|pll1|clk[0]}
-    
-create_generated_clock -source {PLL_IF_inst|altpll_component|auto_generated|pll1|inclk[0]} -divide_by 180 -multiply_by 221 -duty_cycle 50.00 -name testAD9866clk {PLL_IF_inst|altpll_component|auto_generated|pll1|clk[1]}
-    
-create_generated_clock -source {PLL_IF_inst|altpll_component|auto_generated|pll1|inclk[0]} -divide_by 3710 -multiply_by 221 -duty_cycle 50.00 -name slowclk {PLL_IF_inst|altpll_component|auto_generated|pll1|clk[2]}
- 
-
-derive_clock_uncertainty
 
 
 #*************************************************************************************
@@ -56,11 +44,11 @@ set_clock_groups -asynchronous -group { PHY_TX_CLOCK \
 					PHY_RX_CLOCK \
 					PHY_RX_CLOCK_2 \
 					} \
-					-group { IF_clk } \
-					-group { testAD9866clk } \
-					-group { slowclk } \
-					-group { AD9866clk } \
-					-group { AD9866clkX1 AD9866clkX2 }
+					-group {AD9866clk} \
+					-group {PLL_IF_inst|altpll_component|auto_generated|pll1|clk[0]} \
+					-group {PLL_IF_inst|altpll_component|auto_generated|pll1|clk[1]} \
+					-group {PLL_IF_inst|altpll_component|auto_generated|pll1|clk[2]} 
+
 
 
 # set input delays

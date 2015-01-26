@@ -224,8 +224,6 @@ set_instance_assignment -name CURRENT_STRENGTH_NEW 4MA -to rmii_rx[0]
 set_global_assignment -name ENABLE_OCT_DONE OFF
 set_global_assignment -name ENABLE_CONFIGURATION_PINS OFF
 set_global_assignment -name ENABLE_BOOT_SEL_PIN OFF
-set_global_assignment -name QIP_FILE ad9866clk_cv.qip
-set_global_assignment -name SIP_FILE ad9866clk_cv.sip
 set_global_assignment -name SOURCE_FILE db/Hermes_Lite_12CV.cmp.rdb
 set_global_assignment -name AUTO_RESOURCE_SHARING ON
 set_instance_assignment -name PARTITION_HIERARCHY root_partition -to | -section_id Top

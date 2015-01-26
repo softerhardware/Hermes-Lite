@@ -66,9 +66,8 @@ parameter NR = 2; // number of receivers to implement
 wire IF_clk;
 wire slowclk;
 wire testAD9866clk;
-wire AD9866clkX1, AD9866clkX2;
-wire iAD9866clk;
-wire IF_locked, AD9866_locked;
+wire AD9866clkX1;
+wire IF_locked;
 ifclocks_cv ifclocks_cv_inst(
 	.refclk(clk),
 	.rst(1'b0),
@@ -76,15 +75,6 @@ ifclocks_cv ifclocks_cv_inst(
 	.outclk_1(testAD9866clk),
 	.outclk_2(slowclk),
 	.locked(IF_locked)
-	);
-
-	// Multiply by 2
-ad9866clk_cv ad9866clk_cv_inst(
-	.refclk(iAD9866clk),
-	.rst(1'b0),
-	.outclk_0(AD9866clkX2),
-	.outclk_1(AD9866clkX1),
-	.locked(AD9866_locked)
 	);
 
 // RMII2MII Conversion
@@ -124,7 +114,7 @@ clkmux_cv clkmux (
 	.inclk1x(AD9866clk),
 	.inclk2x(testAD9866clk),
 	.clkselect({~exp_present,1'b0}),
-	.outclk(iAD9866clk)
+	.outclk(AD9866clkX1)
 );
 
 // Hermes Lite Core
@@ -137,13 +127,12 @@ hermes_lite_core #(
 	hermes_lite_core_inst(
 	.exp_present(exp_present),
 	.AD9866clkX1(AD9866clkX1),
-	.AD9866clkX2(AD9866clkX2),
 
 	.IF_clk(IF_clk),
 	.ad9866spiclk(IF_clk),
 	.rstclk(slowclk),
 	.EEPROM_clock(slowclk),
-	.IF_locked(IF_locked & AD9866_locked),
+	.IF_locked(IF_locked),
 
  	.extreset(extreset),
 	.leds(leds), 
