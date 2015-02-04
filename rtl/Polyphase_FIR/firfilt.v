@@ -62,7 +62,7 @@ module firX8R8 (
 	
 	parameter
 		TAPS 			= NTAPS / 8,				// Must be even by 8
-   	ABITS			= 24,							// adder bits
+   		ABITS			= 24,							// adder bits
 		OBITS			= 24,							// output bits
 		NTAPS			= 976;						// number of filter taps, even by 8	
 	

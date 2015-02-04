@@ -736,7 +736,7 @@ wire have_sp_data;
 
 
 SP_fifo  SPF (.aclr(C122_rst | !run), .wrclk (AD9866clkX1), .rdclk(Tx_clock_2), 
-             .wrreq (sp_fifo_wrreq), .data (temp_ADC), .rdreq (sp_fifo_rdreq),
+             .wrreq (sp_fifo_wrreq), .data ({{4{temp_ADC[11]}},temp_ADC}), .rdreq (sp_fifo_rdreq),
              .q(sp_fifo_rddata), .wrfull(sp_fifo_wrfull), .wrempty(sp_fifo_wrempty)); 					 
 					 
 					 
@@ -855,7 +855,7 @@ assign ad9866_txclk = AD9866clkX1;
  
 */
 
-reg [15:0]temp_ADC;
+reg [11:0]temp_ADC;
 reg [15:0] temp_DACD; // for pre-distortion Tx tests
 //reg ad9866clipp, ad9866clipn;
 //reg ad9866nearclip;
@@ -924,7 +924,7 @@ wire ad9866goodlvln = (ad9866_adio[11:9] == 3'b100);
 // RX/TX port
 assign ad9866_adio = FPGA_PTT ? DACD[13:2] : 12'bZ;
 
-assign exp_ptt_n = ~FPGA_PTT;
+assign exp_ptt_n = FPGA_PTT;
 assign userout = IF_OC;
 
 // Test sine wave
@@ -932,25 +932,25 @@ reg [3:0] incnt;
 always @ (posedge AD9866clkX1)
   begin
   	if (exp_present)
-		temp_ADC <= {{4{ad9866_adio[11]}},ad9866_adio};
+		temp_ADC <= ad9866_adio;
 	else begin
 	    case (incnt)
-			4'h0 : temp_ADC = 16'b0000000000000000;
-			4'h1 : temp_ADC = 16'b0000001001010110;
-			4'h2 : temp_ADC = 16'b0000010001010001;
-			4'h3 : temp_ADC = 16'b0000010110100100;
-			4'h4 : temp_ADC = 16'b0000011000011011;
-			4'h5 : temp_ADC = 16'b0000010110100100;
-			4'h6 : temp_ADC = 16'b0000010001010001;
-			4'h7 : temp_ADC = 16'b0000001001010110;
-			4'h8 : temp_ADC = 16'b1111100000000000;
-			4'h9 : temp_ADC = 16'b1111110110101010;
-			4'ha : temp_ADC = 16'b1111101110101111;
-			4'hb : temp_ADC = 16'b1111101001011101;
-			4'hc : temp_ADC = 16'b1111100111100110;
-			4'hd : temp_ADC = 16'b1111101001011101;
-			4'he : temp_ADC = 16'b1111101110101111;
-			4'hf : temp_ADC = 16'b1111110110101010;
+			4'h0 : temp_ADC = 12'h000;
+			4'h1 : temp_ADC = 12'hfcb;
+			4'h2 : temp_ADC = 12'hf9f;
+			4'h3 : temp_ADC = 12'hf81;
+			4'h4 : temp_ADC = 12'hf76;
+			4'h5 : temp_ADC = 12'hf81;
+			4'h6 : temp_ADC = 12'hf9f;
+			4'h7 : temp_ADC = 12'hfcb;
+			4'h8 : temp_ADC = 12'h000;
+			4'h9 : temp_ADC = 12'h035;
+			4'ha : temp_ADC = 12'h061;
+			4'hb : temp_ADC = 12'h07f;
+			4'hc : temp_ADC = 12'h08a;
+			4'hd : temp_ADC = 12'h07f;
+			4'he : temp_ADC = 12'h061;
+			4'hf : temp_ADC = 12'h035;
 	    endcase
 	end
     incnt <= incnt + 4'h1; 
@@ -1146,8 +1146,7 @@ generate
 	.in_data(temp_ADC),
 	//output
 	.out_data_I(rx_I[c]),
-	.out_data_Q(rx_Q[c]),
-	.test_strobe3()
+	.out_data_Q(rx_Q[c])
 	);
 
 	cdc_sync #(32)
@@ -1402,7 +1401,7 @@ assign IO4 = 1'b1;
 assign IO5 = 1'b1;
 assign IO6 = 1'b1;
 assign IO8 = 1'b1;
-assign OVERFLOW = ad9866clipp | ad9866clipn;
+assign OVERFLOW = leds[0] | leds[3];
 
 Hermes_Tx_fifo_ctrl #(RX_FIFO_SZ, TX_FIFO_SZ) TXFC 
            (IF_rst, IF_clk, IF_tx_fifo_wdata, IF_tx_fifo_wreq, IF_tx_fifo_full,

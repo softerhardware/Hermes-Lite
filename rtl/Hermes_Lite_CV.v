@@ -54,6 +54,7 @@ module Hermes_Lite(
 // PARAMETERS
 
 // Ethernet Interface
+// 5c release, 4a testing
 parameter MAC = {8'h00,8'h1c,8'hc0,8'ha2,8'h22,8'h5c};
 parameter IP = {8'd0,8'd0,8'd0,8'd0};
 

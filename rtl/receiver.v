@@ -27,29 +27,26 @@ Boston, MA  02110-1301, USA.
 // 2013 Jan 26 - varcic now accepts 2...40 as decimation and CFIR
 //               replaced with Polyphase FIR - VK6APH
 
-
+// 2015 Jan 31 - updated for Hermes-Lite 12bit Steve Haynal KF7O
 
 module receiver(
-  input clock,                  //122.88 MHz
-  input [5:0] rate,             //48k....960k
+  input clock,                  //61.44 MHz
+  input [5:0] rate,             //48k....384k
   input [31:0] frequency,
   output out_strobe,
-  input signed [15:0] in_data,
+  input signed [11:0] in_data,
   output [23:0] out_data_I,
-  output [23:0] out_data_Q,
-  output test_strobe3
+  output [23:0] out_data_Q
   );
 
-wire signed [21:0] cordic_outdata_I;
-wire signed [21:0] cordic_outdata_Q;
+wire signed [17:0] cordic_outdata_I;
+wire signed [17:0] cordic_outdata_Q;
 
 // gain adjustment, Hermes reduced by 6dB to match previous receiver code.
-// Hermes-Lite increase by 6dB to adjust for 12-bit ADC
-wire signed [23:0] out_data_I2;
-wire signed [23:0] out_data_Q2;
-
-assign out_data_I = (out_data_I2 << 1);
-assign out_data_Q = (out_data_Q2 << 1);
+//wire signed [23:0] out_data_I2;
+//wire signed [23:0] out_data_Q2;
+//assign out_data_I = (out_data_I2 >>> 1);
+//assign out_data_Q = (out_data_Q2 >>> 1);
 
 
 //------------------------------------------------------------------------------
@@ -58,28 +55,22 @@ assign out_data_Q = (out_data_Q2 << 1);
 
 cordic cordic_inst(
   .clock(clock),
-  .in_data(in_data),             //16 bit 
+  .in_data(in_data),             //12 bit 
   .frequency(frequency),         //32 bit
-  .out_data_I(cordic_outdata_I), //22 bit
+  .out_data_I(cordic_outdata_I), //18 bit
   .out_data_Q(cordic_outdata_Q)
   );
 
   
- 
-  // CIC M = 5, R = 8  + Vari CIC m = 5, R = 2..40  + FIR R = 8.
-  
-  	// Receive CIC filters followed by FIR filter
-	wire decimA_avail, decimB_avail;
-	wire signed [17:0] decimA_real, decimB_real;
-	wire signed [17:0] decimA_imag, decimB_imag;
+// Receive CIC filters followed by FIR filter
+wire decimA_avail, decimB_avail;
+wire signed [13:0] decimA_real, decimA_imag;
+wire signed [13:0] decimB_real, decimB_imag;
 
-//I channel
-wire cic_outstrobe_2;
-wire signed [23:0] cic_outdata_I2;
-wire signed [23:0] cic_outdata_Q2;
 
+// CIC filter 
 //I channel
-cic #(.STAGES(3), .DECIMATION(10), .IN_WIDTH(22), .ACC_WIDTH(31), .OUT_WIDTH(18))      
+cic #(.STAGES(3), .DECIMATION(10), .IN_WIDTH(18), .ACC_WIDTH(28), .OUT_WIDTH(14))      
   cic_inst_I2(
     .clock(clock),
     .in_strobe(1'b1),
@@ -88,9 +79,8 @@ cic #(.STAGES(3), .DECIMATION(10), .IN_WIDTH(22), .ACC_WIDTH(31), .OUT_WIDTH(18)
     .out_data(decimA_real)
     );
 
-
 //Q channel
-cic #(.STAGES(3), .DECIMATION(10), .IN_WIDTH(22), .ACC_WIDTH(31), .OUT_WIDTH(18))  
+cic #(.STAGES(3), .DECIMATION(10), .IN_WIDTH(18), .ACC_WIDTH(28), .OUT_WIDTH(14))  
   cic_inst_Q2(
     .clock(clock),
     .in_strobe(1'b1),
@@ -100,15 +90,9 @@ cic #(.STAGES(3), .DECIMATION(10), .IN_WIDTH(22), .ACC_WIDTH(31), .OUT_WIDTH(18)
     );
 
 
-
-				
-//  Variable CIC filter - in width = out width = 18 bits, decimation rate = 2 to 40 
-
-wire cic_outstrobe_1;
-wire signed [22:0] cic_outdata_I1;
-wire signed [22:0] cic_outdata_Q1;
-
-varcic #(.STAGES(5), .IN_WIDTH(18), .ACC_WIDTH(45), .OUT_WIDTH(18))
+//  Variable CIC filter - in width = out width = 14 bits, decimation rate = 2 to 16 
+//I channel
+varcic #(.STAGES(5), .IN_WIDTH(14), .ACC_WIDTH(34), .OUT_WIDTH(14))
   varcic_inst_I1(
     .clock(clock),
     .in_strobe(decimA_avail),
@@ -118,9 +102,8 @@ varcic #(.STAGES(5), .IN_WIDTH(18), .ACC_WIDTH(45), .OUT_WIDTH(18))
     .out_data(decimB_real)
     );
 
-
 //Q channel
-varcic #(.STAGES(5), .IN_WIDTH(18), .ACC_WIDTH(45), .OUT_WIDTH(18))
+varcic #(.STAGES(5), .IN_WIDTH(14), .ACC_WIDTH(34), .OUT_WIDTH(14))
   varcic_inst_Q1(
     .clock(clock),
     .in_strobe(decimA_avail),
@@ -129,12 +112,7 @@ varcic #(.STAGES(5), .IN_WIDTH(18), .ACC_WIDTH(45), .OUT_WIDTH(18))
     .in_data(decimA_imag),
     .out_data(decimB_imag)
     );
-
-		
 				
-firX8R8 fir2 (clock, decimB_avail, decimB_real, decimB_imag, out_strobe, out_data_I2, out_data_Q2);
-  
-  
-assign test_strobe3 = out_strobe;
+firX8R8 fir2 (clock, decimB_avail, {{4{decimB_real[11]}},decimB_real}, {{4{decimB_imag[11]}},decimB_imag}, out_strobe, out_data_I, out_data_Q);
 
 endmodule
