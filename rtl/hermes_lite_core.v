@@ -988,11 +988,11 @@ begin
 	if (C122_rst) 
 		agc_value <= 6'b011111;
 	// Decrease gain if near clip seen
-	else if ( agc_clrnearclip & agc_nearclip & (agc_value != 6'b000000) & ~FPGA_PTT ) 
+	else if ( ((agc_clrnearclip & agc_nearclip & (agc_value != 6'b000000)) & ~FPGA_PTT) | agc_value > gain_value ) 
 		agc_value <= agc_value - 6'h01;
 	// Increase if not in the sweet spot of seeing agc_nearclip
 	// But no more than ~26dB (38) as that is the place of diminishing returns re the datasheet
-	else if ( agc_clrgoodlvl & ~agc_goodlvl & (agc_value <= 6'b100110) & ~FPGA_PTT )
+	else if ( agc_clrgoodlvl & ~agc_goodlvl & (agc_value <= gain_value) & ~FPGA_PTT )
 		agc_value <= agc_value + 6'h01;
 end
 
@@ -1401,7 +1401,7 @@ assign IO4 = 1'b1;
 assign IO5 = 1'b1;
 assign IO6 = 1'b1;
 assign IO8 = 1'b1;
-assign OVERFLOW = leds[0] | leds[3];
+assign OVERFLOW = ~(leds[0] | leds[3]);
 
 Hermes_Tx_fifo_ctrl #(RX_FIFO_SZ, TX_FIFO_SZ) TXFC 
            (IF_rst, IF_clk, IF_tx_fifo_wdata, IF_tx_fifo_wreq, IF_tx_fifo_full,
@@ -1856,7 +1856,11 @@ assign ad9866rqst = 1'b0;
 assign ad9866data = 16'h00;
 
 // Hack to use IF_DITHER to switch highest bit of attenuation
-assign ad9866_pga = IF_RAND ? agc_value : {~IF_DITHER, ~Hermes_atten};
+wire [5:0] gain_value;
+
+assign gain_value = {~IF_DITHER, ~Hermes_atten};
+
+assign ad9866_pga = IF_RAND ? agc_value : gain_value;
 
 
 //---------------------------------------------------------

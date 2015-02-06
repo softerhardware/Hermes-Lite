@@ -43,10 +43,11 @@ wire signed [17:0] cordic_outdata_I;
 wire signed [17:0] cordic_outdata_Q;
 
 // gain adjustment, Hermes reduced by 6dB to match previous receiver code.
-//wire signed [23:0] out_data_I2;
-//wire signed [23:0] out_data_Q2;
-//assign out_data_I = (out_data_I2 >>> 1);
-//assign out_data_Q = (out_data_Q2 >>> 1);
+// Hermes-Lite gain reduced to calibrate QtRadio
+wire signed [23:0] out_data_I2;
+wire signed [23:0] out_data_Q2;
+assign out_data_I = out_data_I2; //>>> 3);
+assign out_data_Q = out_data_Q2; //>>> 3);
 
 
 //------------------------------------------------------------------------------
@@ -65,7 +66,7 @@ cordic cordic_inst(
 // Receive CIC filters followed by FIR filter
 wire decimA_avail, decimB_avail;
 wire signed [13:0] decimA_real, decimA_imag;
-wire signed [13:0] decimB_real, decimB_imag;
+wire signed [15:0] decimB_real, decimB_imag;
 
 
 // CIC filter 
@@ -92,7 +93,7 @@ cic #(.STAGES(3), .DECIMATION(10), .IN_WIDTH(18), .ACC_WIDTH(28), .OUT_WIDTH(14)
 
 //  Variable CIC filter - in width = out width = 14 bits, decimation rate = 2 to 16 
 //I channel
-varcic #(.STAGES(5), .IN_WIDTH(14), .ACC_WIDTH(34), .OUT_WIDTH(14))
+varcic #(.STAGES(5), .IN_WIDTH(14), .ACC_WIDTH(34), .OUT_WIDTH(16))
   varcic_inst_I1(
     .clock(clock),
     .in_strobe(decimA_avail),
@@ -103,7 +104,7 @@ varcic #(.STAGES(5), .IN_WIDTH(14), .ACC_WIDTH(34), .OUT_WIDTH(14))
     );
 
 //Q channel
-varcic #(.STAGES(5), .IN_WIDTH(14), .ACC_WIDTH(34), .OUT_WIDTH(14))
+varcic #(.STAGES(5), .IN_WIDTH(14), .ACC_WIDTH(34), .OUT_WIDTH(16))
   varcic_inst_Q1(
     .clock(clock),
     .in_strobe(decimA_avail),
@@ -113,6 +114,6 @@ varcic #(.STAGES(5), .IN_WIDTH(14), .ACC_WIDTH(34), .OUT_WIDTH(14))
     .out_data(decimB_imag)
     );
 				
-firX8R8 fir2 (clock, decimB_avail, {{4{decimB_real[11]}},decimB_real}, {{4{decimB_imag[11]}},decimB_imag}, out_strobe, out_data_I, out_data_Q);
+firX8R8 fir2 (clock, decimB_avail, {{2{decimB_real[15]}},decimB_real}, {{2{decimB_imag[15]}},decimB_imag}, out_strobe, out_data_I2, out_data_Q2);
 
 endmodule

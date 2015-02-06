@@ -108,7 +108,7 @@ begin
 			if (DHCP_offer)
 				DHCP_state <= 2;
 			else begin
-				if (time_count == 25000000) begin
+				if (time_count == 25'h1ffffff) begin
 						time_out <= 1'b1;
 						time_count <= 0;
 						DHCP_state <= 0;
@@ -122,14 +122,15 @@ begin
     2: begin
 	   DHCP_request <= 1'b1;				// accept offered IP address
 	   DHCP_state <= 3;
+	   time_count <= 0;
 	   end
 	3: begin
 	   DHCP_request <= 0;					// loop until we see a DHCP ACK or NAK, time out if not found
 		if (DHCP_ACK) 
 		   DHCP_state <= 0;			 
 		else begin 
-			if (time_count == 25000000) begin
-					time_count <= 0;
+			if (time_count == 25'h1ffffff) begin
+					//time_count <= 0;
 					time_out <= 1'b1;
 					DHCP_state <= 0;
 			 end

@@ -19,15 +19,15 @@
 #
 # Quartus II 64-Bit
 # Version 14.1.0 Build 186 12/03/2014 SJ Web Edition
-# Date created = 23:05:49  February 03, 2015
+# Date created = 21:52:50  February 05, 2015
 #
 # -------------------------------------------------------------------------- #
 
 QUARTUS_VERSION = "14.1"
-DATE = "23:05:49  February 03, 2015"
+DATE = "21:52:50  February 05, 2015"
 
 # Revisions
 
-PROJECT_REVISION = "Hermes_Lite_12SDK"
 PROJECT_REVISION = "Hermes_Lite_12CV"
+PROJECT_REVISION = "Hermes_Lite_12SDK"
 PROJECT_REVISION = "Hermes_Lite_09SDK"
