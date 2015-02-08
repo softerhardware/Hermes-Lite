@@ -164,7 +164,7 @@ begin
   endcase
 end
 
-assign Tx_IQ_mic_ack = (AD_state == AD_WAIT);
+wire Tx_IQ_mic_ack = (AD_state == AD_WAIT);
 
 always @ (posedge IF_clk)
 begin

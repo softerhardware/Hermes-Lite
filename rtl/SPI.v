@@ -29,51 +29,53 @@
 //////////////////////////////////////////////////////////////
 
 /*
-	data to send to Alex Tx filters is in the following format:
+	data to send to Alex Rx filters is in the folowing format:
+	
+		Bit 	Function 		I.C. Output
+	------ 	------------ 	-----------
+	Bit 00 - YELLOW LED 		U2 - D0 		All are active "High"
+	Bit 01 - 13 MHz HPF 		U2 - D1
+	Bit 02 - 20 MHz HPF 		U2 - D2
+	Bit 03 - 6M Preamp 		U2	- D3
+	Bit 04 - 9.5 MHz HPF 	U2 - D4
+	Bit 05 - 6.5 MHz HPF 	U2 - D5
+	Bit 06 - 1.5 MHz HPF 	U2 - D6	
+	Bit 07 - N.C. 				U2 - D7
+	Bit 08 - XVTR RX In 		U3 - D0
+	Bit 09 - RX 2 In 			U3 - D1
+	Bit 10 - RX 1 In 			U3 - D2
+	Bit 11 - RX 1 Out 		U3 - D3 		Low = Default Receive Path
+	Bit 12 - Bypass 			U3 - D4
+	Bit 13 - 20 dB Atten. 	U3 - D5
+	Bit 14 - 10 dB Atten. 	U3 - D6
+	Bit 15 - RED LED 			U3 - D7		
+	
+	
+	data to sent to Alex Tx filters is in the following format:
 
-	Bit 15 - NC					U2 - D0
-	Bit 14 - NC					U2 - D1
-	Bit 13 - NC					U2 - D2
-	Bit 12 - Yellow Led		U2 - D3
-	Bit 11 - 30/20m			U2 - D4
-	Bit 10 - 60/40m			U2 - D5
-	Bit  9 - 80m				U2 - D6
-	Bit  8 - 160m				U2 - D7
-
-	Bit  7 - Ant #1			U4 - D0
-	Bit  6 - Ant #2			U4 - D1
-	Bit  5 - Ant #3			U4 - D2
-	Bit  4 - T/R relay		U4 - D3
-	Bit  3 - Red Led			U4 - D4
-	Bit  2 - 6m					U4 - D5
-	Bit  1 - 12/10m			U4 - D6
-	Bit  0 - 17/15m			U4 - D7
+		Bit 	Function 		I.C. Output
+	------ 	------------ 	-----------
+	Bit 16 - N.C. 				U2 - D0 		
+	Bit 17 - N.C. 				U2 - D1
+	Bit 18 - N.C. 				U2 - D2
+	Bit 19 - YELLOW LED 		U2 - D3
+	Bit 20 - 30/20 Meters 	U2 - D4
+	Bit 21 - 60/40 Meters 	U2 - D5
+	Bit 22 - 80 Meters 		U2 - D6
+	Bit 24 - 160 Meters 		U2 - D7
+	Bit 24 - ANT #1 			U4 - D0
+	Bit 25 - ANT #2 			U4 - D1
+	Bit 26 - ANT #3 			U4 - D2
+	Bit 27 - T/R Relay 		U4 - D3 		Transmit is high, Rec Low
+	Bit 28 - RED LED 			U4 - D4
+	Bit 29 - 6 Mtrs(Bypass) U4 - D5
+	Bit 30 - 12/10 Meters 	U4 - D6
+	Bit 31 - 17/15 Meters 	U4 - D7	
 
 	Relay selection data is contained in [6:0]LPF
 	
-	data to send to Alex Rx filters is in the folowing format:
+	Bit number referes to Alex_data[x]
 	
-
-	Bit 15 - RED LED 			U28 - QA
-	Bit 14 - 1.5 MHz HPF 	U28 - QB
-	Bit 13 - 6.5 MHz HPF 	U28 - QC
-	Bit 12 - 9.5 MHz HPF 	U28 - QD
-	Bit 11 - 6M Preamp 		U28 - QE
-	Bit 10 - 13 MHz HPF 		U28 - QF
-	Bit 09 - 20 MHz HPF 		U28 - QG
-	Bit 08 - Bypass 			U28 - QH
-	Bit 07 - 10 dB Atten. 	U30 - QA
-	Bit 06 - 20 dB Atten. 	U30 - QB
-	Bit 05 - Transverter	RX U30 - QC
-	Bit 04 - RX 2 In 			U30 - QD
-	Bit 03 - RX 1 In 			U30 - QE
-	Bit 02 - RX 1 OUT 		U30 - QF Low = Default Receive Path
-	Bit 01 - N.C.				U30 - QG
-	Bit 00 - YELLOW LED 		U30 - QH
-	
-	Relay selection data is contained in [5:0]HPF
-	All outputs are active high
-
 	SPI data is sent to Alex whenever any of the above data changes
 
 */

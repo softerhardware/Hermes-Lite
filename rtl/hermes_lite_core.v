@@ -22,7 +22,7 @@
 
 // This is a port of the Hermes project from www.openhpsdr.org to work with
 // the Hermes-Lite hardware described at http://github.com/softerhardware/Hermes-Lite.
-// It was forked from Hermes V2.5.
+// It was forked from Hermes V2.5 but kept up to date to v3.1
 
 module hermes_lite_core(
 
@@ -92,8 +92,8 @@ parameter CLK_FREQ = 61440000;
 // B57 = 2^57.   M2 = B57/OSC
 localparam M2 = 32'd2345624805;
 
-// M3 = M2 / 2, used to round the result
-localparam M3 = 32'd1172812402;
+// M3 = 2^24 to round as version 2.7
+localparam M3 = 32'd16777216;
 
 // Decimation rate
 localparam RATE48 = 6'd16;
@@ -115,7 +115,7 @@ assign NCONFIG = IP_write_done || reset_FPGA;
 parameter M_TPD   = 4;
 parameter IF_TPD  = 2;
 
-parameter  Hermes_serialno = 8'd25;		// Serial number of this version
+parameter  Hermes_serialno = 8'd31;		// Serial number of this version
 localparam Penny_serialno = 8'd00;		// Use same value as equ1valent Penny code 
 localparam Merc_serialno = 8'd00;		// Use same value as equivalent Mercury code
 
