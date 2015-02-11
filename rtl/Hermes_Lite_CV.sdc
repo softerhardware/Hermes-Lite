@@ -57,5 +57,30 @@ set_input_delay -clock { rmii_osc } 9 [get_ports {rmii_rx[*]}]
 
 
 # set output delays
-set_output_delay -clock { rmii_osc } 9.5 [get_ports {rmii_tx_en}]
-set_output_delay -clock { rmii_osc } 9.5 [get_ports {rmii_tx[*]}] 
+set_output_delay -clock { rmii_osc } 7.5 [get_ports {rmii_tx_en}]
+set_output_delay -clock { rmii_osc } 7.5 [get_ports {rmii_tx[*]}] 
+
+#set slowclk ifclocks_cv:ifclocks_cv_inst|ifclocks_cv_0002:ifclocks_cv_inst|altera_pll:altera_pll_i|outclk_wire[2]
+#set_output_delay -clock { $slowclk } 20 [get_ports {PHY*}]
+#set_input_delay -clock { $slowclk } 60 [get_ports {PHY_MDIO}]
+
+
+## AD9866 RX Path
+
+set_output_delay -add_delay -max -clock AD9866clk -reference_pin [get_ports ad9866_rxclk] 1.5 [get_ports {ad9866_rxen}]
+set_output_delay -add_delay -min -clock AD9866clk -reference_pin [get_ports ad9866_rxclk] -0.5 [get_ports {ad9866_rxen}]
+
+set_input_delay -add_delay -max -clock AD9866clk -reference_pin [get_ports ad9866_rxclk] 1.5 [get_ports {ad9866_adio[*]}]
+set_input_delay -add_delay -min -clock AD9866clk -reference_pin [get_ports ad9866_rxclk] -0.5 [get_ports {ad9866_adio[*]}]
+
+
+## AD9866 TX Path
+
+
+set_output_delay -add_delay -max -clock AD9866clk -reference_pin [get_ports ad9866_txclk] 1.5 [get_ports {ad9866_txen}]
+set_output_delay -add_delay -min -clock AD9866clk -reference_pin [get_ports ad9866_txclk] -0.5 [get_ports {ad9866_txen}]
+
+set_output_delay -add_delay -max -clock AD9866clk -reference_pin [get_ports ad9866_txclk] 1.5 [get_ports {ad9866_adio[*]}]
+set_output_delay -add_delay -min -clock AD9866clk -reference_pin [get_ports ad9866_txclk] -0.5 [get_ports {ad9866_adio[*]}]
+
+

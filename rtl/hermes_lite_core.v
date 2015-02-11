@@ -903,8 +903,8 @@ assign temp_DACD = 0;
 // end 
 
 
-wire ad9866clipp = (ad9866_adio == 12'b011111111111);
-wire ad9866clipn = (ad9866_adio == 12'b100000000000);
+wire rxclipp = (temp_ADC == 12'b011111111111);
+wire rxclipn = (temp_ADC == 12'b100000000000);
 
 // Near clips occur just over 1 dB from full range
 // 2**12 = 4096
@@ -913,16 +913,16 @@ wire ad9866clipn = (ad9866_adio == 12'b100000000000);
 // 4096-3584 = 512 (256 from positive and 256 from negtive clips)
 // (6.02*11.8074)+1.76 = 72.84
 // 74 - 72.84 = ~1.16 dB from full range
-wire ad9866nearclip = (ad9866_adio[11:8] == 4'b0111) | (ad9866_adio[11:8] == 4'b1000);
+wire rxnearclip = (temp_ADC[11:8] == 4'b0111) | (temp_ADC[11:8] == 4'b1000);
 
 
 // Like above but 2**11.585 = (4096-1024) = 3072
-wire ad9866goodlvlp = (ad9866_adio[11:9] == 3'b011);
-wire ad9866goodlvln = (ad9866_adio[11:9] == 3'b100);
+wire rxgoodlvlp = (temp_ADC[11:9] == 3'b011);
+wire rxgoodlvln = (temp_ADC[11:9] == 3'b100);
 
 
 // RX/TX port
-assign ad9866_adio = FPGA_PTT ? DACD[13:2] : 12'bZ;
+assign ad9866_adio = FPGA_PTT ? DACD : 12'bZ;
 
 assign exp_ptt_n = FPGA_PTT;
 assign userout = IF_OC;
@@ -968,13 +968,13 @@ wire agc_clrgoodlvl;
 always @(posedge AD9866clkX1)
 begin
 	if (agc_clrnearclip) agc_nearclip <= 1'b0;
-	else if (ad9866nearclip) agc_nearclip <= 1'b1;
+	else if (rxnearclip) agc_nearclip <= 1'b1;
 end
 
 always @(posedge AD9866clkX1)
 begin
 	if (agc_clrgoodlvl) agc_goodlvl <= 1'b0;
-	else if (ad9866goodlvlp | ad9866goodlvln) agc_goodlvl <= 1'b1;
+	else if (rxgoodlvlp | rxgoodlvln) agc_goodlvl <= 1'b1;
 end
 
 // Used for heartbeat too
@@ -1303,11 +1303,17 @@ cpl_cordic #(.OUT_WIDTH(16))
 
 // the CORDIC output is stable on the negative edge of the clock
 
-reg [13:0] DACD;
+reg [11:0] DACD;
 
 always @ (negedge AD9866clkX1)
-	DACD <= C122_cordic_i_out[13:0];   //gain of 4
+	DACD <= C122_cordic_i_out[13:2];   //gain of 4
 
+
+wire txclipp = (C122_cordic_i_out[13:2] == 12'b011111111111);
+wire txclipn = (C122_cordic_i_out[13:2] == 12'b100000000000);
+
+wire txgoodlvlp = (C122_cordic_i_out[13:11] == 3'b011);
+wire txgoodlvln = (C122_cordic_i_out[13:11] == 3'b100);
 
 //`endif
 
@@ -2006,10 +2012,10 @@ ad9866 ad9866_inst(.reset(~ad9866_rst_n),.clk(ad9866spiclk),.sclk(ad9866_sclk),.
 localparam half_second = 10000000; // at 48MHz clock rate
 
 	
-Led_flash Flash_LED0(.clock(AD9866clkX1), .signal(ad9866clipp), .LED(leds[0]), .period(half_second));
-Led_flash Flash_LED1(.clock(AD9866clkX1), .signal(ad9866goodlvlp), .LED(leds[1]), .period(half_second));
-Led_flash Flash_LED2(.clock(AD9866clkX1), .signal(ad9866goodlvln), .LED(leds[2]), .period(half_second));
-Led_flash Flash_LED3(.clock(AD9866clkX1), .signal(ad9866clipn), .LED(leds[3]), .period(half_second));
+Led_flash Flash_LED0(.clock(AD9866clkX1), .signal(rxclipp | txclipp), .LED(leds[0]), .period(half_second));
+Led_flash Flash_LED1(.clock(AD9866clkX1), .signal(rxgoodlvlp | txgoodlvlp), .LED(leds[1]), .period(half_second));
+Led_flash Flash_LED2(.clock(AD9866clkX1), .signal(rxgoodlvln | txgoodlvln), .LED(leds[2]), .period(half_second));
+Led_flash Flash_LED3(.clock(AD9866clkX1), .signal(rxclipn | txclipn), .LED(leds[3]), .period(half_second));
 
 Led_flash Flash_LED4(.clock(IF_clk), .signal(this_MAC), .LED(leds[4]), .period(half_second));
 Led_flash Flash_LED5(.clock(IF_clk), .signal(PHY_TX_EN), .LED(leds[5]), .period(half_second));
