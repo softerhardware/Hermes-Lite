@@ -67,6 +67,7 @@ always @(sen_n, dut1_pc, extrqst, extdata) begin: AD9866_DUT1_COMB
         start = 1;
         datain = 3137;
     end
+    //
     else if (((dut1_pc == 5) && sen_n)) begin
         start = 1;
         datain = 3584;
@@ -81,7 +82,7 @@ always @(sen_n, dut1_pc, extrqst, extdata) begin: AD9866_DUT1_COMB
     end
     else if (((dut1_pc == 11) && sen_n)) begin
         start = 1;
-        datain = 2145;
+        datain = 2123;
     end
     else if (((dut1_pc == 13) && sen_n)) begin
         start = 1;
@@ -91,6 +92,7 @@ always @(sen_n, dut1_pc, extrqst, extdata) begin: AD9866_DUT1_COMB
         start = 1;
         datain = 16'h0644;
     end
+    //
     else if (((dut1_pc == 17) && sen_n)) begin
         start = 1;
         datain = 16'h1084;

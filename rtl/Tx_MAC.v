@@ -109,7 +109,7 @@ module Tx_MAC (Tx_clock, Tx_clock_2, IF_rst, Send_ARP,ping_reply,
 			   IP_valid, printf, IP_lease, DHCP_IP, DHCP_MAC, DHCP_request_renew, DHCP_request_renew_sent,
 			   erase_done, erase_done_ACK, send_more, send_more_ACK, Hermes_serialno,
 			   sp_fifo_rddata, sp_fifo_rdreq, sp_fifo_rdempty, sp_fifo_rdused, have_sp_data,
-				 AssignIP);
+				 AssignIP, IDHermesLite);
 			   
 			   
 			   
@@ -153,6 +153,7 @@ input  sp_fifo_rdempty;			// SP_fifo read empty
 input  [12:0]sp_fifo_rdused;	// SP_fifo contents
 input  have_sp_data;				// high when sp_fifo is full.
 input  [31:0]AssignIP;			// IP address read from EEPROM
+input IDHermesLite;
 
 output LED;							// show MAC is doing something!
 output Tx_fifo_rdreq;			// high to indicate read from Tx fifo required
@@ -1055,8 +1056,8 @@ METIS_DISCOVERY:
 			rdaddress <= rdaddress + 1'b1;
 			state_Tx <= METIS_DISCOVERY;
 		end
-		else if (zero_count < 50)begin				// send 50 x 0x01s *** tidy code, Hermes ID for PC code.
-			Tx_data <= 8'h01;
+		else if (zero_count < 50)begin				// send 50 x 0x06s *** tidy code, Hermes ID for PC code.
+			Tx_data <= IDHermesLite ? 8'h06 : 8'h01;
 			zero_count <= zero_count + 1'b1;
 			state_Tx <= METIS_DISCOVERY;	
 		end 

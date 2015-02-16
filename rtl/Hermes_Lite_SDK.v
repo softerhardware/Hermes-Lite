@@ -28,6 +28,7 @@ module Hermes_Lite(
 
 	output exp_ptt_n,
 	output [6:0] userout,
+	input [1:0] dipsw,	
 
 	// AD9866
 	output [5:0] ad9866_pga,
@@ -105,6 +106,7 @@ hermes_lite_core #(
 
 	.exp_ptt_n(exp_ptt_n),
 	.userout(userout),
+	.dipsw({1'b0,dipsw}),
 
 	// AD9866
 	.ad9866_pga(ad9866_pga),

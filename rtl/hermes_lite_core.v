@@ -66,6 +66,7 @@ module hermes_lite_core(
     output exp_ptt_n,
 
     output [6:0] userout,
+    input [2:0] dipsw,
  
     // MII Ethernet PHY
   	output [3:0]PHY_TX,
@@ -90,7 +91,10 @@ parameter IP;
 parameter CLK_FREQ = 61440000;
 
 // B57 = 2^57.   M2 = B57/OSC
-localparam M2 = 32'd2345624805;
+// 61440000
+//localparam M2 = 32'd2345624805;
+// 61440000-400
+localparam M2 = 32'd2345640077;
 
 // M3 = 2^24 to round as version 2.7
 localparam M3 = 32'd16777216;
@@ -600,7 +604,7 @@ Tx_MAC Tx_MAC_inst (.Tx_clock(Tx_clock), .Tx_clock_2(Tx_clock_2), .IF_rst(IF_rst
 			        .send_more_ACK(send_more_ACK), .Hermes_serialno(Hermes_serialno),
 			        .sp_fifo_rddata(sp_fifo_rddata), .sp_fifo_rdreq(sp_fifo_rdreq), 
 			        .sp_fifo_rdused(), .wide_spectrum(wide_spectrum), .have_sp_data(sp_data_ready),
-					  .AssignIP(AssignIP)
+					  .AssignIP(AssignIP), .IDHermesLite(dipsw[0])
 			        ); 
 
 //------------------------ sequence ARP and Ping requests -----------------------------------
@@ -988,7 +992,7 @@ begin
 	if (C122_rst) 
 		agc_value <= 6'b011111;
 	// Decrease gain if near clip seen
-	else if ( ((agc_clrnearclip & agc_nearclip & (agc_value != 6'b000000)) & ~FPGA_PTT) | agc_value > gain_value ) 
+	else if ( ((agc_clrnearclip & agc_nearclip & (agc_value != 6'b000000)) | agc_value > gain_value ) & ~FPGA_PTT ) 
 		agc_value <= agc_value - 6'h01;
 	// Increase if not in the sweet spot of seeing agc_nearclip
 	// But no more than ~26dB (38) as that is the place of diminishing returns re the datasheet
@@ -1854,12 +1858,6 @@ assign FPGA_PTT = IF_Rx_ctrl_0[0]; // IF_Rx_ctrl_0 only updated when we get corr
 // set the attenuator according to whether Hermes_atten_enable and Preamp bits are set 
 //wire [4:0] atten_data;
 
-wire ad9866rqst;
-wire [15:0] ad9866data;
-
-
-assign ad9866rqst = 1'b0;
-assign ad9866data = 16'h00;
 
 // Hack to use IF_DITHER to switch highest bit of attenuation
 wire [5:0] gain_value;
@@ -2006,6 +2004,19 @@ assign clean_dash = 0;
 
 
 // AD9866 Instance
+wire ad9866rqst;
+wire [15:0] ad9866data;
+wire [7:0] ad9866_drive_level;
+
+
+assign ad9866rqst = 1'b1;
+
+// Linear mapping from 0to255 to 0to39
+assign ad9866_drive_level = (IF_Drive_Level >> 1) + (IF_Drive_Level >> 3);
+
+assign ad9866data = {8'h0a,2'b01,ad9866_drive_level[7:2]};
+
+
 ad9866 ad9866_inst(.reset(~ad9866_rst_n),.clk(ad9866spiclk),.sclk(ad9866_sclk),.sdio(ad9866_sdio),.sdo(ad9866_sdo),.sen_n(ad9866_sen_n),.dataout(),.extrqst(ad9866rqst),.extdata(ad9866data));
 
 // Really 0.16 seconds at Hermes-Lite 61.44 MHz clock
@@ -2020,6 +2031,8 @@ Led_flash Flash_LED3(.clock(AD9866clkX1), .signal(rxclipn | txclipn), .LED(leds[
 Led_flash Flash_LED4(.clock(IF_clk), .signal(this_MAC), .LED(leds[4]), .period(half_second));
 Led_flash Flash_LED5(.clock(IF_clk), .signal(PHY_TX_EN), .LED(leds[5]), .period(half_second));
 Led_flash Flash_LED6(.clock(IF_clk), .signal(IF_SYNC_state == SYNC_RX_1_2), .LED(leds[6]), .period(half_second));	
+
+//assign leds[6:0] = ~IF_Drive_Level[7:1];
 
 assign leds[7] = agc_delaycnt[25];
 
