@@ -52,13 +52,26 @@ set_clock_groups -asynchronous -group { PHY_TX_CLOCK \
 
 
 # set input delays
-set_input_delay -clock { PHY_RX_CLOCK } 22 [get_ports {RX_DV}]
-set_input_delay -clock { PHY_RX_CLOCK } 22 [get_ports {PHY_RX[*]}]
+#set_input_delay -clock { PHY_RX_CLOCK } 22 [get_ports {RX_DV}]
+#set_input_delay -clock { PHY_RX_CLOCK } 22 [get_ports {PHY_RX[*]}]
+
+set_input_delay -add_delay -max -clock_fall -clock PHY_RX_CLOCK 1.5 [get_ports {RX_DV}]
+set_input_delay -add_delay -min -clock_fall -clock PHY_RX_CLOCK -0.5 [get_ports {RX_DV}]
+
+set_input_delay -add_delay -max -clock_fall -clock PHY_RX_CLOCK 1.5 [get_ports {PHY_RX[*]}]
+set_input_delay -add_delay -min -clock_fall -clock PHY_RX_CLOCK -0.5 [get_ports {PHY_RX[*]}]
 
 
 # set output delays
-set_output_delay -clock { PHY_TX_CLOCK } 18 [get_ports {PHY_TX_EN}]
-set_output_delay -clock { PHY_TX_CLOCK } 18 [get_ports {PHY_TX[*]}] 
+#set_output_delay -clock { PHY_TX_CLOCK } 18 [get_ports {PHY_TX_EN}]
+#set_output_delay -clock { PHY_TX_CLOCK } 18 [get_ports {PHY_TX[*]}] 
+
+set_output_delay -add_delay -max -clock_fall -clock PHY_TX_CLOCK 1.5 [get_ports {PHY_TX_EN}]
+set_output_delay -add_delay -min -clock_fall -clock PHY_TX_CLOCK -0.5 [get_ports {PHY_TX_EN}]
+
+set_output_delay -add_delay -max -clock_fall -clock PHY_TX_CLOCK 1.5 [get_ports {PHY_TX[*]}]
+set_output_delay -add_delay -min -clock_fall -clock PHY_TX_CLOCK -0.5 [get_ports {PHY_TX[*]}]
+
 
 
 ## AD9866 RX Path

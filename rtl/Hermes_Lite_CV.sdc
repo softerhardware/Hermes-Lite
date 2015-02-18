@@ -52,13 +52,25 @@ set_clock_groups -asynchronous -group {rmii_osc \
 
 
 ## set input delays
-set_input_delay -clock { rmii_osc } 9 [get_ports {rmii_crs_dv}]
-set_input_delay -clock { rmii_osc } 9 [get_ports {rmii_rx[*]}]
+#set_input_delay -clock { rmii_osc } 9 [get_ports {rmii_crs_dv}]
+#set_input_delay -clock { rmii_osc } 9 [get_ports {rmii_rx[*]}]
 
+set_input_delay -add_delay -max -clock rmii_osc 1.5 [get_ports {rmii_crs_dv}]
+set_input_delay -add_delay -min -clock rmii_osc -0.5 [get_ports {rmii_crs_dv}]
+
+set_input_delay -add_delay -max -clock rmii_osc 1.5 [get_ports {rmii_rx[*]}]
+set_input_delay -add_delay -min -clock rmii_osc -0.5 [get_ports {rmii_rx[*]}]
 
 # set output delays
-set_output_delay -clock { rmii_osc } 7.5 [get_ports {rmii_tx_en}]
-set_output_delay -clock { rmii_osc } 7.5 [get_ports {rmii_tx[*]}] 
+set_output_delay -add_delay -max -clock rmii_osc 1.5 [get_ports {rmii_tx_en}]
+set_output_delay -add_delay -min -clock rmii_osc -0.5 [get_ports {rmii_tx_en}]
+
+set_output_delay -add_delay -max -clock rmii_osc 1.5 [get_ports {rmii_tx[*]}]
+set_output_delay -add_delay -min -clock rmii_osc -0.5 [get_ports {rmii_tx[*]}]
+
+
+#set_output_delay -clock { rmii_osc } 7.5 [get_ports {rmii_tx_en}]
+#set_output_delay -clock { rmii_osc } 7.5 [get_ports {rmii_tx[*]}] 
 
 #set slowclk ifclocks_cv:ifclocks_cv_inst|ifclocks_cv_0002:ifclocks_cv_inst|altera_pll:altera_pll_i|outclk_wire[2]
 #set_output_delay -clock { $slowclk } 20 [get_ports {PHY*}]
@@ -83,4 +95,10 @@ set_output_delay -add_delay -min -clock AD9866clk -reference_pin [get_ports ad98
 set_output_delay -add_delay -max -clock AD9866clk -reference_pin [get_ports ad9866_txclk] 1.5 [get_ports {ad9866_adio[*]}]
 set_output_delay -add_delay -min -clock AD9866clk -reference_pin [get_ports ad9866_txclk] -0.5 [get_ports {ad9866_adio[*]}]
 
+
+## Slow outputs
+set_false_path -from * -to {leds[*] userout[*] exp_ptt_n}
+
+## Slow inputs
+set_false_path -from {extreset exp_present dipsw[*]} -to *
 

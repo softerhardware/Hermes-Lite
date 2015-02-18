@@ -213,6 +213,7 @@ set_global_assignment -name QIP_FILE Tx_fifo.qip
 set_global_assignment -name QIP_FILE PHY_Rx_fifo.qip
 set_global_assignment -name PROJECT_OUTPUT_DIRECTORY build
 set_global_assignment -name QIP_FILE ad9866clk_sdk.qip
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to exp_ptt_n
 set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to userout[6]
 set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to userout[5]
 set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to userout[4]

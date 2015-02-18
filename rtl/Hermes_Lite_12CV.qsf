@@ -228,6 +228,7 @@ set_global_assignment -name ENABLE_CONFIGURATION_PINS OFF
 set_global_assignment -name ENABLE_BOOT_SEL_PIN OFF
 set_global_assignment -name SOURCE_FILE db/Hermes_Lite_12CV.cmp.rdb
 set_global_assignment -name AUTO_RESOURCE_SHARING ON
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to exp_ptt_n
 set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to userout[6]
 set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to userout[5]
 set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to userout[4]
