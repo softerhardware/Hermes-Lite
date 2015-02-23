@@ -1411,7 +1411,7 @@ assign IO4 = 1'b1;
 assign IO5 = 1'b1;
 assign IO6 = 1'b1;
 assign IO8 = 1'b1;
-assign OVERFLOW = ~(leds[0] | leds[3]);
+assign OVERFLOW = (~leds[0] | ~leds[3]) & ~FPGA_PTT;
 
 Hermes_Tx_fifo_ctrl #(RX_FIFO_SZ, TX_FIFO_SZ) TXFC 
            (IF_rst, IF_clk, IF_tx_fifo_wdata, IF_tx_fifo_wreq, IF_tx_fifo_full,
@@ -2008,13 +2008,17 @@ wire ad9866rqst;
 wire [15:0] ad9866data;
 wire [7:0] ad9866_drive_level;
 
-
-assign ad9866rqst = 1'b1;
-
 // Linear mapping from 0to255 to 0to39
 assign ad9866_drive_level = (IF_Drive_Level >> 1) + (IF_Drive_Level >> 3);
 
 assign ad9866data = {8'h0a,2'b01,ad9866_drive_level[7:2]};
+
+reg [5:0] lastad9866data;
+always @ (posedge ad9866spiclk)
+	lastad9866data <= ad9866_drive_level[7:2];
+
+assign ad9866rqst = ad9866_drive_level[7:2] != lastad9866data;
+
 
 
 ad9866 ad9866_inst(.reset(~ad9866_rst_n),.clk(ad9866spiclk),.sclk(ad9866_sclk),.sdio(ad9866_sdio),.sdo(ad9866_sdo),.sen_n(ad9866_sen_n),.dataout(),.extrqst(ad9866rqst),.extdata(ad9866data));
@@ -2032,7 +2036,7 @@ Led_flash Flash_LED4(.clock(IF_clk), .signal(this_MAC), .LED(leds[4]), .period(h
 Led_flash Flash_LED5(.clock(IF_clk), .signal(PHY_TX_EN), .LED(leds[5]), .period(half_second));
 Led_flash Flash_LED6(.clock(IF_clk), .signal(IF_SYNC_state == SYNC_RX_1_2), .LED(leds[6]), .period(half_second));	
 
-//assign leds[6:0] = ~IF_Drive_Level[7:1];
+//assign leds[5:0] = ~lastad9866data;
 
 assign leds[7] = agc_delaycnt[25];
 

@@ -68,73 +68,46 @@ def ad9866_spi(reset,clk,sclk,sdio,sdo,sen_n,start,datain,dataout):
 def ad9866_pgm(reset,clk,sen_n,start,datain,extrqst,extdata):
   """ Send commpands to the AD9866 """
 
-  pc = Signal(intbv(0)[5:])
-  ##state = Signal(intbv(0)[1:])
+  pc = Signal(intbv(0)[4:])
 
   ## Mealy outputs
   @always_comb
   def COMB():
     ## Setup 4 wire SPI
-    if pc == 1 and sen_n:
+    if pc == 0x01 and sen_n:
       start.next = 1
       datain.next = 0x0080
     ## TX Twos complement and interpolation factor
-    elif pc == 3 and sen_n:
+    elif pc == 0x03 and sen_n:
       start.next = 1
       datain.next = 0x0c41
-    elif pc == 5 and sen_n:
-      start.next = 1
-      #datain.next = 0x094c
-      #datain.next = 0x0b20
-      ## Clear TX DAC Output
-      datain.next = 0x0e00
-      ## Set IAMP
-      ##datain.next = 0x1084
-    ## Twos complement by default when Mode is 1
-    ## Set RX to use twos complement
-    elif pc == 7 and sen_n:
+    ## RX Twos complement
+    elif pc == 0x05 and sen_n:
       start.next = 1
       datain.next = 0x0d01
-    
-    ## Enable RX Filter and initiate offset calibration
-    elif pc == 9 and sen_n:
+    ## Initiate DC offset calibration and RX Filter on
+    elif pc == 0x07 and sen_n:
       start.next = 1
       datain.next = 0x0721
-    ##
-    ## RX Filter f-3db at ~32MHz
-    elif pc == 0x0b and sen_n:
+    ## RX Filter f-3db at ~34MHz after scaling
+    elif pc == 0x09 and sen_n:
       start.next = 1
-      datain.next = 0x0861
-
-    ## Rewrite clock settings in case of error on powerup
-    elif pc == 0x0d and sen_n:
-      start.next = 1
-      datain.next = 0x0401
-
-    ## Rewrite clock settings in case of error on powerup
-    elif pc == 0x0f and sen_n:
-      start.next = 1
-      datain.next = 0x0644
-
-    elif pc == 0x1e and sen_n and extrqst:
+      datain.next = 0x084b
+    ## Handle external requests
+    elif pc == 0x0f and sen_n and extrqst:
       start.next = 1
       datain.next = extdata
-
+    ## Defaults
     else:
       start.next = 0
       datain.next = 0
 
 
-
   @always_seq(clk.posedge,reset=reset)
   def FSM():
 
-    if pc == 0x1f:
-      pc.next = 0x1e
-    elif sen_n:
+    if pc != 0x0f and  sen_n:
       pc.next = pc + 1
-
-
 
   return instances()
 
