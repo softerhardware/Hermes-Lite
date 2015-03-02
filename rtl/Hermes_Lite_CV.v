@@ -110,6 +110,7 @@ RMII2MII_rev2 RMII2MII_inst(
 	.phy_resetn()
 );
 
+
 // PLL clk must me on input 2 or 3
 clkmux_cv clkmux (
 	.inclk0x(AD9866clk),
@@ -166,5 +167,11 @@ hermes_lite_core #(
 	.PHY_MDIO(PHY_MDIO),             
 	.PHY_MDC(PHY_MDC)
 );             
+
+//reg clkcheck;
+//always @(negedge rmii_osc)
+//	clkcheck <= PHY_TX_CLOCK ^ PHY_RX_CLOCK;
+
+//assign leds = { ileds[7:1],~clkcheck };
 
 endmodule 

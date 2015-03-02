@@ -217,9 +217,6 @@ set_instance_assignment -name SLEW_RATE 1 -to rmii_tx[0]
 set_instance_assignment -name SLEW_RATE 1 -to rmii_tx_en
 set_instance_assignment -name SLEW_RATE 1 -to PHY_MDC
 set_instance_assignment -name SLEW_RATE 1 -to PHY_MDIO
-set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to rmii_tx[1]
-set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to rmii_tx[0]
-set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to rmii_tx_en
 set_instance_assignment -name CURRENT_STRENGTH_NEW 4MA -to rmii_osc
 set_instance_assignment -name CURRENT_STRENGTH_NEW 4MA -to rmii_rx[1]
 set_instance_assignment -name CURRENT_STRENGTH_NEW 4MA -to rmii_rx[0]

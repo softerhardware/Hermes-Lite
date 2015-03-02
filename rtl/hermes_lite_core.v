@@ -380,7 +380,7 @@ assign This_IP =  Assigned_IP_valid ? AssignIP :
 				              use_IPIPA ? {8'd169, 8'd254, This_MAC[15:0]} : YIADDR;
 
 //----------------------------------------------------------------------------------
-// Read/Write the  PHY MDIO registers (NOTE: Max clock frequency is 2.5MHz)
+// Read/Write the  PHY MDIO registers (NOTE: Max clock frequency is 25 MHz)
 //----------------------------------------------------------------------------------
 wire write_done; 
 reg write_PHY;
@@ -389,7 +389,7 @@ wire PHY_clock;
 wire read_done;
 wire [15:0]register_data; 
 wire PHY_MDIO_clk;
-assign PHY_MDIO_clk = EEPROM_clock;
+assign PHY_MDIO_clk = Tx_clock_2; //EEPROM_clock;
 
 MDIO MDIO_inst(.clk(PHY_MDIO_clk), .write_PHY(write_PHY), .write_done(write_done), .read_PHY(read_PHY),
 	  .clock(PHY_MDC), .MDIO_inout(PHY_MDIO), .read_done(read_done),
@@ -410,7 +410,8 @@ MDIO MDIO_inst(.clk(PHY_MDIO_clk), .write_PHY(write_PHY), .write_done(write_done
 */
 
 wire [51:0]lease_time;
-assign lease_time = (IP_lease == 0) ?  52'h7735_8C8C_A6C0 : (IP_lease >> 1) * 12500000; // 24 days if no lease time given
+// Below is to avoid multiplication, note that large lease times may lose msbs in shift
+assign lease_time = (IP_lease == 0) ?  52'h7735_8C8C_A6C0 : IP_lease << 23; // (IP_lease >> 1) * 12500000; // 24 days if no lease time given
 // assign lease_time = (IP_lease == 0) ? 52'h7735_8C8C_A6C0  : (52'd4 * 52'd12500000);  // every 4 seconds for testing
 
 

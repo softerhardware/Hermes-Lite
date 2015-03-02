@@ -34,6 +34,7 @@ create_generated_clock -divide_by 2 -source {RMII2MII_rev2:RMII2MII_inst|rx_clk}
 create_generated_clock -divide_by 2 -source {RMII2MII_rev2:RMII2MII_inst|tx_clk} -name Tx_clock_2 {hermes_lite_core:hermes_lite_core_inst|Tx_clock_2}
 
 
+
 #*************************************************************************************
 # Set Clock Groups
 #*************************************************************************************
@@ -45,27 +46,27 @@ set_clock_groups -asynchronous -group {rmii_osc \
 					PHY_RX_CLOCK \
 					PHY_RX_CLOCK_2 \
 					} \
-					-group {ifclocks_cv:ifclocks_cv_inst|ifclocks_cv_0002:ifclocks_cv_inst|altera_pll:altera_pll_i|outclk_wire[0]} \
+					-group {ifclocks_cv:ifclocks_cv_inst|ifclocks_cv_0002:ifclocks_cv_inst|altera_pll:altera_pll_i|outclk_wire[0] \
+					ifclocks_cv:ifclocks_cv_inst|ifclocks_cv_0002:ifclocks_cv_inst|altera_pll:altera_pll_i|outclk_wire[2]} \
 					-group {ifclocks_cv:ifclocks_cv_inst|ifclocks_cv_0002:ifclocks_cv_inst|altera_pll:altera_pll_i|outclk_wire[1]} \
-					-group {ifclocks_cv:ifclocks_cv_inst|ifclocks_cv_0002:ifclocks_cv_inst|altera_pll:altera_pll_i|outclk_wire[2]} \
 					-group {AD9866clk} 
 
 
 ## set input delays
 create_clock -period 50.000MHz -name vrmii_osc
 
-set_input_delay -add_delay -max -clock vrmii_osc 14.5 [get_ports {rmii_crs_dv}]
-set_input_delay -add_delay -min -clock vrmii_osc 1.5 [get_ports {rmii_crs_dv}]
+set_input_delay -add_delay -max -clock vrmii_osc 14.60 [get_ports {rmii_crs_dv}]
+set_input_delay -add_delay -min -clock vrmii_osc 1.40 [get_ports {rmii_crs_dv}]
 
-set_input_delay -add_delay -max -clock vrmii_osc 14.5 [get_ports {rmii_rx[*]}]
-set_input_delay -add_delay -min -clock vrmii_osc 1.5 [get_ports {rmii_rx[*]}]
+set_input_delay -add_delay -max -clock vrmii_osc 14.60 [get_ports {rmii_rx[*]}]
+set_input_delay -add_delay -min -clock vrmii_osc 1.40 [get_ports {rmii_rx[*]}]
 
 # set output delays
-set_output_delay -add_delay -max -clock vrmii_osc 5.0 [get_ports {rmii_tx_en}]
-set_output_delay -add_delay -min -clock vrmii_osc -3.0 [get_ports {rmii_tx_en}]
+set_output_delay -add_delay -max -clock vrmii_osc 6.5 [get_ports {rmii_tx_en}]
+set_output_delay -add_delay -min -clock vrmii_osc -5.0 [get_ports {rmii_tx_en}]
 
-set_output_delay -add_delay -max -clock vrmii_osc 5.0 [get_ports {rmii_tx[*]}]
-set_output_delay -add_delay -min -clock vrmii_osc -3.0 [get_ports {rmii_tx[*]}]
+set_output_delay -add_delay -max -clock vrmii_osc 6.5 [get_ports {rmii_tx[*]}]
+set_output_delay -add_delay -min -clock vrmii_osc -5.0 [get_ports {rmii_tx[*]}]
 
 
 
@@ -94,3 +95,7 @@ set_output_delay -add_delay -min -clock vrmii_osc -3.0 [get_ports {rmii_tx[*]}]
 ## Slow inputs
 #set_false_path -from {extreset exp_present dipsw[*]} -to *
 
+#set_max_delay -from PHY_RX_CLOCK_2 -to Tx_clock_2 20
+#set_max_delay -from PHY_RX_CLOCK -to Tx_clock_2 20
+#set_max_delay -from Tx_clock_2 -to PHY_RX_CLOCK_2 20
+#set_max_delay -from PHY_TX_CLOCK -to PHY_RX_CLOCK_2 20

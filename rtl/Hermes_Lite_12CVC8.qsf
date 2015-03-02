@@ -26,8 +26,8 @@
 set_global_assignment -name DEVICE 5CEFA2F23C8
 set_global_assignment -name FAMILY "Cyclone V"
 set_global_assignment -name TOP_LEVEL_ENTITY Hermes_Lite
-set_global_assignment -name ORIGINAL_QUARTUS_VERSION 14.1.0
-set_global_assignment -name PROJECT_CREATION_TIME_DATE "20:58:03  FEBRUARY 22, 2015"
+set_global_assignment -name ORIGINAL_QUARTUS_VERSION 14.0
+set_global_assignment -name PROJECT_CREATION_TIME_DATE "12:01:06  NOVEMBER 30, 2014"
 set_global_assignment -name LAST_QUARTUS_VERSION 14.1.0
 set_global_assignment -name MIN_CORE_JUNCTION_TEMP 0
 set_global_assignment -name MAX_CORE_JUNCTION_TEMP 85
@@ -100,6 +100,7 @@ set_location_assignment PIN_T9 -to rmii_crs_dv
 set_location_assignment PIN_H13 -to clk50mhz
 set_location_assignment PIN_H18 -to extreset
 set_global_assignment -name ACTIVE_SERIAL_CLOCK FREQ_25MHZ
+set_global_assignment -name STRATIXV_CONFIGURATION_SCHEME "ACTIVE SERIAL X1"
 set_location_assignment PIN_Y16 -to ad9866_pga[5]
 set_location_assignment PIN_Y15 -to ad9866_pga[4]
 set_location_assignment PIN_AA15 -to ad9866_pga[3]
@@ -216,9 +217,6 @@ set_instance_assignment -name SLEW_RATE 1 -to rmii_tx[0]
 set_instance_assignment -name SLEW_RATE 1 -to rmii_tx_en
 set_instance_assignment -name SLEW_RATE 1 -to PHY_MDC
 set_instance_assignment -name SLEW_RATE 1 -to PHY_MDIO
-set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to rmii_tx[1]
-set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to rmii_tx[0]
-set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to rmii_tx_en
 set_instance_assignment -name CURRENT_STRENGTH_NEW 4MA -to rmii_osc
 set_instance_assignment -name CURRENT_STRENGTH_NEW 4MA -to rmii_rx[1]
 set_instance_assignment -name CURRENT_STRENGTH_NEW 4MA -to rmii_rx[0]
@@ -235,5 +233,4 @@ set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to userout[3]
 set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to userout[2]
 set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to userout[1]
 set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to userout[0]
-set_global_assignment -name STRATIXV_CONFIGURATION_SCHEME "ACTIVE SERIAL X1"
 set_instance_assignment -name PARTITION_HIERARCHY root_partition -to | -section_id Top
