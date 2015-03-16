@@ -174,7 +174,6 @@ set_global_assignment -name LICENSE_FILE Polyphase_FIR/coefL8.dat
 set_global_assignment -name VERILOG_FILE PHY_fifo.v
 set_global_assignment -name VERILOG_FILE sp_rcv_ctrl.v
 set_global_assignment -name VERILOG_FILE CRC32.v
-set_global_assignment -name VERILOG_FILE ASMI.v
 set_global_assignment -name VERILOG_FILE PHY_Rx_fifo.v
 set_global_assignment -name VERILOG_FILE Led_flash.v
 set_global_assignment -name VERILOG_FILE MDIO.v
@@ -183,7 +182,6 @@ set_global_assignment -name VERILOG_FILE Tx_MAC.v
 set_global_assignment -name VERILOG_FILE ASMI_interface.v
 set_global_assignment -name VERILOG_FILE DHCP.v
 set_global_assignment -name VERILOG_FILE EEPROM.v
-set_global_assignment -name VERILOG_FILE EPCS_fifo.v
 set_global_assignment -name VERILOG_FILE Tx_fifo.v
 set_global_assignment -name VERILOG_FILE varcic.v
 set_global_assignment -name VERILOG_FILE cdc_mcp.v
@@ -202,8 +200,6 @@ set_global_assignment -name VERILOG_FILE receiver.v
 set_global_assignment -name VERILOG_FILE SPI.v
 set_global_assignment -name QIP_FILE SP_fifo.qip
 set_global_assignment -name QIP_FILE PHY_fifo.qip
-set_global_assignment -name QIP_FILE ASMI.qip
-set_global_assignment -name QIP_FILE EPCS_fifo.qip
 set_global_assignment -name QIP_FILE Tx_fifo.qip
 set_global_assignment -name QIP_FILE PHY_Rx_fifo.qip
 set_global_assignment -name QIP_FILE ifclocks_cv.qip

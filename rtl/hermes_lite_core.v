@@ -51,10 +51,8 @@ module hermes_lite_core(
 	output ad9866_rxclk,
 	
 	output ad9866_txen,
-	//output ad9866_txsync,
 
 	output ad9866_txclk,
-	//output ad9866_txquiet,
 
 	output ad9866_sclk,
     output ad9866_sdio,
@@ -108,13 +106,9 @@ localparam RATE384 = 6'd02;
 // Number of Receivers
 parameter NR; // number of receivers to implement
 
-wire NCONFIG;
-
 wire FPGA_PTT;
 wire RAND;
 assign RAND = 0;
-
-assign NCONFIG = IP_write_done || reset_FPGA;
 
 parameter M_TPD   = 4;
 parameter IF_TPD  = 2;
@@ -224,7 +218,6 @@ reg DHCP_start;
 reg [24:0]delay;
 reg duplex;						// set when we are connected full duplex
 reg speed_100T;				// set when we are connected at 100MHz
-reg speed_1000T;				// set when we are connected at 1GHz
 reg Tx_reset;					// when set prevents HPSDR UDP/IP Tx data being sent
 reg [2:0]DHCP_retries;		// DHCP retry counter
 reg IP_valid;					// set when Metis has a valid IP address assigned by DHCP or APIPA
@@ -272,7 +265,6 @@ begin
 			write_PHY <= 0;						// clear write PHY flag so it does not run again
 			duplex <= 0;							// clear duplex and speed flags
 			speed_100T <= 0;
-			speed_1000T <= 0; 
 			read_PHY <= 1'b1;						// set read from PHY flag
 			start_up <= start_up + 1'b1;
 		end 
@@ -287,8 +279,6 @@ begin
 		if (read_done  && register_data[0]) begin
 			duplex <= register_data[2];			// get connection status and speed
 			speed_100T  <= register_data[1];
-			//speed_1000T <= register_data[6];
-			speed_1000T <= 0;
 			read_PHY <= 0;								// clear read PHY flag so it does not run again	
 			reset <= 0;	
 			if (duplex) begin							// loop here is not fully duplex network connection
@@ -353,18 +343,10 @@ end
 //----------------------------------------------------------------------------------
 wire IP_ready;
 wire write_IP;
-				
-//EEPROM EEPROM_inst(.clock(EEPROM_clock), .read_MAC(read_MAC), .read_IP(read_IP_address), .write_IP(write_IP), 
-//				   .IP_to_write(IP_to_write), .CS(CS), .SCK(SCK), .SI(SI), .SO(SO), .This_MAC(This_MAC),
-//				   .This_IP(AssignIP), .MAC_ready(MAC_ready), .IP_ready(IP_ready), .IP_write_done(IP_write_done));				
-	
-// Emulate EEPROM
-
 assign This_MAC = MAC;
 assign AssignIP = IP;
 assign MAC_ready = 1'b1;
 assign IP_ready = 1'b1;
-assign IP_write_done = 1'b1;
 
 					
 //------------------------------------------------------------------------------------
@@ -421,7 +403,6 @@ reg [3:0]renew_DHCP_retries;
 reg [51:0]renew_counter;
 reg [24:0]renew_timer; 
 reg [2:0]renew;
-reg printf;
 reg DHCP_request_renew;
 reg second_time;						// set if can't get a DHCP IP address after two tries.
 reg DHCP_discover_broadcast;    // last ditch attempt so do a discovery broadcast
@@ -546,10 +527,8 @@ wire wide_spectrum;				// set to send wide spectrum data
 wire [31:0]IP_lease;				// holds IP lease in seconds from DHCP ACK packet
 wire [47:0]DHCP_MAC;				// MAC address of DHCP server 
 wire erase;							// set when we receive an erase EPCS16 command
-wire erase_ACK;					// set when ASMI interface acks the erase command
 wire [31:0]num_blocks;			// number of 256 byte blocks to save in EPCS16
 wire EPCS_FIFO_enable;			// EPCS fifo write enable
-wire IP_write_done;
 wire [31:0] IP_to_write;
 
 
@@ -563,8 +542,8 @@ Rx_MAC Rx_MAC_inst (.PHY_RX_CLOCK(PHY_RX_CLOCK), .PHY_data_clock(PHY_data_clock)
 			        .ARP_PC_MAC(ARP_PC_MAC), .ARP_PC_IP(ARP_PC_IP), .Ping_PC_MAC(Ping_PC_MAC), 
 			        .Ping_PC_IP(Ping_PC_IP), .Port(Port), .seq_error(seq_error), .data_match(data_match),
 			        .run(run), .IP_lease(IP_lease), .DHCP_IP(DHCP_IP), .DHCP_MAC(DHCP_MAC),
-			        .erase(erase), .erase_ACK(erase_ACK), .num_blocks(num_blocks), .EPCS_FIFO_enable(EPCS_FIFO_enable),
-			        .wide_spectrum(wide_spectrum), .IP_write_done(IP_write_done), .write_IP(write_IP),
+			        .erase(erase), .erase_ACK(1'b1), .num_blocks(num_blocks), .EPCS_FIFO_enable(EPCS_FIFO_enable),
+			        .wide_spectrum(wide_spectrum), .IP_write_done(1'b1), .write_IP(write_IP),
 					  .IP_to_write(IP_to_write) 
 			        );
 			        
@@ -599,9 +578,9 @@ Tx_MAC Tx_MAC_inst (.Tx_clock(Tx_clock), .Tx_clock_2(Tx_clock_2), .IF_rst(IF_rst
 			        .Port(Port), .This_IP(This_IP), .METIS_discover_sent(METIS_discover_sent),
 			        .ARP_PC_MAC(ARP_PC_MAC), .ARP_PC_IP(ARP_PC_IP), .Ping_PC_IP(Ping_PC_IP),
 			        .Ping_PC_MAC(Ping_PC_MAC), .speed_100T(1'b1), .Tx_reset(Tx_reset),
-			        .run(run), .IP_valid(IP_valid), .printf(printf), .IP_lease(IP_lease),
+			        .run(run), .IP_valid(IP_valid), .printf(1'b0), .IP_lease(IP_lease),
 			        .DHCP_MAC(DHCP_MAC), .DHCP_request_renew(DHCP_request_renew),
-			        .erase_done(erase_done), .erase_done_ACK(erase_done_ACK), .send_more(send_more),
+			        .erase_done(1'b0), .erase_done_ACK(erase_done_ACK), .send_more(1'b0),
 			        .send_more_ACK(send_more_ACK), .Hermes_serialno(Hermes_serialno),
 			        .sp_fifo_rddata(sp_fifo_rddata), .sp_fifo_rdreq(sp_fifo_rdreq), 
 			        .sp_fifo_rdused(), .wide_spectrum(wide_spectrum), .have_sp_data(sp_data_ready),
@@ -758,57 +737,6 @@ always @ (posedge Tx_clock_2)
 		sp_delay <= sp_delay + 15'd1;
 		
 assign sp_data_ready = (sp_delay == 0 && have_sp_data); 
-
-
-	
-//--------------------------------------------------------------------------
-//			EPCS16 Erase and Program code 
-//--------------------------------------------------------------------------
-
-/*
-					    EPCS_fifo (1k bytes) 
-					
-					    ---------------------
-	  Rx_fifo_data  |data[7:0]	         | 
-					    |				         |
- EPCS_FIFO_enable  |wrreq		         | 
-					    |					      |									    
-	PHY_data_clock  |>wrclk	 			   |
-					    ---------------------								
-	   EPCS_rdreq   |rdreq		  q[7:0] | EPCS_data
-					    |					      |					  			
-			     	    |   		            |  
-			          |                   | 							
-         Tx_clock  |>rdclk rdusedw[9:0]| EPCS_Rx_used	    
-					    ---------------------								
-					    |                    |
-			  IF_rst  |aclr                |								
-					    ---------------------						
-*/
-
-wire [7:0]EPCS_data;
-wire [9:0]EPCS_Rx_used;
-wire  EPCS_rdreq;
-
-EPCS_fifo EPCS_fifo_inst(.wrclk (PHY_data_clock),.rdreq (EPCS_rdreq),.rdclk (Tx_clock),.wrreq(EPCS_FIFO_enable), 
-                .data (Rx_fifo_data),.q (EPCS_data), .rdusedw(EPCS_Rx_used), .aclr(IF_rst));
-
-//----------------------------
-// 			ASMI Interface
-//----------------------------
-wire busy;
-wire erase_done;
-wire send_more;
-wire erase_done_ACK;
-wire send_more_ACK;
-wire reset_FPGA;
-
-ASMI_interface  ASMI_int_inst(.clock(Tx_clock), .busy(busy), .erase(erase), .erase_ACK(erase_ACK), .IF_PHY_data(EPCS_data),
-							 .IF_Rx_used(EPCS_Rx_used), .rdreq(EPCS_rdreq), .erase_done(erase_done), .num_blocks(num_blocks),
-							 .erase_done_ACK(erase_done_ACK), .send_more(send_more), .send_more_ACK(send_more_ACK), .NCONFIG(reset_FPGA)); 
-
-
-
       
 assign IF_mic_Data = 0;
 
@@ -822,29 +750,6 @@ assign ad9866_rxen = ~FPGA_PTT;
 
 assign ad9866_rxclk = AD9866clkX1;
 assign ad9866_txclk = AD9866clkX1;
-
-
-// Code for Full duplex
-
-
-//assign ad9866_txsync = 1'b0;
-//assign ad9866_txquiet = 1'b0;
-//assign ad9866_tx = 6'h00;
-
-
-//reg [11:0] adio;
-
-// Create adio from rxclk, assume it is in sync with AD9866clkX1...
-
-//always @(posedge ad9866_rxclk)
-//begin
-//	if (ad9866_rxsync == 1'b1)
-//		adio[5:0] <= ad9866_rx;
-//	else
-//		adio[11:6] <= ad9866_rx;
-//end
-
-
 
 
 
@@ -867,46 +772,6 @@ reg [15:0] temp_DACD; // for pre-distortion Tx tests
 //reg ad9866goodlvlp, ad9866goodlvln;
 
 assign temp_DACD = 0;
-
-// always @ (posedge AD9866clkX1) 
-// begin 
-
-//     if (ad9866_adio == 12'b011111111111)
-//     	ad9866clipp <= 1'b1;
-//     else
-//     	ad9866clipp <= 1'b0;
-
-// 	if (ad9866_adio == 12'b100000000000)
-//     	ad9866clipn <= 1'b1;
-//     else
-//     	ad9866clipn <= 1'b0;
-
-//     // Near clips occur just over 1 dB from full range
-//     // 2**12 = 4096
-//     // (6.02*12)+1.76 = 74
-//     // 2**11.8074 = 3584
-//     // 4096-3584 = 512 (256 from positive and 256 from negtive clips)
-//     // (6.02*11.8074)+1.76 = 72.84
-//     // 74 - 72.84 = ~1.16 dB from full range
-//     if ((ad9866_adio[11:8] == 4'b0111) | (ad9866_adio[11:8] == 4'b1000))
-//     	ad9866nearclip <= 1'b1;
-//     else
-//     	ad9866nearclip <= 1'b0;
-
-
-//     if (ad9866_adio[11:9] == 3'b011)
-//     	ad9866goodlvlp <= 1'b1;
-//     else
-//     	ad9866goodlvlp <= 1'b0;
-
-// 	if (ad9866_adio[11:9] == 3'b100)
-//     	ad9866goodlvln <= 1'b1;
-//     else
-//     	ad9866goodlvln <= 1'b0;
-
-
-// end 
-
 
 wire rxclipp = (temp_ADC == 12'b011111111111);
 wire rxclipn = (temp_ADC == 12'b100000000000);
