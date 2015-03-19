@@ -342,7 +342,6 @@ end
 // read and write to the EEPROM	(NOTE: Max clock frequency is 20MHz)
 //----------------------------------------------------------------------------------
 wire IP_ready;
-wire write_IP;
 assign This_MAC = MAC;
 assign AssignIP = IP;
 assign MAC_ready = 1'b1;
@@ -526,10 +525,6 @@ wire run;							// set to send data to PC
 wire wide_spectrum;				// set to send wide spectrum data
 wire [31:0]IP_lease;				// holds IP lease in seconds from DHCP ACK packet
 wire [47:0]DHCP_MAC;				// MAC address of DHCP server 
-wire erase;							// set when we receive an erase EPCS16 command
-wire [31:0]num_blocks;			// number of 256 byte blocks to save in EPCS16
-wire EPCS_FIFO_enable;			// EPCS fifo write enable
-wire [31:0] IP_to_write;
 
 
 Rx_MAC Rx_MAC_inst (.PHY_RX_CLOCK(PHY_RX_CLOCK), .PHY_data_clock(PHY_data_clock),.RX_DV(RX_DV), .PHY_RX(PHY_RX),
@@ -542,9 +537,7 @@ Rx_MAC Rx_MAC_inst (.PHY_RX_CLOCK(PHY_RX_CLOCK), .PHY_data_clock(PHY_data_clock)
 			        .ARP_PC_MAC(ARP_PC_MAC), .ARP_PC_IP(ARP_PC_IP), .Ping_PC_MAC(Ping_PC_MAC), 
 			        .Ping_PC_IP(Ping_PC_IP), .Port(Port), .seq_error(seq_error), .data_match(data_match),
 			        .run(run), .IP_lease(IP_lease), .DHCP_IP(DHCP_IP), .DHCP_MAC(DHCP_MAC),
-			        .erase(erase), .erase_ACK(1'b1), .num_blocks(num_blocks), .EPCS_FIFO_enable(EPCS_FIFO_enable),
-			        .wide_spectrum(wide_spectrum), .IP_write_done(1'b1), .write_IP(write_IP),
-					  .IP_to_write(IP_to_write) 
+			        .wide_spectrum(wide_spectrum)
 			        );
 			        
 

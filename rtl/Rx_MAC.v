@@ -156,18 +156,15 @@ module Rx_MAC (PHY_RX_CLOCK, PHY_data_clock, RX_DV, PHY_RX, broadcast, ARP_reque
 			   ping_request, ping_data, Rx_enable, this_MAC, DHCP_offer, DHCP_ACK, DHCP_NAK,
 			   ARP_PC_MAC, ARP_PC_IP, This_IP, Ping_PC_IP, Ping_PC_MAC,
 			   YIADDR, This_MAC, METIS_discovery, METIS_discover_sent, PC_IP, PC_MAC, Port, Length, data_match,
-			   PHY_100T_state, Rx_fifo_data, seq_error, run, wide_spectrum, IP_lease, DHCP_IP, DHCP_MAC,
-			   erase, erase_ACK, num_blocks, EPCS_FIFO_enable, IP_write_done, write_IP, IP_to_write);
+			   PHY_100T_state, Rx_fifo_data, seq_error, run, wide_spectrum, IP_lease, DHCP_IP, DHCP_MAC);
 			   
 input PHY_RX_CLOCK;
 input PHY_data_clock;
 input RX_DV;
 input [3:0]PHY_RX;
 input [47:0]This_MAC;  				// MAC address of this Oyz board
-input [31:0]This_IP;					// IP address allocated to this METIS Board
+input [31:0]This_IP;				// IP address allocated to this METIS Board
 input METIS_discover_sent;			// set when Discovery request has been responded to
-input erase_ACK;						// set when ASMI inerface confirms erase request received 
-input IP_write_done;					// set when IP write is done
 
 output [15:0]Port;					// UPD/IP Port that Metis and the PC is using
 output reg  broadcast;   			// set when we receive a broadcast address
@@ -197,18 +194,12 @@ output reg  wide_spectrum;			// when set enables wide spectrum data to be sent
 output reg [31:0]IP_lease;			// holds IP lease time in seconds from DHCP ACK frame
 output reg [31:0]DHCP_IP;			// IP address of DHCP Server making offer
 output reg [47:0]DHCP_MAC;			// MAC address of DHCP Server making offer
-output reg erase;						// set when we receive an EPCS16 erase command from PC 
-output reg [31:0]num_blocks;		// holds number of blocks of 256 bytes that we will save in the EPCS16
-output reg EPCS_FIFO_enable;		// set when we write to the EPCS fifo
-output reg write_IP;					// set when IP write requested 
-output reg [31:0]IP_to_write;		// holds IP address sent by PC to save in EEPROM
 
 reg [111:0] PHY_output;				// shift register to hold nibble output from Micrel PHY chip 
 reg [4:0] PHY_Rx_state;
 reg [9:0] left_shift;
 reg [31:0] PC_sequence_number;	// sequence number from PC
 reg [11:0] PHY_data_count;      	// counts how many nibbles we send to the PHY_Rx_fifo
-reg [8:0] EPCS_data_count;      	// counts how many nibbles we send to the EPCS_Rx_fifo
 reg [47:0] FromMAC;					// MAC of sending PC
 reg [31:0] FromIP;					// IP address of sending PC
 reg [7:0] ping_count; 				// counts off 36 bytes of ping data
@@ -233,11 +224,6 @@ localparam	START = 5'd0,
 			SEND_TO_FIFO = 5'd5,
 			DHCP = 5'd6,
 			PING = 5'd7,
-			PROGRAM_FIFO = 5'd8,
-			ERASE = 5'd9,
-			READIP = 5'd10,
-			WRITEIP = 5'd11,
-			WRITEIP_DONE = 5'd12,
 			RETURN = 5'd13;
 
 localparam Broadcast = 48'hFF_FF_FF_FF_FF_FF;
@@ -335,9 +321,7 @@ START:
 	ping_request <= 1'b0;
 	this_MAC <= 1'b0;
 	PHY_data_count <= 0;			// reset the data counters
-	EPCS_data_count <= 0;
 	ping_count <= 0;
-	erase <= 0;						// reset erase command
 	
 	
 		if (PHY_output[63:0] == {16'h55_D5, Broadcast} ) begin
@@ -444,7 +428,7 @@ begin
 	endcase
 end
 
-// process UDP, could be HPSDR frame, ERASE, PROGRAM, START, STOP, METIS discovery or WRITEIP
+// process UDP, could be HPSDR frame, ERASE, PROGRAM, START, STOP, METIS discovery
 UDP:
 begin
 	case (left_shift)
@@ -471,16 +455,6 @@ begin
 								PHY_Rx_state <= SEND_TO_FIFO;
 							end
 						end
-					3:  begin	// check for Program_fifo
-						num_blocks <= PHY_output[31:0];						// save number of blocks
-							if (PHY_output[39:32] == 8'd1) begin			// it is so decode the command
-								PHY_Rx_state <= PROGRAM_FIFO;
-							end 
-							else if (PHY_output[39:32] == 8'd2) begin
-								erase <= 1'b1;
-								PHY_Rx_state <= ERASE;
-							end							
-						end 
 					4:  begin	// check for Start/Stop command
 						run <= PHY_output[32];
 						wide_spectrum <= PHY_output[33];
@@ -505,10 +479,6 @@ begin
 						temp_Port 	 <= Port;							// save the calling PC's from Port
 						PHY_Rx_state <= METIS_DISCOVERY;
 					 end
-					 else if (PHY_output[47:40] == 8'h03 && !run) begin		// check for write IP request, no need to
-						left_shift <= 0;													// save IP and MAC details since we cycle 
-						PHY_Rx_state <= WRITEIP;										// power next.
-					 end 
 					 else PHY_Rx_state <= RETURN;
 				end  				
 				else  PHY_Rx_state <= RETURN;							// non of the above so return						
@@ -683,51 +653,6 @@ PING:
 			PHY_Rx_state <= PING;
 		end
 	end 
-
-//  Loop here until we have sent 256 bytes to the EPCS_FIFO. Then drop EPCS_FIFO_enable 
-//  so that the CRC is not sent.	
-PROGRAM_FIFO:
-	begin
-		if (EPCS_data_count == 9'd256) begin    	// have we sent 256 bytes ?
-			EPCS_data_count <= 0;						// reset data count 
-			EPCS_FIFO_enable <= 0;						// disable further writes to Rx_fifo
-			PHY_Rx_state <= RETURN;			
-		end
-		else begin
-			EPCS_FIFO_enable <= 1'b1;				
-			EPCS_data_count <= EPCS_data_count + 9'd1;
-		end
-	end
-
-
-// wait until ASMI has seen the erase command; erase flag is cleared at START
-ERASE:	if (erase_ACK) PHY_Rx_state <= RETURN;
-
-// check that IP address is for this MAC, if so write the IP address then wait for ack, else return.
-WRITEIP:	
-	begin
-		case (left_shift)		
-		4: begin	
-				if (PHY_output[79:32] == This_MAC) begin  // is the IP address for this MAC?
-					IP_to_write <= PHY_output[31:0];			// yes, so get the IP address to write
-					write_IP = 1'b1;
-					PHY_Rx_state <= WRITEIP_DONE;
-		end
-				else PHY_Rx_state <= RETURN;					// not for us so return
-		end
-		default: left_shift <= left_shift + 1'b1;
-		endcase		
-	end
-	
-// wait until the new IP address has been written to EEPROM then return.	
-WRITEIP_DONE:	
-	begin
-		if (IP_write_done) begin
-			write_IP <= 0;
-			PHY_Rx_state <= RETURN;	
-		end
-	end 
-
 
 	
 // Clear any test flags and return to the start
