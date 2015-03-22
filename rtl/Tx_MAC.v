@@ -106,8 +106,8 @@ module Tx_MAC (Tx_clock, Tx_clock_2, IF_rst, Send_ARP,ping_reply,
 			   DHCP_request_sent, METIS_discovery, PC_IP, PC_MAC,
 			   Port, This_IP, METIS_discover_sent, ARP_PC_MAC, ARP_PC_IP,
 			   Ping_PC_MAC, Ping_PC_IP, Length, speed_100T, Tx_reset, run, wide_spectrum,
-			   IP_valid, printf, IP_lease, DHCP_IP, DHCP_MAC, DHCP_request_renew, DHCP_request_renew_sent,
-			   erase_done, erase_done_ACK, send_more, send_more_ACK, Hermes_serialno,
+			   IP_valid, DHCP_IP, DHCP_MAC, DHCP_request_renew, DHCP_request_renew_sent,
+			   Hermes_serialno,
 			   sp_fifo_rddata, sp_fifo_rdreq, sp_fifo_rdempty, sp_fifo_rdused, have_sp_data,
 				 AssignIP, IDHermesLite);
 			   
@@ -140,13 +140,9 @@ input  Tx_reset;					// high to prevent I&Q data being sent
 input  run;							// high to enable data to be sent
 input  wide_spectrum;			// high to enable wide spectrum data to be sent
 input  IP_valid;					// high when we have a valid IP address 
-input  printf;						// high when we want to send debug data
-input  [31:0]IP_lease;			// *** test data - IP lease time in seconds
 input  [31:0]DHCP_IP;			// IP address of DHCP server
 input  [47:0]DHCP_MAC;			// MAC address of DHCP server 
 input  DHCP_request_renew;		// set when renew required
-input  erase_done;				// set when we what to tell the PC we have completed the EPCS16 erase
-input  send_more;					// set when we want the next block of 256 bytes for the EPCS16
 input  [7:0]Hermes_serialno;	// Hermes code version
 input  [7:0]sp_fifo_rddata;		// raw ACD data from Mercury for wide bandscope
 input  sp_fifo_rdempty;			// SP_fifo read empty
@@ -165,8 +161,6 @@ output DHCP_discover_sent;		// high when has been sent
 output DHCP_request_sent;       // high when has been sent
 output METIS_discover_sent;		// high when has been sent ** pulse
 output DHCP_request_renew_sent;	// high when has been sent
-output erase_done_ACK;			// set when we have sent erase of EPCS16 complete to PC
-output send_more_ACK;			// set when we confirm we have requested more EPCS data from PC
 output sp_fifo_rdreq;			// SP_fifo read require signal
 
 
@@ -190,9 +184,7 @@ localparam
 			DHCP_DISCOVER = 6,
 			DHCP_REQUEST = 7,
 			DHCP_REQUEST_RENEW = 8,
-			PRINTF = 9,
 			SPECTRUM = 10,
-			SENDIP = 11,
 			CRC = 12;
 
 			
@@ -211,8 +203,6 @@ reg [7:0] Tx_data;
 reg [4:0] gap_count;
 reg ARP_sent;					    	// true when we have replied to an ARP request
 reg LED; 						    	// Test LED
-reg erase_done_ACK;					// set when we have sent erase of EPCS16 complete to PC
-reg send_more_ACK;					// set when we confirm we have requested more EPCS data from PC
 reg [31:0]Discovery_IP;				// IP address of PC doing Discovery
 reg [47:0]Discovery_MAC;			// MAC address of PC doing Discovery
 reg [15:0]Discovery_Port;			// Port Address of PC doing Discovery
@@ -309,7 +299,6 @@ reg [15:0]ping_check_sum;
 reg ping_sent;
 reg [8:0] zero_count;
 reg [3:0]interframe;
-reg printf;
 reg DHCP_request_renew_sent;
 reg Metis_discover_sent;
 reg [7:0] frame;				// HPSDR frame type; 0x02 for Discovery reply, 
@@ -746,66 +735,6 @@ case(rdaddress)
  // send 50 zeros to give a minimum payload of 60 bytes  *** sending 0x01 now 
  // then CRC 
  
- 
- // ---------- printf test code -----------------
- // Ethernet preamble
- 600 : pkt_data <= 8'h55;
- 601 : pkt_data <= 8'h55;
- 602 : pkt_data <= 8'h55;
- 603 : pkt_data <= 8'h55;
- 604 : pkt_data <= 8'h55;
- 605 : pkt_data <= 8'h55;
- 606 : pkt_data <= 8'h55;
- 607 : pkt_data <= 8'hD5;
-// Ethernet header
- 608 : pkt_data <= 8'hFF;
- 609 : pkt_data <= 8'hFF;
- 610 : pkt_data <= 8'hFF;
- 611 : pkt_data <= 8'hFF;
- 612 : pkt_data <= 8'hFF;
- 613 : pkt_data <= 8'hFF;
- 614 : pkt_data <= This_MAC[47:40]; 		// MAC address of this Metis Board
- 615 : pkt_data <= This_MAC[39:32]; 
- 616 : pkt_data <= This_MAC[31:24];
- 617 : pkt_data <= This_MAC[23:16]; 
- 618 : pkt_data <= This_MAC[15:8];  
- 619 : pkt_data <= This_MAC[7:0];   
-// Start of Payload
- 620: pkt_data <= 8'hEF;	    			// Ethernet Frame type 0xEFFF (printf)
- 621: pkt_data <= 8'hFF;
- 622: pkt_data <= HPSDR_frame;			// HPSDR Frame type 
- 623: pkt_data <= 8'hFF;
- 624: pkt_data <= This_IP[31:24];		// Source IP Address
- 625: pkt_data <= This_IP[23:16];
- 626: pkt_data <= This_IP[15:8];
- 627: pkt_data <= This_IP[7:0];
- 628: pkt_data <= PC_IP[31:24];			// Destination PC IP Address
- 629: pkt_data <= PC_IP[23:16];
- 630: pkt_data <= PC_IP[15:8];
- 631: pkt_data <= PC_IP[7:0];
- 632: pkt_data <= PC_MAC[47:40];
- 633: pkt_data <= PC_MAC[39:32];
- 634: pkt_data <= PC_MAC[31:24];
- 635: pkt_data <= PC_MAC[23:16];
- 636: pkt_data <= PC_MAC[15:8];
- 637: pkt_data <= PC_MAC[7:0];	
- 638: pkt_data <= IP_lease[31:24];
- 639: pkt_data <= IP_lease[23:16];
- 640: pkt_data <= IP_lease[15:8];
- 641: pkt_data <= IP_lease[7:0];
- 642: pkt_data <= DHCP_IP[31:24];		// DHCP IP Address
- 643: pkt_data <= DHCP_IP[23:16];
- 644: pkt_data <= DHCP_IP[15:8];
- 645: pkt_data <= DHCP_IP[7:0];	
- 646: pkt_data <= DHCP_MAC[47:40];
- 647: pkt_data <= DHCP_MAC[39:32];
- 648: pkt_data <= DHCP_MAC[31:24];
- 649: pkt_data <= DHCP_MAC[23:16];
- 650: pkt_data <= DHCP_MAC[15:8];
- 651: pkt_data <= DHCP_MAC[7:0];			// when changing add one and edit code 		
-  // followed by data 
-  // then CRC32 at 58
-
 //----------  DHCP request renew ---------- 
 // UDP/IP packet
 // Ethernet preamble
@@ -938,8 +867,6 @@ RESET:
 	METIS_discover_sent <= 0;
 	DHCP_request_renew_sent <= 0;
 	interframe <= 0;
-	erase_done_ACK <= 0;
-	send_more_ACK <= 0;
 	IP_count <= 0;		
 	
         if (IF_rst)
@@ -949,13 +876,7 @@ RESET:
 				sequence_number <= 0;  		// reset sequence numbers when not running.
 				spec_seq_number <= 0;
 			end 
-			if (printf) begin
-				rdaddress <= 600;
-				state_Tx <= PRINTF;
-			end 
-			
-			
-			else if (DHCP_discover) begin
+			if (DHCP_discover) begin
 				rdaddress <= 300;				// point to start of DHCP table	
 				state_Tx <= DHCP_DISCOVER;		
 			end 
@@ -983,19 +904,7 @@ RESET:
 				frame <= 8'h02;									// Discovery reply type
 				METIS_discover_sent <= 1'b1;					// let Rx_MAC know Discovery has been responded to
 				state_Tx <= METIS_DISCOVERY;
-			end 
-			else if (erase_done && IP_valid) begin			// only respond if we have a valid IP address
-				erase_done_ACK <= 1'b1; 						// ACK the ASMI request
-				rdaddress <= 500;									// point to start of discovery reply table
-				frame <= 8'h03;									// erase_done reply type
-				state_Tx <= METIS_DISCOVERY;
-			end	
-			else if (send_more && IP_valid) begin			// only respond if we have a valid IP address
-				send_more_ACK <= 1'b1; 							// ACK the ASMI request
-				rdaddress <= 500;									// point to start of discovery reply table
-				frame <= 8'h04;									// send_more reply type
-				state_Tx <= METIS_DISCOVERY;
-			end				
+			end 		
 			else if (PHY_Tx_rdused > 1023  && !Tx_reset && run) begin	// wait until we have at least 1024 bytes in Tx fifo
 				rdaddress <= 0;														// and we have completed a Metis Discovery
 				state_Tx <= UDP;
@@ -1282,36 +1191,6 @@ DHCP_REQUEST_RENEW:
 			reset_CRC <= 1'b0;
 		
 	end
-	
-	
-	
-// for debug - send data as raw Ethernet broadcast	
-PRINTF:
-	begin
-		if (rdaddress != 652)							// end of table + 1  i.e. keep sending until we reach the end of the data 
-		begin
-			Tx_data <= pkt_data;
-			sync_Tx_CTL <= 1'b1;							// enable write to PHY
-			rdaddress <= rdaddress + 1'b1;
-			state_Tx <= PRINTF;
-		end
-		// now send 60 bytes of 0x00 
-		else if (data_count != 60) begin
-			Tx_data <= 0;  				
-			data_count <= data_count + 1'b1;			// increment loop counter
-			state_Tx <= PRINTF;
-		end
-		else begin
-    			temp_CRC32 <= CRC32;						// grab the CRC data since it will change next clock pulse
-				Tx_data <= CRC32[7:0];					// send CRC32 to PHY
-				rdaddress <= 58; 							// point to end of CRC table 
-				state_Tx <= CRC;
-		end  
-	  if (rdaddress == 607)
-		  reset_CRC <= 1'b1; 								// start CRC32 generation
-	  else 
-		  reset_CRC <= 1'b0;
-	end	
 
 // send raw ADC data from Mercury. Spectrum data has its own independant sequence number.
 SPECTRUM:

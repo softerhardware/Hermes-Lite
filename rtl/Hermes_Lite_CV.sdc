@@ -99,3 +99,8 @@ set_max_delay -from PHY_RX_CLOCK_2 -to Tx_clock_2 20
 set_max_delay -from PHY_RX_CLOCK -to Tx_clock_2 20
 set_max_delay -from Tx_clock_2 -to PHY_RX_CLOCK_2 20
 set_max_delay -from PHY_TX_CLOCK -to PHY_RX_CLOCK_2 20
+
+#set_min_delay -from PHY_RX_CLOCK_2 -to Tx_clock_2 1
+#set_min_delay -from PHY_RX_CLOCK -to Tx_clock_2 1
+#set_min_delay -from Tx_clock_2 -to PHY_RX_CLOCK_2 1
+#set_min_delay -from PHY_TX_CLOCK -to PHY_RX_CLOCK_2 1

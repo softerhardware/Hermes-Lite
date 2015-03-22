@@ -59,7 +59,7 @@ set_global_assignment -name CYCLONEII_OPTIMIZATION_TECHNIQUE SPEED
 set_global_assignment -name PHYSICAL_SYNTHESIS_COMBO_LOGIC ON
 set_global_assignment -name PHYSICAL_SYNTHESIS_REGISTER_DUPLICATION ON
 set_global_assignment -name PHYSICAL_SYNTHESIS_REGISTER_RETIMING ON
-set_global_assignment -name STATE_MACHINE_PROCESSING "USER-ENCODED"
+set_global_assignment -name STATE_MACHINE_PROCESSING AUTO
 set_global_assignment -name SEARCH_PATH Polyphase_FIR/ -tag from_archive
 set_global_assignment -name SMART_RECOMPILE ON
 set_global_assignment -name RESERVE_DATA0_AFTER_CONFIGURATION "USE AS REGULAR IO"
@@ -229,4 +229,7 @@ set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to userout[3]
 set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to userout[2]
 set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to userout[1]
 set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to userout[0]
+set_global_assignment -name REMOVE_REDUNDANT_LOGIC_CELLS ON
+set_global_assignment -name ALLOW_ANY_RAM_SIZE_FOR_RECOGNITION ON
+set_global_assignment -name OPTIMIZATION_MODE "HIGH PERFORMANCE EFFORT"
 set_instance_assignment -name PARTITION_HIERARCHY root_partition -to | -section_id Top

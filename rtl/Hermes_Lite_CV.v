@@ -43,11 +43,11 @@ module Hermes_Lite(
     output ad9866_rst_n,
    
     // RMII Ethernet PHY
-    output [1:0] rmii_tx,
-    output rmii_tx_en,
-    input [1:0] rmii_rx,
+(* useioff = 1 *)     output [1:0] rmii_tx,
+	output rmii_tx_en,
+(* useioff = 1 *)     input [1:0] rmii_rx,
     input rmii_osc,
-    input rmii_crs_dv,
+	input rmii_crs_dv,
     inout PHY_MDIO,
     output PHY_MDC
 );

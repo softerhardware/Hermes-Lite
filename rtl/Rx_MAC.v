@@ -204,7 +204,7 @@ reg [47:0] FromMAC;					// MAC of sending PC
 reg [31:0] FromIP;					// IP address of sending PC
 reg [7:0] ping_count; 				// counts off 36 bytes of ping data
 reg [31:0]temp_YIADDR;				// Tempory storage for YIADDR until MAC address validated
-reg [15:0]UDP_check;					// used to check for 0800
+reg UDP_check;					// used to check for 0800
 reg [31:0]To_IP;						// holds IP address that UDP/IP data is being set to
 reg [7:0]skip;							// holds number of bytes to skip when looking for IP lease
 reg [15:0] FromPort;					// Port that PC sends from
@@ -357,13 +357,13 @@ data_match <= 1'b1;								//  we either got our MAC or Broadcast to get this fa
 						PHY_Rx_state <= ARP;
 					end
 					else begin
-						UDP_check <= PHY_output[63:48];				// save these values for next check
+						UDP_check <= PHY_output[63:48] == 16'h0800;				// save these values for next check
 						left_shift <= left_shift + 1'b1;
 			end
 		end
 	// Check for UDP/IP
 	27: begin		
-			if (PHY_output[87:80] == 8'h11 && UDP_check == 16'h0800 ) begin
+			if (PHY_output[87:80] == 8'h11 && UDP_check ) begin
 				FromIP  <=  PHY_output[63:32];			// IP address of PC sending UDP/IP frame
 			    To_IP <=  PHY_output[31:0]; 				// save the IP address being send to for later match
 				left_shift <= 0;

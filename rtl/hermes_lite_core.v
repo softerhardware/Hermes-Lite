@@ -571,10 +571,9 @@ Tx_MAC Tx_MAC_inst (.Tx_clock(Tx_clock), .Tx_clock_2(Tx_clock_2), .IF_rst(IF_rst
 			        .Port(Port), .This_IP(This_IP), .METIS_discover_sent(METIS_discover_sent),
 			        .ARP_PC_MAC(ARP_PC_MAC), .ARP_PC_IP(ARP_PC_IP), .Ping_PC_IP(Ping_PC_IP),
 			        .Ping_PC_MAC(Ping_PC_MAC), .speed_100T(1'b1), .Tx_reset(Tx_reset),
-			        .run(run), .IP_valid(IP_valid), .printf(1'b0), .IP_lease(IP_lease),
+			        .run(run), .IP_valid(IP_valid),
 			        .DHCP_MAC(DHCP_MAC), .DHCP_request_renew(DHCP_request_renew),
-			        .erase_done(1'b0), .erase_done_ACK(erase_done_ACK), .send_more(1'b0),
-			        .send_more_ACK(send_more_ACK), .Hermes_serialno(Hermes_serialno),
+			        .Hermes_serialno(Hermes_serialno),
 			        .sp_fifo_rddata(sp_fifo_rddata), .sp_fifo_rdreq(sp_fifo_rdreq), 
 			        .sp_fifo_rdused(), .wide_spectrum(wide_spectrum), .have_sp_data(sp_data_ready),
 					  .AssignIP(AssignIP), .IDHermesLite(dipsw[0])
