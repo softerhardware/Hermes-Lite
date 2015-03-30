@@ -32,6 +32,6 @@ sdo = Signal(bool(0))
 sen_n = Signal(bool(1))
 dataout = Signal(intbv(0)[8:])
 extrqst = Signal(bool(0))
-extdata = Signal(intbv(0)[16:])
+gain = Signal(intbv(0)[9:])
 
-toVerilog(ad9866,reset,clk,sclk,sdio,sdo,sen_n,dataout,extrqst,extdata)
+toVerilog(ad9866,reset,clk,sclk,sdio,sdo,sen_n,dataout,extrqst,gain)

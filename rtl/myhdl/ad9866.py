@@ -65,10 +65,10 @@ def ad9866_spi(reset,clk,sclk,sdio,sdo,sen_n,start,datain,dataout):
   return instances()
 
 
-def ad9866_pgm(reset,clk,sen_n,start,datain,extrqst,extdata):
+def ad9866_pgm(reset,clk,sen_n,start,datain,extrqst,gain):
   """ Send commpands to the AD9866 """
 
-  pc = Signal(intbv(0)[4:])
+  pc = Signal(intbv(0)[5:])
 
   ## Mealy outputs
   @always_comb
@@ -93,10 +93,19 @@ def ad9866_pgm(reset,clk,sen_n,start,datain,extrqst,extdata):
     elif pc == 0x09 and sen_n:
       start.next = 1
       datain.next = 0x084b
-    ## Handle external requests
-    elif pc == 0x0f and sen_n and extrqst:
+    elif pc == 0x0b and sen_n:
       start.next = 1
-      datain.next = extdata
+      datain.next = 0x1084
+    elif pc == 0x0d and sen_n:
+      start.next = 1
+      datain.next = 0x1100
+    ## Start of repeatable code
+    elif pc == 0x11 and sen_n:
+      start.next = 1
+      datain.next = concat(intbv(0x0a)[8:],intbv(0b01)[2:],gain[6:0])
+    elif pc == 0x13 and sen_n:
+      start.next = 1
+      datain.next = concat(intbv(0x10)[8:],intbv(0b010000)[5:],gain[9:6])
     ## Defaults
     else:
       start.next = 0
@@ -106,8 +115,10 @@ def ad9866_pgm(reset,clk,sen_n,start,datain,extrqst,extdata):
   @always_seq(clk.posedge,reset=reset)
   def FSM():
 
-    if pc != 0x0f and  sen_n:
+    if pc != 0x1f and  sen_n:
       pc.next = pc + 1
+    elif pc == 0x1f and extrqst:
+      pc.next = 0x11     
 
   return instances()
 
@@ -115,11 +126,11 @@ def ad9866_pgm(reset,clk,sen_n,start,datain,extrqst,extdata):
 
 
 
-def ad9866(reset,clk,sclk,sdio,sdo,sen_n,dataout,extrqst,extdata):
+def ad9866(reset,clk,sclk,sdio,sdo,sen_n,dataout,extrqst,gain):
   datain = Signal(intbv(0)[16:])
   start = Signal(bool(0))
 
-  dut1 = ad9866_pgm(reset,clk,sen_n,start,datain,extrqst,extdata)
+  dut1 = ad9866_pgm(reset,clk,sen_n,start,datain,extrqst,gain)
   dut2 = ad9866_spi(reset,clk,sclk,sdio,sdo,sen_n,start,datain,dataout)
   return instances()
 

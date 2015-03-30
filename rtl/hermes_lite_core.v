@@ -947,8 +947,8 @@ reg       [31:0] C122_frequency_HZ [0:NR-1];   // frequency control bits for COR
 reg       [31:0] C122_frequency_HZ_Tx;
 reg       [31:0] C122_last_freq [0:NR-1];
 reg       [31:0] C122_last_freq_Tx;
-reg       [31:0] C122_sync_phase_word [0:NR-1];
-reg       [31:0] C122_sync_phase_word_Tx;
+wire      [31:0] C122_sync_phase_word [0:NR-1];
+wire      [31:0] C122_sync_phase_word_Tx;
 wire      [63:0] C122_ratio [0:NR-1];
 wire      [63:0] C122_ratio_Tx;
 wire      [23:0] rx_I [0:NR-1];
@@ -982,17 +982,19 @@ generate
     //  assign C122_ratio[c] = C122_frequency_HZ[c] * M2; // B0 * B57 number = B57 number
 
    // Note: We add 1/2 M2 (M3) so that we end up with a rounded 32 bit integer below.
-    assign C122_ratio[c] = C122_frequency_HZ[c] * M2 + M3; // B0 * B57 number = B57 number 
+    //assign C122_ratio[c] = C122_frequency_HZ[c] * M2 + M3; // B0 * B57 number = B57 number 
 
-    always @ (posedge AD9866clkX1)
-    begin
-      if (C122_cbrise) // time between C122_cbrise is enough for ratio calculation to settle
-      begin
-        C122_last_freq[c] <= C122_frequency_HZ[c];
-        if (C122_last_freq[c] != C122_frequency_HZ[c]) // frequency changed)
-          C122_sync_phase_word[c] <= C122_ratio[c][56:25]; // B57 -> B32 number since R is always >= 0  
-      end 		
-    end
+    //always @ (posedge AD9866clkX1)
+    //begin
+    //  if (C122_cbrise) // time between C122_cbrise is enough for ratio calculation to settle
+    //  begin
+    //    C122_last_freq[c] <= C122_frequency_HZ[c];
+    //    if (C122_last_freq[c] != C122_frequency_HZ[c]) // frequency changed)
+    //      C122_sync_phase_word[c] <= C122_ratio[c][56:25]; // B57 -> B32 number since R is always >= 0  
+    //  end 		
+    //end
+
+    assign C122_sync_phase_word[c] = C122_frequency_HZ[c];
 
 	cdc_mcp #(48)			// Transfer the receiver data and strobe from AD9866clkX1 to IF_clk
 		IQ_sync (.a_data ({rx_I[c], rx_Q[c]}), .a_clk(AD9866clkX1),.b_clk(IF_clk), .a_data_rdy(strobe[c]),
@@ -1020,17 +1022,19 @@ endgenerate
 // calc frequency phase word for Tx
 //assign C122_ratio_Tx = C122_frequency_HZ_Tx * M2;
 // Note: We add 1/2 M2 (M3) so that we end up with a rounded 32 bit integer below.
-assign C122_ratio_Tx = C122_frequency_HZ_Tx * M2 + M3; 
+//assign C122_ratio_Tx = C122_frequency_HZ_Tx * M2 + M3; 
 
-always @ (posedge AD9866clkX1)
-begin
-  if (C122_cbrise)
-  begin
-    C122_last_freq_Tx <= C122_frequency_HZ_Tx;
-	 if (C122_last_freq_Tx != C122_frequency_HZ_Tx)
-	  C122_sync_phase_word_Tx <= C122_ratio_Tx[56:25];
-  end
-end
+//always @ (posedge AD9866clkX1)
+//begin
+//  if (C122_cbrise)
+//  begin
+//    C122_last_freq_Tx <= C122_frequency_HZ_Tx;
+//	 if (C122_last_freq_Tx != C122_frequency_HZ_Tx)
+//	  C122_sync_phase_word_Tx <= C122_ratio_Tx[56:25];
+//  end
+//end
+
+assign C122_sync_phase_word_Tx = C122_frequency_HZ_Tx;
 
 
 
@@ -1168,7 +1172,7 @@ cpl_cordic #(.OUT_WIDTH(16))
 reg [11:0] DACD;
 
 always @ (negedge AD9866clkX1)
-	DACD <= C122_cordic_i_out[13:2];   //gain of 4
+	DACD <= C122_cordic_i_out[13:2] + {11'h00,C122_cordic_i_out[1]};   //gain of 4 with rounding
 
 
 wire txclipp = (C122_cordic_i_out[13:2] == 12'b011111111111);
@@ -1650,6 +1654,11 @@ begin
   end
 end	
 
+// Always compute frequency
+// This really should be done on the PC....
+wire [63:0] freqcomp;
+assign freqcomp = {IF_Rx_ctrl_1, IF_Rx_ctrl_2, IF_Rx_ctrl_3, IF_Rx_ctrl_4} * M2 + M3;
+
 always @ (posedge IF_clk)
 begin 
   if (IF_rst)
@@ -1665,39 +1674,40 @@ begin
   begin
       if (IF_Rx_ctrl_0[7:1] == 7'b0000_001)   // decode IF_frequency[0]
       begin
-		  IF_frequency[0]   <= {IF_Rx_ctrl_1, IF_Rx_ctrl_2, IF_Rx_ctrl_3, IF_Rx_ctrl_4}; // Tx frequency
+		  IF_frequency[0]   <= freqcomp[56:25];
 			if (!IF_duplex && (IF_last_chan == 3'b000))
 				IF_frequency[1] <= IF_frequency[0]; //				  
 		end
-		if (IF_Rx_ctrl_0[7:1] == 7'b0000_010) // decode Rx1 frequency
+		
+	if (IF_Rx_ctrl_0[7:1] == 7'b0000_010) // decode Rx1 frequency
       begin
-			if (!IF_duplex && (IF_last_chan == 3'b000)) // Rx1 frequency
+		if (!IF_duplex && (IF_last_chan == 3'b000)) // Rx1 frequency
 			begin
 				IF_frequency[1] <= IF_frequency[0];
 			end				  
          else
          	begin
-				IF_frequency[1] <= {IF_Rx_ctrl_1, IF_Rx_ctrl_2, IF_Rx_ctrl_3, IF_Rx_ctrl_4}; 
+				IF_frequency[1] <= freqcomp[56:25];
 			end
 		end
 
 		if (IF_Rx_ctrl_0[7:1] == 7'b0000_011) begin // decode Rx2 frequency
-			if (IF_last_chan >= 3'b001) IF_frequency[2] <= {IF_Rx_ctrl_1, IF_Rx_ctrl_2, IF_Rx_ctrl_3, IF_Rx_ctrl_4};  // Rx2 frequency
+			if (IF_last_chan >= 3'b001) IF_frequency[2] <= freqcomp[56:25];  // Rx2 frequency
 			else IF_frequency[2] <= IF_frequency[0];  
 		end 
 
 		if (IF_Rx_ctrl_0[7:1] == 7'b0000_100) begin // decode Rx3 frequency
-			if (IF_last_chan >= 3'b010) IF_frequency[3] <= {IF_Rx_ctrl_1, IF_Rx_ctrl_2, IF_Rx_ctrl_3, IF_Rx_ctrl_4};  // Rx3 frequency
+			if (IF_last_chan >= 3'b010) IF_frequency[3] <= freqcomp[56:25];  // Rx3 frequency
 			else IF_frequency[3] <= IF_frequency[0];  
 		end 
 
 		 if (IF_Rx_ctrl_0[7:1] == 7'b0000_101) begin // decode Rx4 frequency
-			if (IF_last_chan >= 3'b011) IF_frequency[4] <= {IF_Rx_ctrl_1, IF_Rx_ctrl_2, IF_Rx_ctrl_3, IF_Rx_ctrl_4};  // Rx4 frequency
+			if (IF_last_chan >= 3'b011) IF_frequency[4] <= freqcomp[56:25];  // Rx4 frequency
 			else IF_frequency[4] <= IF_frequency[0];  
 		end 
 
 		 if (IF_Rx_ctrl_0[7:1] == 7'b0000_110) begin // decode Rx5 frequency
-			if (IF_last_chan >= 3'b100) IF_frequency[5] <= {IF_Rx_ctrl_1, IF_Rx_ctrl_2, IF_Rx_ctrl_3, IF_Rx_ctrl_4};  // Rx5 frequency
+			if (IF_last_chan >= 3'b100) IF_frequency[5] <= freqcomp[56:25];  // Rx5 frequency
 			else IF_frequency[5] <= IF_frequency[0];  
 		end 
 		 
@@ -1863,23 +1873,151 @@ assign clean_dash = 0;
 
 // AD9866 Instance
 wire ad9866rqst;
-wire [15:0] ad9866data;
-wire [7:0] ad9866_drive_level;
+wire [6:0] ad9866_drive_level;
+reg [8:0] dd;
 
 // Linear mapping from 0to255 to 0to39
-assign ad9866_drive_level = (IF_Drive_Level >> 1) + (IF_Drive_Level >> 3);
+assign ad9866_drive_level = (IF_Drive_Level >> 1);
 
-assign ad9866data = {8'h0a,2'b01,ad9866_drive_level[7:2]};
+always @*
+	case (ad9866_drive_level)
+		0 : dd=9'h000;
+		1 : dd=9'h040;
+		2 : dd=9'h040;
+		3 : dd=9'h040;
+		4 : dd=9'h040;
+		5 : dd=9'h040;
+		6 : dd=9'h040;
+		7 : dd=9'h040;
+		8 : dd=9'h040;
+		9 : dd=9'h040;
+		10 : dd=9'h040;
+		11 : dd=9'h040;
+		12 : dd=9'h040;
+		13 : dd=9'h040;
+		14 : dd=9'h040;
+		15 : dd=9'h040;
+		16 : dd=9'h041;
+		17 : dd=9'h041;
+		18 : dd=9'h041;
+		19 : dd=9'h041;
+		20 : dd=9'h041;
+		21 : dd=9'h042;
+		22 : dd=9'h042;
+		23 : dd=9'h042;
+		24 : dd=9'h042;
+		25 : dd=9'h042;
+		26 : dd=9'h043;
+		27 : dd=9'h043;
+		28 : dd=9'h043;
+		29 : dd=9'h043;
+		30 : dd=9'h043;
+		31 : dd=9'h044;
+		32 : dd=9'h044;
+		33 : dd=9'h044;
+		34 : dd=9'h044;
+		35 : dd=9'h045;
+		36 : dd=9'h045;
+		37 : dd=9'h045;
+		38 : dd=9'h045;
+		39 : dd=9'h046;
+		40 : dd=9'h046;
+		41 : dd=9'h046;
+		42 : dd=9'h046;
+		43 : dd=9'h047;
+		44 : dd=9'h047;
+		45 : dd=9'h047;
+		46 : dd=9'h047;
+		47 : dd=9'h048;
+		48 : dd=9'h048;
+		49 : dd=9'h048;
+		50 : dd=9'h049;
+		51 : dd=9'h049;
+		52 : dd=9'h049;
+		53 : dd=9'h04a;
+		54 : dd=9'h04a;
+		55 : dd=9'h04a;
+		56 : dd=9'h04b;
+		57 : dd=9'h04b;
+		58 : dd=9'h04b;
+		59 : dd=9'h080;
+		60 : dd=9'h080;
+		61 : dd=9'h080;
+		62 : dd=9'h081;
+		63 : dd=9'h081;
+		64 : dd=9'h081;
+		65 : dd=9'h082;
+		66 : dd=9'h082;
+		67 : dd=9'h082;
+		68 : dd=9'h083;
+		69 : dd=9'h083;
+		70 : dd=9'h083;
+		71 : dd=9'h084;
+		72 : dd=9'h084;
+		73 : dd=9'h084;
+		74 : dd=9'h085;
+		75 : dd=9'h085;
+		76 : dd=9'h085;
+		77 : dd=9'h086;
+		78 : dd=9'h086;
+		79 : dd=9'h086;
+		80 : dd=9'h087;
+		81 : dd=9'h087;
+		82 : dd=9'h087;
+		83 : dd=9'h088;
+		84 : dd=9'h088;
+		85 : dd=9'h088;
+		86 : dd=9'h089;
+		87 : dd=9'h089;
+		88 : dd=9'h089;
+		89 : dd=9'h08a;
+		90 : dd=9'h08a;
+		91 : dd=9'h08a;
+		92 : dd=9'h08b;
+		93 : dd=9'h08b;
+		94 : dd=9'h08b;
+		95 : dd=9'h100;
+		96 : dd=9'h100;
+		97 : dd=9'h100;
+		98 : dd=9'h101;
+		99 : dd=9'h101;
+		100 : dd=9'h102;
+		101 : dd=9'h102;
+		102 : dd=9'h103;
+		103 : dd=9'h103;
+		104 : dd=9'h104;
+		105 : dd=9'h104;
+		106 : dd=9'h105;
+		107 : dd=9'h105;
+		108 : dd=9'h106;
+		109 : dd=9'h106;
+		110 : dd=9'h107;
+		111 : dd=9'h107;
+		112 : dd=9'h108;
+		113 : dd=9'h108;
+		114 : dd=9'h109;
+		115 : dd=9'h109;
+		116 : dd=9'h10a;
+		117 : dd=9'h10a;
+		118 : dd=9'h10b;
+		119 : dd=9'h10b;
+		120 : dd=9'h134;
+		121 : dd=9'h134;
+		122 : dd=9'h135;
+		123 : dd=9'h135;
+		124 : dd=9'h136;
+		125 : dd=9'h136;
+		126 : dd=9'h137;
+		127 : dd=9'h137;
+	endcase
 
-reg [5:0] lastad9866data;
+reg [8:0] lastdd;
 always @ (posedge ad9866spiclk)
-	lastad9866data <= ad9866_drive_level[7:2];
+	lastdd <= dd;
 
-assign ad9866rqst = ad9866_drive_level[7:2] != lastad9866data;
+assign ad9866rqst = dd != lastdd;
 
-
-
-ad9866 ad9866_inst(.reset(~ad9866_rst_n),.clk(ad9866spiclk),.sclk(ad9866_sclk),.sdio(ad9866_sdio),.sdo(ad9866_sdo),.sen_n(ad9866_sen_n),.dataout(),.extrqst(ad9866rqst),.extdata(ad9866data));
+ad9866 ad9866_inst(.reset(~ad9866_rst_n),.clk(ad9866spiclk),.sclk(ad9866_sclk),.sdio(ad9866_sdio),.sdo(ad9866_sdo),.sen_n(ad9866_sen_n),.dataout(),.extrqst(ad9866rqst),.gain(dd));
 
 // Really 0.16 seconds at Hermes-Lite 61.44 MHz clock
 localparam half_second = 10000000; // at 48MHz clock rate
@@ -1897,7 +2035,6 @@ Led_flash Flash_LED6(.clock(IF_clk), .signal(IF_SYNC_state == SYNC_RX_1_2), .LED
 //assign leds[5:0] = ~lastad9866data;
 
 assign leds[7] = agc_delaycnt[25];
-
 
 
 reg [15:0] resetcounter;

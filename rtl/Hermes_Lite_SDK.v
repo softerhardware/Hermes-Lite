@@ -63,7 +63,7 @@ parameter MAC = {8'h00,8'h1c,8'hc0,8'ha2,8'h22,8'h5d};
 parameter IP = {8'd0,8'd0,8'd0,8'd0};
 
 // Number of Receivers
-parameter NR = 2; // number of receivers to implement
+parameter NR = 3; // number of receivers to implement
 
 // IF Clocks
 wire IF_clk;
