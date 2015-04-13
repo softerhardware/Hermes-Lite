@@ -32,6 +32,8 @@ derive_clock_uncertainty
 #
 create_generated_clock -divide_by 2 -source PHY_RX_CLOCK -name PHY_RX_CLOCK_2 {hermes_lite_core:hermes_lite_core_inst|PHY_RX_CLOCK_2}
 create_generated_clock -divide_by 2 -source PHY_TX_CLOCK -name Tx_clock_2 {hermes_lite_core:hermes_lite_core_inst|Tx_clock_2}
+create_generated_clock -divide_by 20 -source AD9866clk -name BCLK {hermes_lite_core:hermes_lite_core_inst|Hermes_clk_lrclk_gen:clrgen|BCLK}
+
 
 
 #*************************************************************************************
@@ -44,7 +46,7 @@ set_clock_groups -asynchronous -group { PHY_TX_CLOCK \
 					PHY_RX_CLOCK \
 					PHY_RX_CLOCK_2 \
 					} \
-					-group {AD9866clk} \
+					-group {AD9866clk BCLK} \
 					-group {PLL_IF_inst|altpll_component|auto_generated|pll1|clk[0]} \
 					-group {PLL_IF_inst|altpll_component|auto_generated|pll1|clk[1]} \
 					-group {PLL_IF_inst|altpll_component|auto_generated|pll1|clk[2]} 

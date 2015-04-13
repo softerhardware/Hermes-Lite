@@ -143,6 +143,10 @@ set_location_assignment PIN_P18 -to userout[6]
 set_location_assignment PIN_C16 -to dipsw[0]
 set_location_assignment PIN_D17 -to dipsw[1]
 set_location_assignment PIN_G17 -to dipsw[2]
+set_location_assignment PIN_M7 -to ADCMOSI
+set_location_assignment PIN_M6 -to ADCCLK
+set_location_assignment PIN_P6 -to ADCMISO
+set_location_assignment PIN_T8 -to nADCCS
 set_global_assignment -name VHDL_FILE RMII2MII_conv.vhd
 set_global_assignment -name SDC_FILE Hermes_Lite_CV.sdc
 set_global_assignment -name VERILOG_FILE Hermes_Lite_CV.v
@@ -198,6 +202,7 @@ set_global_assignment -name VERILOG_FILE Hermes_Tx_fifo_ctrl.v
 set_global_assignment -name VERILOG_FILE pulsegen.v
 set_global_assignment -name VERILOG_FILE receiver.v
 set_global_assignment -name VERILOG_FILE SPI.v
+set_global_assignment -name VERILOG_FILE Hermes_ADC.v
 set_global_assignment -name QIP_FILE SP_fifo.qip
 set_global_assignment -name QIP_FILE PHY_fifo.qip
 set_global_assignment -name QIP_FILE Tx_fifo.qip
@@ -229,6 +234,10 @@ set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to userout[3]
 set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to userout[2]
 set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to userout[1]
 set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to userout[0]
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to ADCMOSI
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to ADCCLK
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to ADCMISO
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to nADCCS
 set_global_assignment -name REMOVE_REDUNDANT_LOGIC_CELLS ON
 set_global_assignment -name ALLOW_ANY_RAM_SIZE_FOR_RECOGNITION ON
 set_global_assignment -name OPTIMIZATION_MODE "HIGH PERFORMANCE EFFORT"

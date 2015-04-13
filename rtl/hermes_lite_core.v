@@ -75,8 +75,13 @@ module hermes_lite_core(
   	input  PHY_RX_CLOCK,           //PHY Rx data clock
   	output PHY_RESET_N,  
     inout PHY_MDIO,
-    output PHY_MDC
+    output PHY_MDC,
 
+	//12 bit adc's (ADC78H90CIMT)
+	output ADCMOSI,                
+	output ADCCLK,
+ 	input  ADCMISO,
+	output nADCCS
 );
 
 // PARAMETERS
@@ -1049,15 +1054,15 @@ wire [11:0] AIN4;
 wire [11:0] AIN5;  // holds 12 bit ADC value of Forward Power detector.
 wire [11:0] AIN6;  // holds 12 bit ADC of 13.8v measurement 
 
-//Hermes_ADC ADC_SPI(.clock(CBCLK), .SCLK(ADCCLK), .nCS(nADCCS), .MISO(ADCMISO), .MOSI(ADCMOSI),
-//				   .AIN1(AIN1), .AIN2(AIN2), .AIN3(AIN3), .AIN4(AIN4), .AIN5(AIN5), .AIN6(AIN6));	
+Hermes_ADC ADC_SPI(.clock(C122_cbclk), .SCLK(ADCCLK), .nCS(nADCCS), .MISO(ADCMISO), .MOSI(ADCMOSI),
+				   .AIN1(AIN1), .AIN2(AIN2), .AIN3(AIN3), .AIN4(AIN4), .AIN5(AIN5), .AIN6(AIN6));	
 
-assign AIN1 = 0;
-assign AIN2 = 0;
-assign AIN3 = 0;
-assign AIN4 = 0;
-assign AIN5 =  200;
-assign AIN6 = 1000;
+//assign AIN1 = 0;
+//assign AIN2 = 0;
+//assign AIN3 = 0;
+//assign AIN4 = 0;
+//assign AIN5 =  200;
+//assign AIN6 = 1000;
 	
 
 

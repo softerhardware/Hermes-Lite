@@ -52,7 +52,13 @@ module Hermes_Lite(
   	input  PHY_RX_CLOCK,           
   	output PHY_RESET_N,
 	inout  PHY_MDIO,               
-	output PHY_MDC                 
+	output PHY_MDC,
+
+	//12 bit adc's (ADC78H90CIMT)
+	output ADCMOSI,                
+	output ADCCLK,
+ 	input  ADCMISO,
+	output nADCCS	               
 
 );
 
@@ -130,7 +136,13 @@ hermes_lite_core #(
   	.PHY_RX_CLOCK(PHY_RX_CLOCK),         
   	.PHY_RESET_N(PHY_RESET_N),
 	.PHY_MDIO(PHY_MDIO),             
-	.PHY_MDC(PHY_MDC)
+	.PHY_MDC(PHY_MDC),
+
+	//12 bit adc's (ADC78H90CIMT)
+	.ADCMOSI(ADCMOSI),                
+	.ADCCLK(ADCCLK),
+ 	.ADCMISO(ADCMISO),
+	.nADCCS(nADCCS)
 );             
 
 endmodule 
