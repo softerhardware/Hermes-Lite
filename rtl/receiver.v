@@ -39,6 +39,8 @@ module receiver(
   output [23:0] out_data_Q
   );
 
+  parameter CICRATE;
+
 wire signed [17:0] cordic_outdata_I;
 wire signed [17:0] cordic_outdata_Q;
 
@@ -68,10 +70,11 @@ wire decimA_avail, decimB_avail;
 wire signed [13:0] decimA_real, decimA_imag;
 wire signed [15:0] decimB_real, decimB_imag;
 
+localparam VARCICWIDTH =  (CICRATE == 8) ? 37 : 34;
 
 // CIC filter 
 //I channel
-cic #(.STAGES(3), .DECIMATION(10), .IN_WIDTH(18), .ACC_WIDTH(28), .OUT_WIDTH(14))      
+cic #(.STAGES(3), .DECIMATION(CICRATE), .IN_WIDTH(18), .ACC_WIDTH(28), .OUT_WIDTH(14))      
   cic_inst_I2(
     .clock(clock),
     .in_strobe(1'b1),
@@ -81,7 +84,7 @@ cic #(.STAGES(3), .DECIMATION(10), .IN_WIDTH(18), .ACC_WIDTH(28), .OUT_WIDTH(14)
     );
 
 //Q channel
-cic #(.STAGES(3), .DECIMATION(10), .IN_WIDTH(18), .ACC_WIDTH(28), .OUT_WIDTH(14))  
+cic #(.STAGES(3), .DECIMATION(CICRATE), .IN_WIDTH(18), .ACC_WIDTH(28), .OUT_WIDTH(14))  
   cic_inst_Q2(
     .clock(clock),
     .in_strobe(1'b1),
@@ -93,7 +96,7 @@ cic #(.STAGES(3), .DECIMATION(10), .IN_WIDTH(18), .ACC_WIDTH(28), .OUT_WIDTH(14)
 
 //  Variable CIC filter - in width = out width = 14 bits, decimation rate = 2 to 16 
 //I channel
-varcic #(.STAGES(5), .IN_WIDTH(14), .ACC_WIDTH(34), .OUT_WIDTH(16))
+varcic #(.STAGES(5), .IN_WIDTH(14), .ACC_WIDTH(VARCICWIDTH), .OUT_WIDTH(16), .CICRATE(CICRATE))
   varcic_inst_I1(
     .clock(clock),
     .in_strobe(decimA_avail),
@@ -104,7 +107,7 @@ varcic #(.STAGES(5), .IN_WIDTH(14), .ACC_WIDTH(34), .OUT_WIDTH(16))
     );
 
 //Q channel
-varcic #(.STAGES(5), .IN_WIDTH(14), .ACC_WIDTH(34), .OUT_WIDTH(16))
+varcic #(.STAGES(5), .IN_WIDTH(14), .ACC_WIDTH(VARCICWIDTH), .OUT_WIDTH(16), .CICRATE(CICRATE))
   varcic_inst_Q1(
     .clock(clock),
     .in_strobe(decimA_avail),

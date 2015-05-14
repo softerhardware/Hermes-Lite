@@ -29,6 +29,8 @@ module varcic(decimation, clock, in_strobe,  out_strobe, in_data, out_data );
   parameter IN_WIDTH = 18;
   parameter ACC_WIDTH = 45;
   parameter OUT_WIDTH = 18;
+
+  parameter CICRATE;
   
   input [5:0] decimation; 
   
@@ -134,13 +136,44 @@ localparam LSB8  =  (IN_WIDTH + GROWTH8)  - OUT_WIDTH;
 localparam MSB16 =  (IN_WIDTH + GROWTH16) - 1;       
 localparam LSB16 =  (IN_WIDTH + GROWTH16) - OUT_WIDTH;
 
-always @(posedge clock)
-  case (decimation)
-	   2: out_data <= comb_data[STAGES][MSB2:LSB2] 	 + comb_data[STAGES][LSB2-1];
-	   4: out_data <= comb_data[STAGES][MSB4:LSB4]   + comb_data[STAGES][LSB4-1];
-	   8: out_data <= comb_data[STAGES][MSB8:LSB8]   + comb_data[STAGES][LSB8-1];
-    default: out_data <= comb_data[STAGES][MSB16:LSB16] + comb_data[STAGES][LSB16-1];        
-  endcase
+
+localparam GROWTH3  =  8;
+localparam GROWTH6  = 13;
+localparam GROWTH12  = 18;
+localparam GROWTH24 = 23;
+
+localparam MSB3  =  (IN_WIDTH + GROWTH3)  - 1;           
+localparam LSB3  =  (IN_WIDTH + GROWTH3)  - OUT_WIDTH;   
+
+localparam MSB6  =  (IN_WIDTH + GROWTH6)  - 1;            
+localparam LSB6  =  (IN_WIDTH + GROWTH6)  - OUT_WIDTH;  
+
+localparam MSB12  =  (IN_WIDTH + GROWTH12)  - 1;           
+localparam LSB12  =  (IN_WIDTH + GROWTH12)  - OUT_WIDTH;  
+
+localparam MSB24 =  (IN_WIDTH + GROWTH24) - 1;       
+localparam LSB24 =  (IN_WIDTH + GROWTH24) - OUT_WIDTH;
+
+
+generate
+  if (CICRATE == 8)
+    always @(posedge clock)
+      case (decimation)
+         3: out_data <= comb_data[STAGES][MSB3:LSB3]   + comb_data[STAGES][LSB3-1];
+         6: out_data <= comb_data[STAGES][MSB6:LSB6]   + comb_data[STAGES][LSB6-1];
+         12: out_data <= comb_data[STAGES][MSB12:LSB12]   + comb_data[STAGES][LSB12-1];
+        default: out_data <= comb_data[STAGES][MSB24:LSB24] + comb_data[STAGES][LSB24-1];        
+      endcase
+  else
+    always @(posedge clock)
+      case (decimation)
+         2: out_data <= comb_data[STAGES][MSB2:LSB2]   + comb_data[STAGES][LSB2-1];
+         4: out_data <= comb_data[STAGES][MSB4:LSB4]   + comb_data[STAGES][LSB4-1];
+         8: out_data <= comb_data[STAGES][MSB8:LSB8]   + comb_data[STAGES][LSB8-1];
+        default: out_data <= comb_data[STAGES][MSB16:LSB16] + comb_data[STAGES][LSB16-1];        
+      endcase
+endgenerate    
+
 
 endmodule
 

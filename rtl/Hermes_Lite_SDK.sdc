@@ -15,7 +15,7 @@ set_time_format -unit ns -decimal_places 3
 # externally generated clocks (with respect to the FPGA)
 #
 
-create_clock -period 61.440MHz	  [get_ports AD9866clk]					-name AD9866clk
+create_clock -period 73.728MHz	  [get_ports AD9866clk]					-name AD9866clk
 create_clock -period 50.000MHz 	  [get_ports clk50mhz]					-name clk50mhz
 create_clock -period 25.000MHz	  [get_ports PHY_TX_CLOCK]				-name PHY_TX_CLOCK	
 create_clock -period 25.000MHz    [get_ports PHY_RX_CLOCK] 				-name PHY_RX_CLOCK

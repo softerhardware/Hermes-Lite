@@ -65,6 +65,10 @@ module Hermes_Lite(
 parameter MAC = {8'h00,8'h1c,8'hc0,8'ha2,8'h22,8'h5c};
 parameter IP = {8'd0,8'd0,8'd0,8'd0};
 
+// Clock Frequency
+// parameter CLK_FREQ = 61440000
+parameter CLK_FREQ = 73728000;
+
 // Number of Receivers
 parameter NR = 2; // number of receivers to implement
 
@@ -130,6 +134,7 @@ clkmux_cv clkmux (
 hermes_lite_core #(
 	.MAC(MAC),
 	.IP(IP),
+	.CLK_FREQ(CLK_FREQ),
 	.NR(NR)
 	) 
 

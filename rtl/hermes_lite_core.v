@@ -97,16 +97,23 @@ parameter CLK_FREQ = 61440000;
 // 61440000
 //localparam M2 = 32'd2345624805;
 // 61440000-400
-localparam M2 = 32'd2345640077;
+//localparam M2 = 32'd2345640077;
+localparam M2 = (CLK_FREQ == 61440000) ? 32'd2345640077 : 32'd1954687338;
 
 // M3 = 2^24 to round as version 2.7
 localparam M3 = 32'd16777216;
 
-// Decimation rate
-localparam RATE48 = 6'd16;
-localparam RATE96 =  6'd08;
-localparam RATE192 = 6'd04;
-localparam RATE384 = 6'd02;
+// Decimation rates
+localparam RATE48 =  (CLK_FREQ == 61440000) ? 6'd16 : 6'd24;
+localparam RATE96 =  (CLK_FREQ == 61440000) ? 6'd08 : 6'd12;
+localparam RATE192 = (CLK_FREQ == 61440000) ? 6'd04 : 6'd06;
+localparam RATE384 = (CLK_FREQ == 61440000) ? 6'd02 : 6'd03;
+
+localparam CICRATE = (CLK_FREQ == 61440000) ? 6'd10 : 6'd08;
+localparam GBITS = (CLK_FREQ == 61440000) ? 30 : 31;
+localparam RRRR = (CLK_FREQ == 61440000) ? 160 : 192;
+
+
 
 // Number of Receivers
 parameter NR; // number of receivers to implement
@@ -1005,7 +1012,7 @@ generate
 		IQ_sync (.a_data ({rx_I[c], rx_Q[c]}), .a_clk(AD9866clkX1),.b_clk(IF_clk), .a_data_rdy(strobe[c]),
 				.a_rst(C122_rst), .b_rst(IF_rst), .b_data(IF_M_IQ_Data[c]), .b_data_ack(IF_M_IQ_Data_rdy[c]));
 
-	receiver receiver_inst(
+	receiver #(.CICRATE(CICRATE)) receiver_inst (
 	//control
 	.clock(AD9866clkX1),
 	.rate(rate),
@@ -1132,7 +1139,7 @@ wire [15:0] y2_r, y2_i;
 FirInterp8_1024 fi (AD9866clkX1, req2, req1, C122_fir_i, C122_fir_q, y1_r, y1_i);  // req2 enables an output sample, req1 requests next input sample.
 
 // GBITS reduced to 30
-CicInterpM5 #(.RRRR(160), .IBITS(20), .OBITS(16), .GBITS(30)) in2 ( AD9866clkX1, 1'd1, req2, y1_r, y1_i, y2_r, y2_i);
+CicInterpM5 #(.RRRR(RRRR), .IBITS(20), .OBITS(16), .GBITS(GBITS)) in2 ( AD9866clkX1, 1'd1, req2, y1_r, y1_i, y2_r, y2_i);
 
 
 
