@@ -354,7 +354,7 @@ end
 // read and write to the EEPROM	(NOTE: Max clock frequency is 20MHz)
 //----------------------------------------------------------------------------------
 wire IP_ready;
-assign This_MAC = MAC;
+assign This_MAC = {MAC[47:2],~dipsw[1],MAC[0]};
 assign AssignIP = IP;
 assign MAC_ready = 1'b1;
 assign IP_ready = 1'b1;
