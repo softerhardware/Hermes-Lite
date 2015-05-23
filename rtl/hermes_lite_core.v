@@ -17,7 +17,7 @@
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
 // (C) Phil Harman VK6APH, Kirk Weedman KD7IRS  2006, 2007, 2008, 2009, 2010, 2011, 2012, 2013, 2014 
-// (C) Steve Haynal KF7O 2014
+// (C) Steve Haynal KF7O 2014, 2015
 
 
 // This is a port of the Hermes project from www.openhpsdr.org to work with
