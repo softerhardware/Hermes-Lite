@@ -60,6 +60,7 @@ module hermes_lite_core(
     output ad9866_sen_n,
 
     output ad9866_rst_n,
+    output ad9866_mode,
 
     output exp_ptt_n,
 
@@ -806,7 +807,7 @@ reg [3:0] incnt;
 always @ (posedge AD9866clkX1)
   begin
   	if (exp_present)
-		temp_ADC <= ad9866_adio;
+		temp_ADC <= FPGA_PTT ? DACD : ad9866_adio;
 	else begin
 	    case (incnt)
 			4'h0 : temp_ADC = 12'h000;
@@ -2028,6 +2029,7 @@ always @ (posedge ad9866spiclk)
 	lastdd <= dd;
 
 assign ad9866rqst = dd != lastdd;
+assign ad9866_mode = 1'b0;
 
 ad9866 ad9866_inst(.reset(~ad9866_rst_n),.clk(ad9866spiclk),.sclk(ad9866_sclk),.sdio(ad9866_sdio),.sdo(ad9866_sdo),.sen_n(ad9866_sen_n),.dataout(),.extrqst(ad9866rqst),.gain(dd));
 

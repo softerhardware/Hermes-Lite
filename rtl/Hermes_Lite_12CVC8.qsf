@@ -131,6 +131,7 @@ set_location_assignment PIN_Y17 -to ad9866_sdo
 set_location_assignment PIN_AB17 -to ad9866_sen_n
 set_location_assignment PIN_M9 -to clk
 set_location_assignment PIN_U13 -to ad9866_rst_n
+set_location_assignment PIN_U21 -to ad9866_mode
 set_location_assignment PIN_P19 -to exp_present
 set_location_assignment PIN_U16 -to exp_ptt_n
 set_location_assignment PIN_U17 -to userout[0]

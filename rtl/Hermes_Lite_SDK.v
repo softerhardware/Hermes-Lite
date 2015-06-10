@@ -42,6 +42,7 @@ module Hermes_Lite(
     input  ad9866_sdo,
     output ad9866_sen_n,
     output ad9866_rst_n,
+    output ad9866_mode,
    
     // MII Interface
   	output [3:0]PHY_TX,
@@ -81,6 +82,7 @@ wire slowclk;
 wire testAD9866clk;
 wire AD9866clkX1;
 wire IF_locked;
+
 
 ifclocks PLL_IF_inst( .inclk0(clk50mhz), .c0(IF_clk), .c1(testAD9866clk), .c2(slowclk), .locked(IF_locked));
 
@@ -131,7 +133,8 @@ hermes_lite_core #(
     .ad9866_sdo(ad9866_sdo),
     .ad9866_sen_n(ad9866_sen_n),
     .ad9866_rst_n(ad9866_rst_n),
-   
+   	.ad9866_mode(ad9866_mode),
+
     // MMI Ethernet PHY
   	.PHY_TX(PHY_TX),
   	.PHY_TX_EN(PHY_TX_EN),        

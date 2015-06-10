@@ -41,6 +41,7 @@ module Hermes_Lite(
     input  ad9866_sdo,
     output ad9866_sen_n,
     output ad9866_rst_n,
+    output ad9866_mode,
    
     // RMII Ethernet PHY
 (* useioff = 1 *)     output [1:0] rmii_tx,
@@ -67,7 +68,7 @@ parameter IP = {8'd0,8'd0,8'd0,8'd0};
 
 // Clock Frequency
 parameter CLK_FREQ = 61440000;
-// parameter CLK_FREQ = 73728000;
+//parameter CLK_FREQ = 73728000;
 
 // Number of Receivers
 parameter NR = 2; // number of receivers to implement
@@ -166,6 +167,7 @@ hermes_lite_core #(
     .ad9866_sdo(ad9866_sdo),
     .ad9866_sen_n(ad9866_sen_n),
     .ad9866_rst_n(ad9866_rst_n),
+    .ad9866_mode(ad9866_mode),
    
     // MMI Ethernet PHY
   	.PHY_TX(PHY_TX),
