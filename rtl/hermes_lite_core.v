@@ -1565,7 +1565,7 @@ reg         Preamp;					// selects input attenuator setting, 0 = 20dB, 1 = 0dB (
 reg   [1:0] IF_TX_relay; 			// Tx relay setting on Alex
 reg         IF_Rout;     			// Rx1 out on Alex
 reg   [1:0] IF_RX_relay; 			// Rx relay setting on Alex 
-reg  [31:0] IF_frequency[0:5]; 	// Tx, Rx1, Rx2, Rx3, Rx4, Rx5
+reg  [31:0] IF_frequency[0:8]; 	// Tx, Rx1, Rx2, Rx3, Rx4, Rx5
 reg         IF_duplex;
 reg         IF_DFS1;
 reg			IF_DFS0;
@@ -1682,6 +1682,9 @@ begin
     IF_frequency[3]    <= 32'd0;
     IF_frequency[4]    <= 32'd0;
     IF_frequency[5]    <= 32'd0;
+    IF_frequency[6]    <= 32'd0;
+    IF_frequency[7]    <= 32'd0;
+    IF_frequency[8]    <= 32'd0;
   end
   else if (IF_Rx_save)
   begin
@@ -1723,7 +1726,22 @@ begin
 			if (IF_last_chan >= 3'b100) IF_frequency[5] <= freqcomp[56:25];  // Rx5 frequency
 			else IF_frequency[5] <= IF_frequency[0];  
 		end 
-		 
+	
+		if (IF_Rx_ctrl_0[7:1] == 7'b0000_111) begin // decode Rx6 frequency
+			if (IF_last_chan >= 3'b101) IF_frequency[6] <= freqcomp[56:25];  // Rx6 frequency
+			else IF_frequency[6] <= IF_frequency[0];  
+		end 
+
+		 if (IF_Rx_ctrl_0[7:1] == 7'b0001_000) begin // decode Rx7 frequency
+			if (IF_last_chan >= 3'b110) IF_frequency[7] <= freqcomp[56:25];  // Rx7 frequency
+			else IF_frequency[7] <= IF_frequency[0];  
+		end 
+
+		 if (IF_Rx_ctrl_0[7:1] == 7'b0001_001) begin // decode Rx8 frequency
+			if (IF_last_chan >= 3'b111) IF_frequency[8] <= freqcomp[56:25];  // Rx8 frequency
+			else IF_frequency[8] <= IF_frequency[0];  
+		end 
+
 		 
 //--------------------------------------------------------------------------------------------------------
  end

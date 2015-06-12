@@ -28,7 +28,7 @@ set_global_assignment -name FAMILY "Cyclone IV E"
 set_global_assignment -name TOP_LEVEL_ENTITY Hermes_Lite
 set_global_assignment -name ORIGINAL_QUARTUS_VERSION 14.0
 set_global_assignment -name PROJECT_CREATION_TIME_DATE "15:25:03  NOVEMBER 02, 2014"
-set_global_assignment -name LAST_QUARTUS_VERSION 14.1.0
+set_global_assignment -name LAST_QUARTUS_VERSION 15.0.0
 set_global_assignment -name MIN_CORE_JUNCTION_TEMP 0
 set_global_assignment -name MAX_CORE_JUNCTION_TEMP 85
 set_global_assignment -name DEVICE_FILTER_PACKAGE FBGA
