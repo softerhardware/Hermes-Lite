@@ -1737,7 +1737,7 @@ begin
 			else IF_frequency[7] <= IF_frequency[0];  
 		end 
 
-		 if (IF_Rx_ctrl_0[7:1] == 7'b0001_001) begin // decode Rx8 frequency
+		 if (IF_Rx_ctrl_0[7:1] == 7'b0010_010) begin // decode Rx8 frequency
 			if (IF_last_chan >= 3'b111) IF_frequency[8] <= freqcomp[56:25];  // Rx8 frequency
 			else IF_frequency[8] <= IF_frequency[0];  
 		end 
