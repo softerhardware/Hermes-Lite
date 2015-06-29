@@ -22,13 +22,13 @@ module Hermes_Lite(
 
 	input exp_present,
 	input AD9866clk,
+	input clk,
 	input clk50mhz,
  	input extreset,
-	output [7:0] leds, 
-
+	output [7:0] leds,
 	output exp_ptt_n,
 	output [6:0] userout,
-	input [1:0] dipsw,	
+	input [2:0] dipsw,
 
 	// AD9866
 	output [5:0] ad9866_pga,
@@ -44,29 +44,36 @@ module Hermes_Lite(
     output ad9866_rst_n,
     output ad9866_mode,
    
-    // MII Interface
-  	output [3:0]PHY_TX,
-  	output PHY_TX_EN,              
-  	input  PHY_TX_CLOCK,           
-  	input  [3:0]PHY_RX,     
-  	input  RX_DV,                  
-  	input  PHY_RX_CLOCK,           
-  	output PHY_RESET_N,
-	inout  PHY_MDIO,               
-	output PHY_MDC,
+	//phy rgmii (KSZ9021RL)
+	output [3:0]PHY_TX,
+	output PHY_TX_EN,              //PHY Tx enable
+	output PHY_TX_CLOCK,           //PHY Tx data clock
+	input  [3:0]PHY_RX,     
+	input  RX_DV,                  //PHY has data flag
+	input  PHY_RX_CLOCK,           //PHY Rx data clock
+	output PHY_RESET_N,
 
+    // RMII Ethernet PHY
+//(* useioff = 1 *)     output [1:0] rmii_tx,
+//	output rmii_tx_en,
+//(* useioff = 1 *)     input [1:0] rmii_rx,
+//    input rmii_osc,
+//	input rmii_crs_dv,
+    inout PHY_MDIO,
+    output PHY_MDC,
+ 
 	//12 bit adc's (ADC78H90CIMT)
 	output ADCMOSI,                
 	output ADCCLK,
  	input  ADCMISO,
-	output nADCCS	               
-
+	output nADCCS
 );
 
 // PARAMETERS
 
 // Ethernet Interface
-parameter MAC = {8'h00,8'h1c,8'hc0,8'ha2,8'h22,8'h5d};
+// 5c release, 4a testing
+parameter MAC = {8'h00,8'h1c,8'hc0,8'ha2,8'h22,8'h5c};
 parameter IP = {8'd0,8'd0,8'd0,8'd0};
 
 // Clock Frequency
@@ -76,25 +83,32 @@ parameter CLK_FREQ = 73728000;
 // Number of Receivers
 parameter NR = 2; // number of receivers to implement
 
-// IF Clocks
+// Clocks
 wire IF_clk;
 wire slowclk;
 wire testAD9866clk;
 wire AD9866clkX1;
 wire IF_locked;
+ifclocks_cv ifclocks_cv_inst(
+	.refclk(clk),
+	.rst(1'b0),
+	.outclk_0(IF_clk),
+	.outclk_1(testAD9866clk),
+	.outclk_2(slowclk),
+	.locked(IF_locked)
+	);
 
 
-ifclocks PLL_IF_inst( .inclk0(clk50mhz), .c0(IF_clk), .c1(testAD9866clk), .c2(slowclk), .locked(IF_locked));
 
-// PLL clk must be on input 2 or 3
-clkmux_sdk clkmux (
+
+// PLL clk must me on input 2 or 3
+clkmux_cv clkmux (
 	.inclk0x(AD9866clk),
-	.inclk1x(1'b0),
+	.inclk1x(AD9866clk),
 	.inclk2x(testAD9866clk),
-	.clkselect({~exp_present,1'b0}),
+	.clkselect({~dipsw[2],1'b0}),
 	.outclk(AD9866clkX1)
 );
-
 
 // Hermes Lite Core
 hermes_lite_core #(
@@ -105,9 +119,9 @@ hermes_lite_core #(
 	) 
 
 	hermes_lite_core_inst(
-	.exp_present(exp_present),
+	.exp_present(dipsw[2]),
 	.AD9866clkX1(AD9866clkX1),
-
+	.clk50mhz(clk50mhz),
 	.IF_clk(IF_clk),
 	.ad9866spiclk(IF_clk),
 	.rstclk(slowclk),
@@ -116,10 +130,9 @@ hermes_lite_core #(
 
  	.extreset(extreset),
 	.leds(leds), 
-
 	.exp_ptt_n(exp_ptt_n),
 	.userout(userout),
-	.dipsw({1'b0,dipsw}),
+	.dipsw(dipsw),
 
 	// AD9866
 	.ad9866_pga(ad9866_pga),
@@ -133,8 +146,8 @@ hermes_lite_core #(
     .ad9866_sdo(ad9866_sdo),
     .ad9866_sen_n(ad9866_sen_n),
     .ad9866_rst_n(ad9866_rst_n),
-   	.ad9866_mode(ad9866_mode),
-
+    .ad9866_mode(ad9866_mode),
+   
     // MMI Ethernet PHY
   	.PHY_TX(PHY_TX),
   	.PHY_TX_EN(PHY_TX_EN),        
@@ -150,7 +163,13 @@ hermes_lite_core #(
 	.ADCMOSI(ADCMOSI),                
 	.ADCCLK(ADCCLK),
  	.ADCMISO(ADCMISO),
-	.nADCCS(nADCCS)
+	.nADCCS(nADCCS)	
 );             
+
+//reg clkcheck;
+//always @(negedge rmii_osc)
+//	clkcheck <= PHY_TX_CLOCK ^ PHY_RX_CLOCK;
+
+//assign leds = { ileds[7:1],~clkcheck };
 
 endmodule 

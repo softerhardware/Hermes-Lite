@@ -23,14 +23,14 @@
 # and any changes you make may be lost or overwritten.
 
 
-set_global_assignment -name DEVICE 5CEFA2F23C8
+set_global_assignment -name DEVICE 5CEFA2F23I7
 set_global_assignment -name FAMILY "Cyclone V"
 set_global_assignment -name TOP_LEVEL_ENTITY Hermes_Lite
-set_global_assignment -name ORIGINAL_QUARTUS_VERSION 14.0
-set_global_assignment -name PROJECT_CREATION_TIME_DATE "12:01:06  NOVEMBER 30, 2014"
+set_global_assignment -name ORIGINAL_QUARTUS_VERSION 15.0.1
+set_global_assignment -name PROJECT_CREATION_TIME_DATE "16:04:55  JUNE 28, 2015"
 set_global_assignment -name LAST_QUARTUS_VERSION 15.0.1
-set_global_assignment -name MIN_CORE_JUNCTION_TEMP 0
-set_global_assignment -name MAX_CORE_JUNCTION_TEMP 85
+set_global_assignment -name MIN_CORE_JUNCTION_TEMP "-40"
+set_global_assignment -name MAX_CORE_JUNCTION_TEMP 100
 set_global_assignment -name USE_CONFIGURATION_DEVICE ON
 set_global_assignment -name FORCE_CONFIGURATION_VCCIO ON
 set_global_assignment -name RESERVE_ALL_UNUSED_PINS_WEAK_PULLUP "AS INPUT TRI-STATED"
@@ -59,7 +59,6 @@ set_global_assignment -name CYCLONEII_OPTIMIZATION_TECHNIQUE SPEED
 set_global_assignment -name PHYSICAL_SYNTHESIS_COMBO_LOGIC ON
 set_global_assignment -name PHYSICAL_SYNTHESIS_REGISTER_DUPLICATION ON
 set_global_assignment -name PHYSICAL_SYNTHESIS_REGISTER_RETIMING ON
-set_global_assignment -name STATE_MACHINE_PROCESSING "USER-ENCODED"
 set_global_assignment -name SEARCH_PATH Polyphase_FIR/ -tag from_archive
 set_global_assignment -name SMART_RECOMPILE ON
 set_global_assignment -name RESERVE_DATA0_AFTER_CONFIGURATION "USE AS REGULAR IO"
@@ -100,7 +99,6 @@ set_location_assignment PIN_T9 -to rmii_crs_dv
 set_location_assignment PIN_H13 -to clk50mhz
 set_location_assignment PIN_H18 -to extreset
 set_global_assignment -name ACTIVE_SERIAL_CLOCK FREQ_25MHZ
-set_global_assignment -name STRATIXV_CONFIGURATION_SCHEME "ACTIVE SERIAL X1"
 set_location_assignment PIN_Y16 -to ad9866_pga[5]
 set_location_assignment PIN_Y15 -to ad9866_pga[4]
 set_location_assignment PIN_AA15 -to ad9866_pga[3]
@@ -108,21 +106,21 @@ set_location_assignment PIN_AB15 -to ad9866_pga[2]
 set_location_assignment PIN_Y14 -to ad9866_pga[1]
 set_location_assignment PIN_AA14 -to ad9866_pga[0]
 set_location_assignment PIN_N9 -to ad9866_rxclk
-set_location_assignment PIN_U22 -to ad9866_adio[11]
-set_location_assignment PIN_V21 -to ad9866_adio[10]
-set_location_assignment PIN_W21 -to ad9866_adio[9]
-set_location_assignment PIN_W22 -to ad9866_adio[8]
-set_location_assignment PIN_Y21 -to ad9866_adio[7]
-set_location_assignment PIN_Y22 -to ad9866_adio[6]
-set_location_assignment PIN_AA22 -to ad9866_adio[5]
-set_location_assignment PIN_AB21 -to ad9866_adio[4]
-set_location_assignment PIN_AB22 -to ad9866_adio[3]
-set_location_assignment PIN_AA20 -to ad9866_adio[2]
-set_location_assignment PIN_Y20 -to ad9866_adio[1]
-set_location_assignment PIN_AB20 -to ad9866_adio[0]
-set_location_assignment PIN_Y19 -to ad9866_rxen
-set_location_assignment PIN_AA18 -to ad9866_txclk
-set_location_assignment PIN_AA19 -to ad9866_txen
+set_location_assignment PIN_U22 -to ad9866_tx[5]
+set_location_assignment PIN_V21 -to ad9866_tx[4]
+set_location_assignment PIN_W21 -to ad9866_tx[3]
+set_location_assignment PIN_W22 -to ad9866_tx[2]
+set_location_assignment PIN_Y21 -to ad9866_tx[1]
+set_location_assignment PIN_Y22 -to ad9866_tx[0]
+set_location_assignment PIN_AA22 -to ad9866_rx[5]
+set_location_assignment PIN_AB21 -to ad9866_rx[4]
+set_location_assignment PIN_AB22 -to ad9866_rx[3]
+set_location_assignment PIN_AA20 -to ad9866_rx[2]
+set_location_assignment PIN_Y20 -to ad9866_rx[1]
+set_location_assignment PIN_AB20 -to ad9866_rx[0]
+set_location_assignment PIN_Y19 -to ad9866_rxsync
+set_location_assignment PIN_AA18 -to ad9866_txquietn
+set_location_assignment PIN_AA19 -to ad9866_txsync
 set_location_assignment PIN_V15 -to AD9866clk
 ##set_location_assignment PIN_V13 -to altclk
 set_location_assignment PIN_AA17 -to ad9866_sclk
@@ -149,9 +147,9 @@ set_location_assignment PIN_M6 -to ADCCLK
 set_location_assignment PIN_P6 -to ADCMISO
 set_location_assignment PIN_T8 -to nADCCS
 set_global_assignment -name VHDL_FILE RMII2MII_conv.vhd
-set_global_assignment -name SDC_FILE Hermes_Lite_CV.sdc
-set_global_assignment -name VERILOG_FILE Hermes_Lite_CV.v
-set_global_assignment -name VERILOG_FILE hermes_lite_core.v
+set_global_assignment -name SDC_FILE Hermes_Lite_FD_CV.sdc
+set_global_assignment -name VERILOG_FILE Hermes_Lite_FD_CV.v
+set_global_assignment -name VERILOG_FILE hermes_lite_core_FD.v
 set_global_assignment -name VERILOG_FILE myhdl/ad9866.v
 set_global_assignment -name VERILOG_FILE Polyphase_FIR/firfilt.v
 set_global_assignment -name VERILOG_FILE Polyphase_FIR/CicInterpM5.v
@@ -179,7 +177,6 @@ set_global_assignment -name LICENSE_FILE Polyphase_FIR/coefL8.dat
 set_global_assignment -name VERILOG_FILE PHY_fifo.v
 set_global_assignment -name VERILOG_FILE sp_rcv_ctrl.v
 set_global_assignment -name VERILOG_FILE CRC32.v
-set_global_assignment -name VERILOG_FILE ASMI.v
 set_global_assignment -name VERILOG_FILE PHY_Rx_fifo.v
 set_global_assignment -name VERILOG_FILE Led_flash.v
 set_global_assignment -name VERILOG_FILE MDIO.v
@@ -188,7 +185,6 @@ set_global_assignment -name VERILOG_FILE Tx_MAC.v
 set_global_assignment -name VERILOG_FILE ASMI_interface.v
 set_global_assignment -name VERILOG_FILE DHCP.v
 set_global_assignment -name VERILOG_FILE EEPROM.v
-set_global_assignment -name VERILOG_FILE EPCS_fifo.v
 set_global_assignment -name VERILOG_FILE Tx_fifo.v
 set_global_assignment -name VERILOG_FILE varcic.v
 set_global_assignment -name VERILOG_FILE cdc_mcp.v
@@ -208,8 +204,6 @@ set_global_assignment -name VERILOG_FILE SPI.v
 set_global_assignment -name VERILOG_FILE Hermes_ADC.v
 set_global_assignment -name QIP_FILE SP_fifo.qip
 set_global_assignment -name QIP_FILE PHY_fifo.qip
-set_global_assignment -name QIP_FILE ASMI.qip
-set_global_assignment -name QIP_FILE EPCS_fifo.qip
 set_global_assignment -name QIP_FILE Tx_fifo.qip
 set_global_assignment -name QIP_FILE PHY_Rx_fifo.qip
 set_global_assignment -name QIP_FILE ifclocks_cv.qip
@@ -243,4 +237,7 @@ set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to ADCMOSI
 set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to ADCCLK
 set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to ADCMISO
 set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to nADCCS
+set_global_assignment -name REMOVE_REDUNDANT_LOGIC_CELLS ON
+set_global_assignment -name ALLOW_ANY_RAM_SIZE_FOR_RECOGNITION ON
+set_global_assignment -name OPTIMIZATION_MODE "HIGH PERFORMANCE EFFORT"
 set_instance_assignment -name PARTITION_HIERARCHY root_partition -to | -section_id Top

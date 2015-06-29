@@ -99,6 +99,10 @@ def ad9866_pgm(reset,clk,sen_n,start,datain,extrqst,gain):
     elif pc == 0x0d and sen_n:
       start.next = 1
       datain.next = 0x1100
+    ## RX gain only on PGA
+    elif pc == 0x0f and sen_n:
+      start.next = 1
+      datain.next = 0x0b20
     ## Start of repeatable code
     elif pc == 0x11 and sen_n:
       start.next = 1

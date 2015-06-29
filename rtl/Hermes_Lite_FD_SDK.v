@@ -32,11 +32,23 @@ module Hermes_Lite(
 
 	// AD9866
 	output [5:0] ad9866_pga,
-	inout [11:0] ad9866_adio,
-	output ad9866_rxen,
-	output ad9866_rxclk,
-	output ad9866_txen,
-	output ad9866_txclk,
+	
+	//inout [11:0] ad9866_adio,
+	input [5:0] ad9866_rx,
+	output [5:0] ad9866_tx,
+	
+	//output ad9866_rxen,
+	input ad9866_rxsync,
+	
+	//output ad9866_clk,
+	input ad9866_rxclk,
+	
+	//output ad9866_txen,
+	output ad9866_txsync,
+
+	//output ad9866_txclk,
+	output ad9866_txquietn,
+
 	output ad9866_sclk,
     output ad9866_sdio,
     input  ad9866_sdo,
@@ -74,7 +86,7 @@ parameter IP = {8'd0,8'd0,8'd0,8'd0};
 parameter CLK_FREQ = 73728000;
 
 // Number of Receivers
-parameter NR = 2; // number of receivers to implement
+parameter NR = 3; // number of receivers to implement
 
 // IF Clocks
 wire IF_clk;
@@ -123,11 +135,13 @@ hermes_lite_core #(
 
 	// AD9866
 	.ad9866_pga(ad9866_pga),
-	.ad9866_adio(ad9866_adio),
-	.ad9866_rxen(ad9866_rxen),
+	//.ad9866_adio(ad9866_adio),
+	.ad9866_tx(ad9866_tx),
+	.ad9866_rx(ad9866_rx),
+	.ad9866_rxsync(ad9866_rxsync),
 	.ad9866_rxclk(ad9866_rxclk),
-	.ad9866_txen(ad9866_txen),
-	.ad9866_txclk(ad9866_txclk),
+	.ad9866_txsync(ad9866_txsync),
+	.ad9866_txquietn(ad9866_txquietn),
 	.ad9866_sclk(ad9866_sclk),
     .ad9866_sdio(ad9866_sdio),
     .ad9866_sdo(ad9866_sdo),
