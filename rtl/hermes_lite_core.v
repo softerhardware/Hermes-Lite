@@ -119,6 +119,9 @@ localparam RRRR = (CLK_FREQ == 61440000) ? 160 : 192;
 // Number of Receivers
 parameter NR; // number of receivers to implement
 
+// Number of transmitters Be very careful when using more than 1 transmitter!
+parameter NT = 1;
+
 wire FPGA_PTT;
 wire RAND;
 assign RAND = 0;
@@ -1184,8 +1187,30 @@ cpl_cordic #(.OUT_WIDTH(16))
 
 reg [11:0] DACD;
 
+
+wire signed [15:0] txsum;
+generate
+	if (NT == 1) begin: SINGLETX
+
+		//gain of 4
+		assign txsum = C122_cordic_i_out  >>> 2;
+
+	end else begin: DUALTX
+		wire signed [15:0] C122_cordic_tx2_i_out;
+		
+		// Hardwire second TX frequency to second RX
+		cpl_cordic #(.OUT_WIDTH(16))
+ 			cordic_tx2_inst (.clock(AD9866clkX1), .frequency(C122_sync_phase_word[1]), .in_data_I(I),			
+			.in_data_Q(Q), .out_data_I(C122_cordic_tx2_i_out), .out_data_Q());
+
+ 		assign txsum = (C122_cordic_i_out + C122_cordic_tx2_i_out) >>> 3;
+		
+	end
+endgenerate
+
 always @ (negedge AD9866clkX1)
-	DACD <= C122_cordic_i_out[13:2] + {11'h00,C122_cordic_i_out[1]};   //gain of 4 with rounding
+	DACD <= txsum[11:0];
+
 
 
 wire txclipp = (C122_cordic_i_out[13:2] == 12'b011111111111);
