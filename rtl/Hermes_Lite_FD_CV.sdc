@@ -69,25 +69,29 @@ set_output_delay -add_delay -min -clock vrmii_osc -5.5 [get_ports {rmii_tx_en}]
 set_output_delay -add_delay -max -clock vrmii_osc 6.0 [get_ports {rmii_tx[*]}]
 set_output_delay -add_delay -min -clock vrmii_osc -5.5 [get_ports {rmii_tx[*]}]
 
-
-
 ## AD9866 RX Path
 
-#set_output_delay -add_delay -max -clock AD9866clk -reference_pin [get_ports ad9866_rxclk] 1.5 [get_ports {ad9866_rxen}]
-#set_output_delay -add_delay -min -clock AD9866clk -reference_pin [get_ports ad9866_rxclk] -0.5 [get_ports {ad9866_rxen}]
+set_input_delay -add_delay -max -clock ad9866_rxclk 3.78 [get_ports {ad9866_rxsync}]
+set_input_delay -add_delay -min -clock ad9866_rxclk 0.5 [get_ports {ad9866_rxsync}]
 
-#set_input_delay -add_delay -max -clock AD9866clk -reference_pin [get_ports ad9866_rxclk] 1.5 [get_ports {ad9866_adio[*]}]
-#set_input_delay -add_delay -min -clock AD9866clk -reference_pin [get_ports ad9866_rxclk] -0.5 [get_ports {ad9866_adio[*]}]
+set_input_delay -add_delay -max -clock ad9866_rxclk 3.78 [get_ports {ad9866_rx[*]}]
+set_input_delay -add_delay -min -clock ad9866_rxclk 0.5 [get_ports {ad9866_rx[*]}]
 
 
 ## AD9866 TX Path
+## Adjust for PCB delays 
 
+set_multicycle_path -to [get_ports {ad9866_txsync}] -setup -start 2
+set_multicycle_path -to [get_ports {ad9866_txsync}] -hold -start 0
 
-#set_output_delay -add_delay -max -clock AD9866clk -reference_pin [get_ports ad9866_txclk] 1.5 [get_ports {ad9866_txen}]
-#set_output_delay -add_delay -min -clock AD9866clk -reference_pin [get_ports ad9866_txclk] -0.5 [get_ports {ad9866_txen}]
+set_multicycle_path -to [get_ports {ad9866_tx[*]}] -setup -start 2
+set_multicycle_path -to [get_ports {ad9866_tx[*]}] -hold -start 0
 
-#set_output_delay -add_delay -max -clock AD9866clk -reference_pin [get_ports ad9866_txclk] 1.5 [get_ports {ad9866_adio[*]}]
-#set_output_delay -add_delay -min -clock AD9866clk -reference_pin [get_ports ad9866_txclk] -0.5 [get_ports {ad9866_adio[*]}]
+set_output_delay -add_delay -max -clock ad9866_rxclk 2.0 [get_ports {ad9866_txsync}]
+set_output_delay -add_delay -min -clock ad9866_rxclk -0.3 [get_ports {ad9866_txsync}]
+
+set_output_delay -add_delay -max -clock ad9866_rxclk 2.0 [get_ports {ad9866_tx[*]}]
+set_output_delay -add_delay -min -clock ad9866_rxclk -0.3 [get_ports {ad9866_tx[*]}]
 
 
 ## Slow outputs

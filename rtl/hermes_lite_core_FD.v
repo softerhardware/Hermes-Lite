@@ -839,9 +839,23 @@ always @(posedge ad9866_rxclk)
 		end
 	end
 
-assign ad9866_tx = iad9866_txsync ? ad9866_tx_stage[5:0] : ad9866_tx_stage[11:6];
+reg [5:0] ad9866_txr;
+reg ad9866_txsyncr;
+
+always @(posedge ad9866_rxclk)
+	begin
+	 	ad9866_txr <= iad9866_txsync ? ad9866_tx_stage[5:0] : ad9866_tx_stage[11:6];
+	 	ad9866_txsyncr <= iad9866_txsync;
+	end 
+
+//assign ad9866_tx = iad9866_txsync ? ad9866_tx_stage[5:0] : ad9866_tx_stage[11:6];
 assign ad9866_txquietn = (FPGA_PTT | VNA); //1'b0;
-assign ad9866_txsync = iad9866_txsync;
+//assign ad9866_txsync = iad9866_txsync;
+
+assign ad9866_tx = ad9866_txr;
+assign ad9866_txsync = ad9866_txsyncr;
+
+
 
 
 

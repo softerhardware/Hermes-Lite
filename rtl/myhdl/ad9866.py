@@ -103,11 +103,15 @@ def ad9866_pgm(reset,clk,sen_n,start,datain,extrqst,gain):
     elif pc == 0x0f and sen_n:
       start.next = 1
       datain.next = 0x0b20
+    ## Enable/Disable IAMP
+    ##elif pc == 0x11 and sen_n:
+    ##  start.next = 1
+    ##  datain.next = 0x0e01
     ## Start of repeatable code
-    elif pc == 0x11 and sen_n:
+    elif pc == 0x13 and sen_n:
       start.next = 1
       datain.next = concat(intbv(0x0a)[8:],intbv(0b01)[2:],gain[6:0])
-    elif pc == 0x13 and sen_n:
+    elif pc == 0x15 and sen_n:
       start.next = 1
       datain.next = concat(intbv(0x10)[8:],intbv(0b010000)[5:],gain[9:6])
     ## Defaults
@@ -122,7 +126,7 @@ def ad9866_pgm(reset,clk,sen_n,start,datain,extrqst,gain):
     if pc != 0x1f and  sen_n:
       pc.next = pc + 1
     elif pc == 0x1f and extrqst:
-      pc.next = 0x11     
+      pc.next = 0x13     
 
   return instances()
 

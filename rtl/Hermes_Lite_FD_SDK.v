@@ -35,7 +35,7 @@ module Hermes_Lite(
 	
 	//inout [11:0] ad9866_adio,
 	input [5:0] ad9866_rx,
-	output [5:0] ad9866_tx,
+(* useioff = 1 *) output [5:0] ad9866_tx,
 	
 	//output ad9866_rxen,
 	input ad9866_rxsync,
@@ -44,7 +44,7 @@ module Hermes_Lite(
 	input ad9866_rxclk,
 	
 	//output ad9866_txen,
-	output ad9866_txsync,
+(* useioff = 1 *) output ad9866_txsync,
 
 	//output ad9866_txclk,
 	output ad9866_txquietn,
