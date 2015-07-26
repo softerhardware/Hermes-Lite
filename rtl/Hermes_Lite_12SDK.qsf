@@ -208,6 +208,7 @@ set_global_assignment -name VERILOG_FILE pulsegen.v
 set_global_assignment -name VERILOG_FILE receiver.v
 set_global_assignment -name VERILOG_FILE SPI.v
 set_global_assignment -name VERILOG_FILE Hermes_ADC.v
+set_global_assignment -name VERILOG_FILE ethernet.v
 set_global_assignment -name QIP_FILE SP_fifo.qip
 set_global_assignment -name QIP_FILE PHY_fifo.qip
 set_global_assignment -name QIP_FILE ifclocks.qip

@@ -41,18 +41,20 @@ module hermes_lite_core(
 	// AD9866
 	output [5:0] ad9866_pga,
 	
+`ifdef FULLDUPLEX	
+	input [5:0] ad9866_rx,
+	output [5:0] ad9866_tx,
+	input ad9866_rxsync,
+	input ad9866_rxclk,
+	output ad9866_txsync,
+	output ad9866_txquietn,
+`else 
 	inout [11:0] ad9866_adio,
-	//input [5:0] ad9866_rx,
-	//output [5:0] ad9866_tx,
-	
-	output ad9866_rxen,
-	//input ad9866_rxsync,
-	
+	output ad9866_rxen,	
 	output ad9866_rxclk,
-	
 	output ad9866_txen,
-
 	output ad9866_txclk,
+`endif
 
 	output ad9866_sclk,
     output ad9866_sdio,
@@ -114,7 +116,10 @@ localparam CICRATE = (CLK_FREQ == 61440000) ? 6'd10 : 6'd08;
 localparam GBITS = (CLK_FREQ == 61440000) ? 30 : 31;
 localparam RRRR = (CLK_FREQ == 61440000) ? 160 : 192;
 
-
+// VNA Settings
+localparam VNATXGAIN = 7'h10;
+localparam DUPRXMAXGAIN = 6'h12;
+localparam DUPRXMINGAIN = 6'h06;
 
 // Number of Receivers
 parameter NR; // number of receivers to implement
@@ -123,8 +128,6 @@ parameter NR; // number of receivers to implement
 parameter NT = 1;
 
 wire FPGA_PTT;
-wire RAND;
-assign RAND = 0;
 
 parameter M_TPD   = 4;
 parameter IF_TPD  = 2;
@@ -137,9 +140,6 @@ localparam RX_FIFO_SZ  = 4096; 			// 16 by 4096 deep RX FIFO
 localparam TX_FIFO_SZ  = 1024; 			// 16 by 1024 deep TX FIFO  
 localparam SP_FIFO_SZ = 2048;			// 16 by 8192 deep SP FIFO, was 16384 but wouldn't fit
 
-localparam read_reg_address = 5'h10; 	// PHY register to read from - gives connect speed and fully duplex	
-
-
 //--------------------------------------------------------------
 // Reset Lines - C122_rst, IF_rst
 //--------------------------------------------------------------
@@ -147,8 +147,6 @@ localparam read_reg_address = 5'h10; 	// PHY register to read from - gives conne
 wire  IF_rst;
 	
 assign IF_rst 	 = (!IF_locked || reset);		// hold code in reset until PLLs are locked & PHY operational
-
-assign PHY_RESET_N = 1'b1;  						// Allow PYH to run for now
 
 // transfer IF_rst to 122.88MHz clock domain to generate C122_rst
 cdc_sync #(1)
@@ -165,474 +163,54 @@ Hermes_clk_lrclk_gen #(.CLK_FREQ(CLK_FREQ)) clrgen (.reset(C122_rst), .CLK_IN(AD
                              .Brise(C122_cbrise), .Bfall(C122_cbfall), .LRCLK(CLRCLK));
 
 
-//----------------------------PHY Clocks-------------------
-
-wire Tx_clock;
-//wire Tx_clock_2;
-wire C125_locked; 										// high when PLL locked
-wire PHY_data_clock;
-wire PHY_speed;											// 0 = 100T, 1 = 1000T
-
-reg Tx_clock_2;
-always @ (posedge PHY_TX_CLOCK) Tx_clock_2 <= ~Tx_clock_2;
-
-//ethclocks_cv PLL_clocks_inst( .inclk0(PHY_TX_CLOCK), .c0(Tx_clock_2), .c1(EEPROM_clock));
-assign Tx_clock = PHY_TX_CLOCK;
 
 
-assign PHY_speed = 1'b0;		// high for 1000T, low for 100T; force 100T for now
-
-
-// generate PHY_RX_CLOCK/2 for 100T 
-reg PHY_RX_CLOCK_2;
-always @ (posedge PHY_RX_CLOCK) PHY_RX_CLOCK_2 <= ~PHY_RX_CLOCK_2; 
-
-// force 100T for now 
-assign PHY_data_clock = PHY_RX_CLOCK_2;
-
-
-//------------------------------------------------------------
-//  Reset and initialisation
-//------------------------------------------------------------
-
-/* 
-	Hold the code in reset whilst we do the following:
-	
-	Get the boards MAC address from the EEPROM.
-	
-	Then setup the PHY registers and read from the PHY until it indicates it has 
-	negotiated a speed.  Read connection speed and that we are running full duplex.
-	
-	LED0 incates PHY status - fast flash if no Ethernet connection, slow flash if 100T and on if 1000T
-	
-	Then wait a second (for the network to stabilise) then  attempt to obtain an IP address using DHCP
-	- supplied address is in YIADDR.  If the DHCP request either times out, or results in a NAK, retry four 
-	additional times with a 2 second delay between each retry.
-	
-	If after the retries a DHCP assigned IP address is not available use an APIPA IP address or an assigned one
-	from Flash.
-	
-	Inhibit replying to a Metis Discovery request until an IP address has been applied.
-	
-	LED6 indicates the result of DHCP - on if ACK, slow flash if NAK, fast flash if time out and 
-	long then short flash if static IP
-	
-	Once an IP address has been assigned set IP_valid flag. When set enables a response to a Discovery request.
-	
-	Wait for a Metis discovery frame - once received enable HPSDR data to PC.
-	
-	Enable rest of code.
-	
-*/
-
-reg reset;
-reg [4:0]start_up;
-reg [47:0]This_MAC; 			// holds the MAC address of this Metis board
-reg read_MAC; 
-wire MAC_ready;
-reg DHCP_start;
-reg [24:0]delay;
-reg duplex;						// set when we are connected full duplex
-reg speed_100T;				// set when we are connected at 100MHz
-reg Tx_reset;					// when set prevents HPSDR UDP/IP Tx data being sent
-reg [2:0]DHCP_retries;		// DHCP retry counter
-reg IP_valid;					// set when Metis has a valid IP address assigned by DHCP or APIPA
-reg Assigned_IP_valid;		// set if IP address assigned by PC is not 0.0.0.0. or 255.255.255.255
-reg use_IPIPA;					// set when no DHCP or assigned IP available so use APIAP
-reg read_IP_address;			// set when we wish to read IP address from EEPROM
-
-
-always @ (posedge Tx_clock_2)
-begin
-	case (start_up)
-	// get the MAC address for this board
-0:	begin 
-		IP_valid <= 1'b0;							// clear IP valid flag
-		Assigned_IP_valid <= 1'b0;				// clear IP in flash memory valid
-		reset <= 1'b1;
-		Tx_reset <= 1'b1;							// prevent I&Q data Tx until all initialised 
-		read_MAC <= 1'b1;
-		use_IPIPA <= 0;							// clear IPIPA flag
-		start_up <= start_up + 1'b1;
-	end
-	// wait until we have read the EEPROM then the IP address
-1:  begin
-		if (MAC_ready) begin 					// MAC_ready goes high when EEPROM read
-			read_MAC <= 0;
-			read_IP_address <= 1'b1;						// set read IP flag
-			start_up <= start_up + 1'b1;
-		end
-		else start_up <= 1'b1;
-	end
-	// read the IP address from EEPROM then set up the PHY
-2:	begin
-		if (IP_ready) begin
-			read_IP_address <= 0;
-    		write_PHY <= 1'b1;					// set write to PHY flag
-			start_up <= start_up + 1'b1;
-		end
-		else start_up <= 2;    
-    end			
-	// check the IP address read from the flash memory is valid. Set up the PHY MDIO registers
-3: begin
-	   if (AssignIP != 0 && AssignIP != 32'hFF_FF_FF_FF)
-			Assigned_IP_valid <= 1'b1;	
-	   if (write_done) begin
-			write_PHY <= 0;						// clear write PHY flag so it does not run again
-			duplex <= 0;							// clear duplex and speed flags
-			speed_100T <= 0;
-			read_PHY <= 1'b1;						// set read from PHY flag
-			start_up <= start_up + 1'b1;
-		end 
-		else start_up <= 3;						// loop here till write is done
-	end 
-	
-	// loop reading PHY Register 31 bits [3],[5] & [6] to determine if final connection is full duplex at 100T or 1000T.
-	// Set speed and duplex bits.
-	// If an IP address has been assigned (i.e. != 0) then continue else	
-	// once connected delay 1 second before trying DHCP to give network time to stabilise.
-4: begin
-		if (read_done  && register_data[0]) begin
-			duplex <= register_data[2];			// get connection status and speed
-			speed_100T  <= register_data[1];
-			read_PHY <= 0;								// clear read PHY flag so it does not run again	
-			reset <= 0;	
-			if (duplex) begin							// loop here is not fully duplex network connection
-				// if an IP address has been assigned then skip DHCP etc
-				if (Assigned_IP_valid) start_up <= 6;
-				// allow rest of code to run now so we can get IP address. If 						
-				else if (delay == 12500000) begin	// delay 1 second so that PHY is ready for DHCP transaction
-					DHCP_start <= 1'b1;					// start DHCP process
-					if (time_out)							// loop until the DHCP module has cleared its time_out flag
-						start_up <= 4;
-					else begin
-						delay <= 0;							// reset delay for DHCP retries
-						start_up <= start_up + 1'b1;
-					end 
-				end 
-				else delay <= delay + 1'b1;
-			end 
-		end 
-		else start_up <= 4;								// keep reading Register 1 until we have a valid speed and full duplex		
-   end 
-
-	// get an IP address from the DHCP server, move to next state if successful, retry 3 times if NAK or time out.		
-5:  begin 
-		DHCP_start <= 0;
-		if (DHCP_ACK) 										// have DHCP assigned IP address so continue
-			start_up <= start_up + 1'b1;
-		else if (DHCP_NAK || time_out) begin		// try again 3 more times with 1 second delay between attempts
-			if (DHCP_retries == 3) begin				// no more DHCP retries so use IPIPA address and  continue
-				use_IPIPA <= 1'b1;
-				start_up <= start_up + 1'b1;
-			end
-			else begin
-				DHCP_retries <= DHCP_retries + 1'b1;	// try DHCP again
-				start_up <= 4;
-			end	
-		end		
-		else start_up <= 5;
-	end
-	
-	// Have a valid IP address and a full duplex PHY connection so enable Tx code 
-6:  begin
-	IP_valid <= 1'b1;					// we now have a valid IP address so can respond to Discovery requests etc
-	Tx_reset <= 0;						// release reset so UDP/IP Tx code can run
-	start_up <= start_up + 1'b1;						
-	read_PHY <= 1'b1;					// set read from PHY flag
-	end
-	// loop checking we still have a Network connection by reading speed from PHY registers - restart if network connection lost
-7:	begin
-		if (read_done) begin 
-			read_PHY <= 0;
-			if (register_data[0] || ~register_data[1])
-				start_up <= 6;								// network connection OK
-			else start_up <= 0;							// lost network connection so re-start
-		end 
-	end
-	default: start_up <= 0;
-    endcase
-end 
-
-//----------------------------------------------------------------------------------
-// read and write to the EEPROM	(NOTE: Max clock frequency is 20MHz)
-//----------------------------------------------------------------------------------
-wire IP_ready;
-assign This_MAC = {MAC[47:2],~dipsw[1],MAC[0]};
-assign AssignIP = IP;
-assign MAC_ready = 1'b1;
-assign IP_ready = 1'b1;
-
-					
-//------------------------------------------------------------------------------------
-//  If DHCP provides an IP address for Metis use that else use a random APIPA address
-//------------------------------------------------------------------------------------
-
-// Use an APIPA address of 169.254.(last two bytes of the MAC address)
-
-wire [31:0] This_IP;
-wire [31:0]AssignIP;			// IP address read from EEPROM
-
-assign This_IP =  Assigned_IP_valid ? AssignIP : 
-				              use_IPIPA ? {8'd169, 8'd254, This_MAC[15:0]} : YIADDR;
-
-//----------------------------------------------------------------------------------
-// Read/Write the  PHY MDIO registers (NOTE: Max clock frequency is 25 MHz)
-//----------------------------------------------------------------------------------
-wire write_done; 
-reg write_PHY;
-reg read_PHY;
-wire PHY_clock;
-wire read_done;
-wire [15:0]register_data; 
-wire PHY_MDIO_clk;
-assign PHY_MDIO_clk = Tx_clock_2; //EEPROM_clock;
-
-MDIO MDIO_inst(.clk(PHY_MDIO_clk), .write_PHY(write_PHY), .write_done(write_done), .read_PHY(read_PHY),
-	  .clock(PHY_MDC), .MDIO_inout(PHY_MDIO), .read_done(read_done),
-	  .read_reg_address(read_reg_address), .register_data(register_data),.speed(PHY_speed));
-
-//----------------------------------------------------------------------------------
-//  Renew the DHCP supplied IP address at half the lease period
-//----------------------------------------------------------------------------------
-
-/*
-	Request a DHCP IP address at IP_lease/2 seconds if we have a valid DHCP assigned IP address.
-	The IP_lease is obtained from the DHCP server and returned during the DHCP ACK.
-	This is the number of seconds that the IP lease is valid. 
-	
-	Divide this value by 2 then multiply by the clock rate to give the delay time.
-	
-	If an IP_lease time of zero is received then the lease time is set to 24 days.
-*/
-
-wire [51:0]lease_time;
-// Below is to avoid multiplication, note that large lease times may lose msbs in shift
-assign lease_time = (IP_lease == 0) ?  52'h7735_8C8C_A6C0 : IP_lease << 23; // (IP_lease >> 1) * 12500000; // 24 days if no lease time given
-// assign lease_time = (IP_lease == 0) ? 52'h7735_8C8C_A6C0  : (52'd4 * 52'd12500000);  // every 4 seconds for testing
-
-
-reg [24:0]IP_delay;
-reg DHCP_renew;
-reg [3:0]renew_DHCP_retries;
-reg [51:0]renew_counter;
-reg [24:0]renew_timer; 
-reg [2:0]renew;
-reg DHCP_request_renew;
-reg second_time;						// set if can't get a DHCP IP address after two tries.
-reg DHCP_discover_broadcast;    // last ditch attempt so do a discovery broadcast
-
-always @(posedge Tx_clock_2)
-begin 
-case (renew)
-
-0:	begin 
-	renew_timer <= 0;
-		if (DHCP_ACK) begin							 // only run if we have a  valid DHCP supplied IP address
-			if (renew_counter == lease_time )begin
-				renew_counter <= 0;
-				renew <= renew + 1'b1;
-			end
-			else renew_counter <= renew_counter + 1'b1;
-		end 
-		else renew <= 0;
-	end 
-// Renew DHCP IP address
-1:	begin
-		if (second_time) 
-			renew <= 4;
-		else begin 
-			DHCP_request_renew <= 1'b1;
-			renew <= renew + 1'b1;
-		end 
-	end
-
-// delay so the request is seen then return
-2:	renew <= renew + 1'b1;
-
- 
-// get an IP address from the DHCP server, move to next state if successful, if not reset lease timer to 1/4 previous value
-3: begin
-	DHCP_request_renew <= 0;
-		if (renew_timer != 2 * 12500000) begin  // delay for 2 seconds before we look for ACK, NAK or time_out
-			renew_timer <= renew_timer + 1'b1;
-			renew <= 3;
-		end 		
-		else begin
-			if (DHCP_NAK || time_out) begin		// did not renew so set timer to lease_time/4
-				second_time <= 1'b1;
-				renew_counter = (lease_time - lease_time >> 4);  // i.e. 0.75 * lease_time
-				renew <= 0;
-			end
-			else begin	
-				renew_counter <= 0; 					// did renew so reset counter and continue.
-				renew <= 0;
-			end 
-		end
-	end 
-
-// have not got an IP address the second time we tryed so use a broadcast and loop here
-4:	begin 
-	DHCP_discover_broadcast <= 1'b1;				// do a DHCP discovery
-	renew <= renew + 1'b1;
-	end 
-	
-// if we get a DHCP_ACK then continue else give up 
-5:	begin
-	DHCP_discover_broadcast <= 0;
-		if (renew_timer != 2 * 12500000) begin  // delay for 2 seconds before we look for ACK, NAK or time_out
-			renew_timer <= renew_timer + 1'b1;
-			renew <= 5;
-		end 
-		else if (DHCP_NAK || time_out) 			// did not renew so give up
-				renew <= 5;
-		else begin 										// did renew so continue
-			second_time <= 0;
-			renew <= 0;
-		end 
-	end 	
-default: renew <= 0;
-endcase
-end 
-
-//----------------------------------------------------------------------------------
-//  See if we can get an IP address using DHCP
-//----------------------------------------------------------------------------------
-
-wire time_out;
-wire DHCP_request;
-
-DHCP DHCP_inst(Tx_clock_2, (DHCP_start || DHCP_discover_broadcast), DHCP_renew, DHCP_discover , DHCP_offer, time_out, DHCP_request, DHCP_ACK);
-
-
-//-----------------------------------------------------
-//   Rx_MAC - PHY Receive Interface  
-//-----------------------------------------------------
-
-wire [7:0]ping_data[0:59];
-wire [15:0]Port;
-wire [15:0]Discovery_Port;		// PC port doing a Discovery
-wire broadcast;
-wire ARP_request;
-wire ping_request;
-wire Rx_enable;
-wire this_MAC;  					// set when packet addressed to this MAC
-wire DHCP_offer; 					// set when we get a valid DHCP_offer
-wire [31:0]YIADDR;				// DHCP supplied IP address for this board
-wire [31:0]DHCP_IP;  			// IP address of DHCP server offering IP address 
-wire DHCP_ACK, DHCP_NAK;
-wire [31:0]PC_IP;					// IP address of the PC we are connecting to
-wire [31:0]Discovery_IP;		// IP address of the PC doing a Discovery
-wire [47:0]PC_MAC;				// MAC address of the PC we are connecting to
-wire [47:0]Discovery_MAC;		// MAC address of the PC doing a Discovery
-wire [31:0]Use_IP;				// Assigned IP address, if zero then use DHCP
-wire METIS_discovery;			// pulse high when Metis_discovery received
-wire [47:0]ARP_PC_MAC; 			// MAC address of PC requesting ARP
-wire [31:0]ARP_PC_IP;			// IP address of PC requesting ARP
-wire [47:0]Ping_PC_MAC; 		// MAC address of PC requesting ping
-wire [31:0]Ping_PC_IP;			// IP address of PC requesting ping
-wire [15:0]Length;				// Lenght of frame - used by ping
-wire data_match;					// for debug use 
-wire PHY_100T_state;				// used as system clock at 100T
-wire [7:0] Rx_fifo_data;		// byte from PHY to send to Rx_fifo
-wire rs232_write_strobe;
-wire seq_error;					// set when we receive a sequence error
-wire run;							// set to send data to PC
-wire wide_spectrum;				// set to send wide spectrum data
-wire [31:0]IP_lease;				// holds IP lease in seconds from DHCP ACK packet
-wire [47:0]DHCP_MAC;				// MAC address of DHCP server 
-
-
-Rx_MAC Rx_MAC_inst (.PHY_RX_CLOCK(PHY_RX_CLOCK), .PHY_data_clock(PHY_data_clock),.RX_DV(RX_DV), .PHY_RX(PHY_RX),
-			        .broadcast(broadcast), .ARP_request(ARP_request), .ping_request(ping_request),  
-			        .Rx_enable(Rx_enable), .this_MAC(this_MAC), .Rx_fifo_data(Rx_fifo_data), .ping_data(ping_data),
-			        .DHCP_offer(DHCP_offer),
-			        .This_MAC(This_MAC), .YIADDR(YIADDR), .DHCP_ACK(DHCP_ACK), .DHCP_NAK(DHCP_NAK),
-			        .METIS_discovery(METIS_discovery), .METIS_discover_sent(METIS_discover_sent), .PC_IP(PC_IP), .PC_MAC(PC_MAC),
-			        .This_IP(This_IP), .Length(Length), .PHY_100T_state(PHY_100T_state),
-			        .ARP_PC_MAC(ARP_PC_MAC), .ARP_PC_IP(ARP_PC_IP), .Ping_PC_MAC(Ping_PC_MAC), 
-			        .Ping_PC_IP(Ping_PC_IP), .Port(Port), .seq_error(seq_error), .data_match(data_match),
-			        .run(run), .IP_lease(IP_lease), .DHCP_IP(DHCP_IP), .DHCP_MAC(DHCP_MAC),
-			        .wide_spectrum(wide_spectrum)
-			        );
-			        
-
-
-//-----------------------------------------------------
-//   Tx_MAC - PHY Transmit Interface  
-//-----------------------------------------------------
-
-wire [10:0] PHY_Tx_rdused;  
-wire LED;
+wire Tx_clock_2;
 wire Tx_fifo_rdreq;
-wire ARP_sent;
-wire  DHCP_discover;
-reg  [7:0] RS232_data;
-reg  RS232_Tx;
-wire DHCP_request_sent;
-wire DHCP_discover_sent;
-wire METIS_discover_sent;
-wire Tx_CTL;
-wire [3:0]TD;
+wire [10:0] PHY_Tx_rdused;
+wire PHY_data_clock;
+wire Rx_enable;
+wire [7:0] Rx_fifo_data;
 
+wire this_MAC;
+wire run;
+wire reset;
 
-Tx_MAC Tx_MAC_inst (.Tx_clock(Tx_clock), .Tx_clock_2(Tx_clock_2), .IF_rst(IF_rst),
-					.Send_ARP(Send_ARP),.ping_reply(ping_reply),.PHY_Tx_data(PHY_Tx_data),
-					.PHY_Tx_rdused(PHY_Tx_rdused), .ping_data(ping_data), .LED(LED),
-					.Tx_fifo_rdreq(Tx_fifo_rdreq),.Tx_CTL(PHY_TX_EN), .ARP_sent(ARP_sent),
-					.ping_sent(ping_sent), .TD(PHY_TX),.DHCP_request(DHCP_request),
-					.DHCP_discover_sent(DHCP_discover_sent), .This_MAC(This_MAC),
-					.DHCP_discover(DHCP_discover), .DHCP_IP(DHCP_IP), .DHCP_request_sent(DHCP_request_sent),
-					.METIS_discovery(METIS_discovery), .PC_IP(PC_IP), .PC_MAC(PC_MAC), .Length(Length),
-			        .Port(Port), .This_IP(This_IP), .METIS_discover_sent(METIS_discover_sent),
-			        .ARP_PC_MAC(ARP_PC_MAC), .ARP_PC_IP(ARP_PC_IP), .Ping_PC_IP(Ping_PC_IP),
-			        .Ping_PC_MAC(Ping_PC_MAC), .speed_100T(1'b1), .Tx_reset(Tx_reset),
-			        .run(run), .IP_valid(IP_valid),
-			        .DHCP_MAC(DHCP_MAC), .DHCP_request_renew(DHCP_request_renew),
-			        .Hermes_serialno(Hermes_serialno),
-			        .sp_fifo_rddata(sp_fifo_rddata), .sp_fifo_rdreq(sp_fifo_rdreq), 
-			        .sp_fifo_rdused(), .wide_spectrum(wide_spectrum), .have_sp_data(sp_data_ready),
-					  .AssignIP(AssignIP), .IDHermesLite(dipsw[0])
-			        ); 
+ethernet #(.MAC(MAC), .IP(IP), .Hermes_serialno(Hermes_serialno)) ethernet_inst (
 
-//------------------------ sequence ARP and Ping requests -----------------------------------
+	// Send to ethernet
+	.Tx_clock_2_o(Tx_clock_2),
+	.Tx_fifo_rdreq_o(Tx_fifo_rdreq),
+	.PHY_Tx_data_i(PHY_Tx_data),
+	.PHY_Tx_rdused_i(PHY_Tx_rdused),
 
-reg Send_ARP;
-reg ping_reply;
-reg ping_sent;
-reg [16:0]times_up;			// time out counter so code wont hang here
-reg [1:0] state;
+	.sp_fifo_rddata_i(sp_fifo_rddata),	
+	.sp_data_ready_i(sp_data_ready),
+	.sp_fifo_rdreq_o(sp_fifo_rdreq),
 
-localparam IDLE = 2'd0, ARP = 2'd1, PING = 2'd2;
+	// Receive from ethernet
+	.PHY_data_clock_o(PHY_data_clock),
+	.Rx_enable_o(Rx_enable),
+	.Rx_fifo_data_o(Rx_fifo_data),
 
-always @ (posedge PHY_RX_CLOCK)
-begin
-	case (state)
-	IDLE: begin
-				times_up   <= 0;
-				Send_ARP   <= 0;
-				ping_reply <= 0;
-				if (ARP_request) state <= ARP;
-				else if (ping_request) state <= PING;
-			end
-	
-	ARP:	begin	
-				Send_ARP <= 1'b1;
-				if (ARP_sent || times_up > 100000) state <= IDLE;
-				times_up <= times_up + 17'd1;
-			end
-			
-	PING:	begin
-				ping_reply <= 1'b1;	
-				if (ping_sent || times_up > 100000) state <= IDLE;
-				times_up <= times_up + 17'd1;
-			end 
+	// Status
+	.this_MAC_o(this_MAC),
+	.run_o(run),
+	.IF_rst_i(IF_rst),
+	.reset_o(reset),
+	.dipsw_i(dipsw[1:0]),
 
-	default: state = IDLE;
-	endcase
-end
-
-
+    // MII Ethernet PHY
+  	.PHY_TX(PHY_TX),
+  	.PHY_TX_EN(PHY_TX_EN),              //PHY Tx enable
+  	.PHY_TX_CLOCK(PHY_TX_CLOCK),           //PHY Tx data clock
+  	.PHY_RX(PHY_RX),     
+  	.RX_DV(RX_DV),                  //PHY has data flag
+  	.PHY_RX_CLOCK(PHY_RX_CLOCK),           //PHY Rx data clock
+  	.PHY_RESET_N(PHY_RESET_N),  
+    .PHY_MDIO(PHY_MDIO),
+    .PHY_MDC(PHY_MDC)
+	);
 
 //----------------------------------------------------
 //   Receive PHY FIFO 
@@ -712,7 +290,7 @@ wire [7:0]sp_fifo_rddata;
 wire sp_fifo_wrempty;
 wire sp_fifo_wrfull;
 wire sp_fifo_wrreq;
-
+wire have_sp_data;
 
 //--------------------------------------------------
 //   Wideband Spectrum Data 
@@ -722,9 +300,6 @@ wire sp_fifo_wrreq;
 // of consecutive ADC samples.  Pass have_sp_data to Tx_MAC to indicate that 
 // data is available.
 // Reset fifo when !run so the data always starts at a known state.
-
-
-wire have_sp_data;
 
 
 SP_fifo  SPF (.aclr(C122_rst | !run), .wrclk (AD9866clkX1), .rdclk(Tx_clock_2), 
@@ -748,19 +323,6 @@ assign sp_data_ready = (sp_delay == 0 && have_sp_data);
       
 assign IF_mic_Data = 0;
 
-
-
-// AD9866 Code
-// Code for Half duplex
-
-assign ad9866_txen = FPGA_PTT;
-assign ad9866_rxen = ~FPGA_PTT;
-
-assign ad9866_rxclk = AD9866clkX1;
-assign ad9866_txclk = AD9866clkX1;
-
-
-
 //---------------------------------------------------------
 //		De-ramdomizer
 //--------------------------------------------------------- 
@@ -774,12 +336,12 @@ assign ad9866_txclk = AD9866clkX1;
 */
 
 reg [11:0]temp_ADC;
-reg [15:0] temp_DACD; // for pre-distortion Tx tests
+//reg [15:0] temp_DACD; // for pre-distortion Tx tests
 //reg ad9866clipp, ad9866clipn;
 //reg ad9866nearclip;
 //reg ad9866goodlvlp, ad9866goodlvln;
 
-assign temp_DACD = 0;
+//assign temp_DACD = 0;
 
 wire rxclipp = (temp_ADC == 12'b011111111111);
 wire rxclipn = (temp_ADC == 12'b100000000000);
@@ -799,18 +361,82 @@ wire rxgoodlvlp = (temp_ADC[11:9] == 3'b011);
 wire rxgoodlvln = (temp_ADC[11:9] == 3'b100);
 
 
+
+
+`ifdef FULLDUPLEX
+
+reg [11:0] ad9866_rx_stage;
+reg [11:0] ad9866_rx_input;
+
+// Assume that ad9866_rxclk is synchronous to ad9866clk
+// Don't know the phase relation
+always @(posedge ad9866_rxclk)
+	begin
+		if (ad9866_rxsync) begin
+			ad9866_rx_stage[5:0] <= ad9866_rx;
+		end else begin
+			ad9866_rx_stage[11:6] <= ad9866_rx;
+			ad9866_rx_input <= ad9866_rx_stage;
+		end
+	end
+
+reg iad9866_txsync;
+reg [11:0] ad9866_tx_stage;
+// TX path
+always @(posedge ad9866_rxclk)
+	begin
+		if (iad9866_txsync) begin
+			iad9866_txsync <= 1'b0;
+			ad9866_tx_stage <= ( (FPGA_PTT | VNA) ? DACD : 12'b000);
+		end else begin
+			iad9866_txsync <= 1'b1;
+		end
+	end
+
+reg [5:0] ad9866_txr;
+reg ad9866_txsyncr;
+
+always @(posedge ad9866_rxclk)
+	begin
+	 	ad9866_txr <= iad9866_txsync ? ad9866_tx_stage[5:0] : ad9866_tx_stage[11:6];
+	 	ad9866_txsyncr <= iad9866_txsync;
+	end 
+
+assign ad9866_txquietn = (FPGA_PTT | VNA); //1'b0;
+assign ad9866_tx = ad9866_txr;
+assign ad9866_txsync = ad9866_txsyncr;
+
+`else
+
+// AD9866 Code
+// Code for Half duplex
+
+assign ad9866_txen = FPGA_PTT;
+assign ad9866_rxen = ~FPGA_PTT;
+
+assign ad9866_rxclk = AD9866clkX1;
+assign ad9866_txclk = AD9866clkX1;
+
 // RX/TX port
 assign ad9866_adio = FPGA_PTT ? DACD : 12'bZ;
 
+`endif
+
+
 assign exp_ptt_n = FPGA_PTT;
 assign userout = IF_OC;
+
 
 // Test sine wave
 reg [3:0] incnt;
 always @ (posedge AD9866clkX1)
   begin
   	if (exp_present)
+`ifdef FULLDUPLEX
+		temp_ADC <= ad9866_rx_input;
+`else
 		temp_ADC <= FPGA_PTT ? DACD : ad9866_adio;
+`endif
 	else begin
 	    case (incnt)
 			4'h0 : temp_ADC = 12'h000;
@@ -1077,9 +703,9 @@ Hermes_ADC ADC_SPI(.clock(C122_cbclk), .SCLK(ADCCLK), .nCS(nADCCS), .MISO(ADCMIS
 	
 
 
-reg IF_Filter;
-reg IF_Tuner;
-reg IF_autoTune;
+//reg IF_Filter;
+//reg IF_Tuner;
+//reg IF_autoTune;
 
 //---------------------------------------------------------
 //                 Transmitter code 
@@ -1582,10 +1208,10 @@ assign  IF_PHY_drdy = have_room & ~IF_PHY_rdempty;
 */
 
 reg   [6:0] IF_OC;       			// open collectors on Hermes
-reg         IF_mode;     			// normal or Class E PA operation 
+//reg         IF_mode;     			// normal or Class E PA operation 
 reg         IF_RAND;     			// when set randomizer in ADCon
 reg         IF_DITHER;   			// when set dither in ADC on
-reg   [1:0] IF_ATTEN;    			// decode attenuator setting on Alex
+//reg   [1:0] IF_ATTEN;    			// decode attenuator setting on Alex
 reg         Preamp;					// selects input attenuator setting, 0 = 20dB, 1 = 0dB (preamp ON)
 reg   [1:0] IF_TX_relay; 			// Tx relay setting on Alex
 reg         IF_Rout;     			// Rx1 out on Alex
@@ -1615,10 +1241,10 @@ begin
     // RX_CONTROL_1
     {IF_DFS1, IF_DFS0} <= 2'b00;   	// decode speed 
     // RX_CONTROL_2
-    IF_mode            <= 1'b0;    	// decode mode, normal or Class E PA
+//    IF_mode            <= 1'b0;    	// decode mode, normal or Class E PA
     IF_OC              <= 7'b0;    	// decode open collectors on Hermes
     // RX_CONTROL_3
-    IF_ATTEN           <= 2'b0;    	// decode Alex attenuator setting 
+//    IF_ATTEN           <= 2'b0;    	// decode Alex attenuator setting 
     Preamp             <= 1'b1;    	// decode Preamp (Attenuator), default on
     IF_DITHER          <= 1'b1;    	// decode dither on or off
     IF_RAND            <= 1'b0;    	// decode randomizer on or off
@@ -1632,9 +1258,9 @@ begin
     IF_Mic_boost       <= 1'b0;    	// mic boost off 
     IF_Drive_Level     <= 8'b0;	   // drive at minimum
 	 IF_Line_In			  <= 1'b0;		// select Mic input, not Line in
-	 IF_Filter			  <= 1'b0;		// Apollo filter disabled (bypassed)
-	 IF_Tuner			  <= 1'b0;		// Apollo tuner disabled (bypassed)
-	 IF_autoTune	     <= 1'b0;		// Apollo auto-tune disabled
+//	 IF_Filter			  <= 1'b0;		// Apollo filter disabled (bypassed)
+//	 IF_Tuner			  <= 1'b0;		// Apollo tuner disabled (bypassed)
+//	 IF_autoTune	     <= 1'b0;		// Apollo auto-tune disabled
 	 IF_Apollo			  <= 1'b0;     //	Alex selected		
 	 VNA					  <= 1'b0;		// VNA disabled
 	 Alex_manual		  <= 1'b0; 	  	// default manual Alex filter selection (0 = auto selection, 1 = manual selection)
@@ -1653,10 +1279,10 @@ begin
       // RX_CONTROL_1
       {IF_DFS1, IF_DFS0}  <= IF_Rx_ctrl_1[1:0]; // decode speed 
       // RX_CONTROL_2
-      IF_mode             <= IF_Rx_ctrl_2[0];   // decode mode, normal or Class E PA
+//      IF_mode             <= IF_Rx_ctrl_2[0];   // decode mode, normal or Class E PA
       IF_OC               <= IF_Rx_ctrl_2[7:1]; // decode open collectors on Penelope
       // RX_CONTROL_3
-      IF_ATTEN            <= IF_Rx_ctrl_3[1:0]; // decode Alex attenuator setting 
+//      IF_ATTEN            <= IF_Rx_ctrl_3[1:0]; // decode Alex attenuator setting 
       Preamp              <= IF_Rx_ctrl_3[2];  // decode Preamp (Attenuator)  1 = On (0dB atten), 0 = Off (20dB atten)
       IF_DITHER           <= IF_Rx_ctrl_3[3];   // decode dither on or off
       IF_RAND             <= IF_Rx_ctrl_3[4];   // decode randomizer on or off
@@ -1672,9 +1298,9 @@ begin
 	  IF_Drive_Level	  <= IF_Rx_ctrl_1;	    	// decode drive level 
 	  IF_Mic_boost		  <= IF_Rx_ctrl_2[0];   	// decode mic boost 0 = 0dB, 1 = 20dB  
 	  IF_Line_In		  <= IF_Rx_ctrl_2[1];		// 0 = Mic input, 1 = Line In
-	  IF_Filter			  <= IF_Rx_ctrl_2[2];		// 1 = enable Apollo filter
-	  IF_Tuner			  <= IF_Rx_ctrl_2[3];		// 1 = enable Apollo tuner
-	  IF_autoTune		  <= IF_Rx_ctrl_2[4];		// 1 = begin Apollo auto-tune
+//	  IF_Filter			  <= IF_Rx_ctrl_2[2];		// 1 = enable Apollo filter
+//	  IF_Tuner			  <= IF_Rx_ctrl_2[3];		// 1 = enable Apollo tuner
+//	  IF_autoTune		  <= IF_Rx_ctrl_2[4];		// 1 = begin Apollo auto-tune
 	  IF_Apollo         <= IF_Rx_ctrl_2[5];      // 1 = Apollo enabled, 0 = Alex enabled 
 	  Alex_manual		  <= IF_Rx_ctrl_2[6]; 	  	// manual Alex HPF/LPF filter selection (0 = disable, 1 = enable)
 	  VNA					  <= IF_Rx_ctrl_2[7];		// 1 = enable VNA mode
@@ -1788,8 +1414,11 @@ wire [5:0] gain_value;
 
 assign gain_value = {~IF_DITHER, ~Hermes_atten};
 
+`ifdef FULLDUPLEX
+assign ad9866_pga = (FPGA_PTT | VNA) ? ((VNA & Preamp) ? DUPRXMAXGAIN : DUPRXMINGAIN) : (IF_RAND ? agc_value : gain_value);
+`else
 assign ad9866_pga = IF_RAND ? agc_value : gain_value;
-
+`endif
 
 //---------------------------------------------------------
 //   State Machine to manage PWM interface
@@ -1933,7 +1562,11 @@ wire [6:0] ad9866_drive_level;
 reg [8:0] dd;
 
 // Linear mapping from 0to255 to 0to39
+`ifdef FULLDUPLEX
+assign ad9866_drive_level = VNA ? VNATXGAIN : (IF_Drive_Level >> 1);
+`else
 assign ad9866_drive_level = (IF_Drive_Level >> 1);
+`endif
 
 always @*
 	case (ad9866_drive_level)
@@ -2072,24 +1705,33 @@ always @ (posedge ad9866spiclk)
 	lastdd <= dd;
 
 assign ad9866rqst = dd != lastdd;
-assign ad9866_mode = 1'b0;
 
 ad9866 ad9866_inst(.reset(~ad9866_rst_n),.clk(ad9866spiclk),.sclk(ad9866_sclk),.sdio(ad9866_sdio),.sdo(ad9866_sdo),.sen_n(ad9866_sen_n),.dataout(),.extrqst(ad9866rqst),.gain(dd));
 
 // Really 0.16 seconds at Hermes-Lite 61.44 MHz clock
 localparam half_second = 10000000; // at 48MHz clock rate
 
-	
+`ifdef FULLDUPLEX
+
+assign ad9866_mode = 1'b1;
+Led_flash Flash_LED0(.clock(AD9866clkX1), .signal(rxclipp), .LED(leds[0]), .period(half_second));
+Led_flash Flash_LED1(.clock(AD9866clkX1), .signal(rxgoodlvlp), .LED(leds[1]), .period(half_second));
+Led_flash Flash_LED2(.clock(AD9866clkX1), .signal(rxgoodlvln), .LED(leds[2]), .period(half_second));
+Led_flash Flash_LED3(.clock(AD9866clkX1), .signal(rxclipn), .LED(leds[3]), .period(half_second));
+
+`else
+
+assign ad9866_mode = 1'b0;	
 Led_flash Flash_LED0(.clock(AD9866clkX1), .signal(rxclipp | txclipp), .LED(leds[0]), .period(half_second));
 Led_flash Flash_LED1(.clock(AD9866clkX1), .signal(rxgoodlvlp | txgoodlvlp), .LED(leds[1]), .period(half_second));
 Led_flash Flash_LED2(.clock(AD9866clkX1), .signal(rxgoodlvln | txgoodlvln), .LED(leds[2]), .period(half_second));
 Led_flash Flash_LED3(.clock(AD9866clkX1), .signal(rxclipn | txclipn), .LED(leds[3]), .period(half_second));
 
+`endif
+
 Led_flash Flash_LED4(.clock(IF_clk), .signal(this_MAC), .LED(leds[4]), .period(half_second));
 Led_flash Flash_LED5(.clock(IF_clk), .signal(PHY_TX_EN), .LED(leds[5]), .period(half_second));
 Led_flash Flash_LED6(.clock(IF_clk), .signal(IF_SYNC_state == SYNC_RX_1_2), .LED(leds[6]), .period(half_second));	
-
-//assign leds[5:0] = ~lastad9866data;
 
 assign leds[7] = agc_delaycnt[25];
 

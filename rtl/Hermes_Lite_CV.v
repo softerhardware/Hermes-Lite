@@ -31,11 +31,22 @@ module Hermes_Lite(
 
 	// AD9866
 	output [5:0] ad9866_pga,
+
+`ifdef FULLDUPLEX
+	input [5:0] ad9866_rx,
+(* useioff = 1 *) output [5:0] ad9866_tx,
+	input ad9866_rxsync,
+	input ad9866_rxclk,
+(* useioff = 1 *) output ad9866_txsync,
+	output ad9866_txquietn,
+`else
 	inout [11:0] ad9866_adio,
 	output ad9866_rxen,
 	output ad9866_rxclk,
 	output ad9866_txen,
 	output ad9866_txclk,
+`endif
+
 	output ad9866_sclk,
     output ad9866_sdio,
     input  ad9866_sdo,
@@ -157,11 +168,20 @@ hermes_lite_core #(
 
 	// AD9866
 	.ad9866_pga(ad9866_pga),
+`ifdef FULLDUPLEX
+	.ad9866_tx(ad9866_tx),
+	.ad9866_rx(ad9866_rx),
+	.ad9866_rxsync(ad9866_rxsync),
+	.ad9866_rxclk(ad9866_rxclk),
+	.ad9866_txsync(ad9866_txsync),
+	.ad9866_txquietn(ad9866_txquietn),
+`else
 	.ad9866_adio(ad9866_adio),
 	.ad9866_rxen(ad9866_rxen),
 	.ad9866_rxclk(ad9866_rxclk),
 	.ad9866_txen(ad9866_txen),
 	.ad9866_txclk(ad9866_txclk),
+`endif
 	.ad9866_sclk(ad9866_sclk),
     .ad9866_sdio(ad9866_sdio),
     .ad9866_sdo(ad9866_sdo),
