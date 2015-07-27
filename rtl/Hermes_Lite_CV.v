@@ -29,6 +29,9 @@ module Hermes_Lite(
 	output [6:0] userout,
 	input [2:0] dipsw,
 
+    input cwkey_i,
+    output cwkey_o,
+
 	// AD9866
 	output [5:0] ad9866_pga,
 
@@ -75,7 +78,7 @@ module Hermes_Lite(
 // Ethernet Interface
 // 5c release, 4a testing
 parameter MAC = {8'h00,8'h1c,8'hc0,8'ha2,8'h22,8'h5c};
-parameter IP = {8'd192,8'd168,8'd33,8'd241};
+parameter IP = {8'd0,8'd0,8'd0,8'd0};
 
 // Clock Frequency
 //parameter CLK_FREQ = 61440000;
@@ -165,6 +168,9 @@ hermes_lite_core #(
 	.exp_ptt_n(exp_ptt_n),
 	.userout(userout),
 	.dipsw(dipsw),
+
+	.cwkey_i(cwkey_i),
+	.cwkey_o(cwkey_o),
 
 	// AD9866
 	.ad9866_pga(ad9866_pga),

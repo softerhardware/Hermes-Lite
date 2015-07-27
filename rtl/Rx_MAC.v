@@ -224,6 +224,7 @@ localparam	START = 5'd0,
 			SEND_TO_FIFO = 5'd5,
 			DHCP = 5'd6,
 			PING = 5'd7,
+			WRITEIP = 5'd8,
 			RETURN = 5'd13;
 
 localparam Broadcast = 48'hFF_FF_FF_FF_FF_FF;
@@ -479,6 +480,10 @@ begin
 						temp_Port 	 <= Port;							// save the calling PC's from Port
 						PHY_Rx_state <= METIS_DISCOVERY;
 					 end
+					 else if (PHY_output[47:40] == 8'h03 && !run) begin		// check for write IP request, no need to
+						left_shift <= 0;													// save IP and MAC details since we cycle 
+						PHY_Rx_state <= WRITEIP;										// power next.
+					 end					 
 					 else PHY_Rx_state <= RETURN;
 				end  				
 				else  PHY_Rx_state <= RETURN;							// non of the above so return						
@@ -654,6 +659,20 @@ PING:
 		end
 	end 
 
+// check that IP address is for this MAC, if so write the IP address then wait for ack, else return.
+WRITEIP:	
+	begin
+		case (left_shift)		
+		4: begin	
+				if (PHY_output[79:32] == This_MAC) begin  // is the IP address for this MAC?
+					YIADDR <= PHY_output[31:0];			// yes, so get the IP address to write
+					PHY_Rx_state <= RETURN;
+		end
+				else PHY_Rx_state <= RETURN;					// not for us so return
+		end
+		default: left_shift <= left_shift + 1'b1;
+		endcase		
+	end
 	
 // Clear any test flags and return to the start
 RETURN:

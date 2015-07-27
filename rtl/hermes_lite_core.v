@@ -68,6 +68,9 @@ module hermes_lite_core(
 
     output [6:0] userout,
     input [2:0] dipsw,
+
+    input cwkey_i,
+    output cwkey_o,
  
     // MII Ethernet PHY
   	output [3:0]PHY_TX,
@@ -364,6 +367,8 @@ wire rxgoodlvln = (temp_ADC[11:9] == 3'b100);
 
 
 `ifdef FULLDUPLEX
+
+adfjakjke
 
 reg [11:0] ad9866_rx_stage;
 reg [11:0] ad9866_rx_input;
@@ -787,8 +792,8 @@ wire signed [15:0] Q;
 
 // if in VNA mode use the Rx[0] phase word for the Tx
 assign C122_phase_word_Tx = VNA ? C122_sync_phase_word[0] : C122_sync_phase_word_Tx;
-assign                  I = VNA ? 16'd19274 : y2_i;   	// select VNA mode if active. Set CORDIC for max DAC output
-assign                  Q = VNA ? 0 : y2_r; 					// taking into account CORDICs gain i.e. 0x7FFF/1.7
+assign                  I = VNA ? 16'd19274 : (cwkey ? {1'b0, C122_cwlevel} : y2_i);   	// select VNA mode if active. Set CORDIC for max DAC output
+assign                  Q = (VNA | cwkey) ? 0 : y2_r; 					// taking into account CORDICs gain i.e. 0x7FFF/1.7
 
 
 // NOTE:  I and Q inputs reversed to give correct sideband out 
@@ -914,7 +919,7 @@ wire            IF_Rx_fifo_full;
 
 wire            clean_dash;      			// debounced dash key
 wire            clean_dot;       			// debounced dot key
-wire            clean_PTT_in;    			// debounced PTT button
+
 wire     [11:0] Penny_ALC;
 
 wire   [RFSZ:0] RX_USED;
@@ -942,7 +947,7 @@ assign OVERFLOW = (~leds[0] | ~leds[3]) & ~FPGA_PTT;
 Hermes_Tx_fifo_ctrl #(RX_FIFO_SZ, TX_FIFO_SZ) TXFC 
            (IF_rst, IF_clk, IF_tx_fifo_wdata, IF_tx_fifo_wreq, IF_tx_fifo_full,
             IF_tx_fifo_used, IF_tx_fifo_clr, IF_tx_IQ_mic_rdy,
-            IF_tx_IQ_mic_data, IF_chan, IF_last_chan, clean_dash, clean_dot, clean_PTT_in, OVERFLOW,
+            IF_tx_IQ_mic_data, IF_chan, IF_last_chan, clean_dash, clean_dot, cwkey, OVERFLOW,
             Penny_serialno, Merc_serialno, Hermes_serialno, Penny_ALC, AIN1, AIN2,
             AIN3, AIN4, AIN6, IO4, IO5, IO6, IO8, VNA_start, VNA);
 
@@ -1398,7 +1403,7 @@ begin
  end
 end
 
-assign FPGA_PTT = IF_Rx_ctrl_0[0]; // IF_Rx_ctrl_0 only updated when we get correct sync sequence
+assign FPGA_PTT = IF_Rx_ctrl_0[0] | cwkey; // IF_Rx_ctrl_0 only updated when we get correct sync sequence
 
 
 //------------------------------------------------------------
@@ -1534,11 +1539,56 @@ begin
 end
 
 //---------------------------------------------------------
-//  Debounce PTT input - active low
+//  Debounce CWKEY input - active low
 //---------------------------------------------------------
 
-//debounce de_PTT(.clean_pb(clean_PTT_in), .pb(~PTT), .clk(IF_clk));
-assign clean_PTT_in = 0;
+// 3 ms rise and fall, not shaped, but like HiQSDR
+// MAX CWLEVEL is picked to be 8*max cordic level for transmit
+// ADJUST if cordic max changes...
+localparam MAX_CWLEVEL = 18'h25a50;
+wire clean_cwkey;
+wire cwkey;
+reg [17:0] cwlevel;
+reg [1:0] cwstate;
+localparam	cwrx = 2'b00, cwkeydown = 2'b01, cwkeyup = 2'b11;
+
+// 5 ms debounce with 48 MHz clock
+debounce de_cwkey(.clean_pb(clean_cwkey), .pb(~cwkey_i), .clk(IF_clk));
+
+// CW state machine
+always @(posedge IF_clk)
+	begin case (cwstate)
+		cwrx: 
+			begin
+				cwlevel <= 18'h00;
+				if (clean_cwkey) cwstate <= cwkeydown;
+				else cwstate <= cwrx;
+			end
+
+		cwkeydown:
+			begin
+				if (cwlevel != MAX_CWLEVEL) cwlevel <= cwlevel + 18'h01;
+				if (clean_cwkey) cwstate <= cwkeydown;
+				else cwstate <= cwkeyup;
+			end
+
+		cwkeyup:
+			begin
+				if (cwlevel == 18'h00) cwstate <= cwrx;
+				else begin
+					cwstate <= cwkeyup;
+					cwlevel <= cwlevel - 18'h01;
+				end
+			end
+	endcase
+	end
+
+assign cwkey = cwstate != cwrx;
+assign cwkey_o = cwkey;
+
+wire [14:0] C122_cwlevel;
+cdc_sync #(15)
+    CWLVL  (.siga(cwlevel[17:3]), .rstb(C122_rst), .clkb(AD9866clkX1), .sigb(C122_cwlevel)); // To Tx domain
 
 
 //---------------------------------------------------------

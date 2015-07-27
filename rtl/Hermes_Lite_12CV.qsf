@@ -148,6 +148,8 @@ set_location_assignment PIN_M7 -to ADCMOSI
 set_location_assignment PIN_M6 -to ADCCLK
 set_location_assignment PIN_P6 -to ADCMISO
 set_location_assignment PIN_T8 -to nADCCS
+set_location_assignment PIN_N6 -to cwkey_i
+set_location_assignment PIN_R5 -to cwkey_o
 set_global_assignment -name VHDL_FILE RMII2MII_conv.vhd
 set_global_assignment -name SDC_FILE Hermes_Lite_CV.sdc
 set_global_assignment -name VERILOG_FILE Hermes_Lite_CV.v
@@ -240,6 +242,7 @@ set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to ADCMOSI
 set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to ADCCLK
 set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to ADCMISO
 set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to nADCCS
+set_instance_assignment -name WEAK_PULL_UP_RESISTOR ON -to cwkey_i
 set_global_assignment -name REMOVE_REDUNDANT_LOGIC_CELLS ON
 set_global_assignment -name ALLOW_ANY_RAM_SIZE_FOR_RECOGNITION ON
 set_global_assignment -name OPTIMIZATION_MODE "HIGH PERFORMANCE EFFORT"
