@@ -364,11 +364,7 @@ wire rxgoodlvlp = (temp_ADC[11:9] == 3'b011);
 wire rxgoodlvln = (temp_ADC[11:9] == 3'b100);
 
 
-
-
 `ifdef FULLDUPLEX
-
-adfjakjke
 
 reg [11:0] ad9866_rx_stage;
 reg [11:0] ad9866_rx_input;
