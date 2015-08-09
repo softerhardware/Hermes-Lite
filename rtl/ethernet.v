@@ -1,7 +1,7 @@
 
 
 module ethernet (
-
+	input clk50mhz,
 	// Send to ethernet
 	output Tx_clock_2_o,
 	output Tx_fifo_rdreq_o,
@@ -28,6 +28,7 @@ module ethernet (
   	output [3:0] PHY_TX,
   	output PHY_TX_EN,              //PHY Tx enable
   	input  PHY_TX_CLOCK,           //PHY Tx data clock
+  	output PHY_TX_CLOCK_out,
   	input  [3:0] PHY_RX,     
   	input  RX_DV,                  //PHY has data flag
   	input  PHY_RX_CLOCK,           //PHY Rx data clock
@@ -40,6 +41,7 @@ parameter MAC;
 parameter IP;
 parameter Hermes_serialno;
 
+assign PHY_TX_CLOCK_out = 1'b0;
 
 localparam read_reg_address = 5'h10; 	// PHY register to read from - gives connect speed and fully duplex	
 

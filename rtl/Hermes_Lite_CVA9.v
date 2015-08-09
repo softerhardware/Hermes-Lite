@@ -19,7 +19,7 @@
 //
 
 module Hermes_Lite(
-
+	input clk50mhz,
 	input exp_present,
 	input AD9866clk,
 	input clk,
@@ -55,14 +55,16 @@ module Hermes_Lite(
     output ad9866_rst_n,
     output ad9866_mode,
    
-    // RMII Ethernet PHY
-(* useioff = 1 *)     output [1:0] rmii_tx,
-	output rmii_tx_en,
-(* useioff = 1 *)     input [1:0] rmii_rx,
-    input rmii_osc,
-	input rmii_crs_dv,
-    inout PHY_MDIO,
-    output PHY_MDC,
+    // MII Interface
+  	output [3:0]PHY_TX,
+  	output PHY_TX_EN,              
+  	output  PHY_TX_CLOCK_out,           
+  	input  [3:0]PHY_RX,     
+  	input  RX_DV,                  
+  	input  PHY_RX_CLOCK,           
+  	output PHY_RESET_N,
+	inout  PHY_MDIO,               
+	output PHY_MDC,
 
 	//12 bit adc's (ADC78H90CIMT)
 	output ADCMOSI,                
@@ -75,7 +77,7 @@ module Hermes_Lite(
 
 // Ethernet Interface
 // 5c release, 4a testing
-parameter MAC = {8'h00,8'h1c,8'hc0,8'ha2,8'h22,8'h5c};
+parameter MAC = {8'h00,8'h1c,8'hc0,8'ha2,8'h22,8'hdd};
 parameter IP = {8'd0,8'd0,8'd0,8'd0};
 
 // Clock Frequency
@@ -83,7 +85,7 @@ parameter IP = {8'd0,8'd0,8'd0,8'd0};
 parameter CLK_FREQ = 73728000;
 
 // Number of Receivers
-parameter NR = 8; // number of receivers to implement
+parameter NR = 7; // number of receivers to implement
 
 
 
@@ -101,38 +103,6 @@ ifclocks_cv ifclocks_cv_inst(
 	.outclk_2(slowclk),
 	.locked(IF_locked)
 	);
-
-// RMII2MII Conversion
-wire [3:0] PHY_TX;
-wire PHY_TX_EN;              //PHY Tx enable
-reg PHY_TX_CLOCK;           //PHY Tx data clock
-wire [3:0] PHY_RX;     
-wire RX_DV;                  //PHY has data flag
-reg PHY_RX_CLOCK;           //PHY Rx data clock
-wire PHY_RESET_N;
-
-RMII2MII_rev2 RMII2MII_inst(
-	.clk(rmii_osc),
-	.resetn(1'b1),
-	.phy_RXD(rmii_rx),
-	.phy_CRS(rmii_crs_dv),
-	.mac_RXD(PHY_RX),
-	.mac_RX_CLK(PHY_RX_CLOCK),
-	.mac_RX_DV(RX_DV),
-	.mac_TXD(PHY_TX),
-	.mac_TX_EN(PHY_TX_EN),
-	.phy_TXD(rmii_tx),
-	.phy_TX_EN(rmii_tx_en),
-	.mac_TX_CLK(PHY_TX_CLOCK),
-	.mac_MDC_in(),
-	.phy_MDC_out(),
-	.mac_MDO_oen(),
-	.mac_MDO_in(),
-	.phy_MDIO(),
-	.mac_MDI_out(),
-	.phy_resetn()
-);
-
 
 // PLL clk must me on input 2 or 3
 clkmux_cv clkmux (
@@ -152,6 +122,7 @@ hermes_lite_core #(
 	) 
 
 	hermes_lite_core_inst(
+	.clk50mhz(clk50mhz),
 	.exp_present(dipsw[2]),
 	.AD9866clkX1(AD9866clkX1),
 
@@ -196,7 +167,8 @@ hermes_lite_core #(
     // MMI Ethernet PHY
   	.PHY_TX(PHY_TX),
   	.PHY_TX_EN(PHY_TX_EN),        
-  	.PHY_TX_CLOCK(PHY_TX_CLOCK),
+  	.PHY_TX_CLOCK(1'b0),
+  	.PHY_TX_CLOCK_out(PHY_TX_CLOCK_out),
   	.PHY_RX(PHY_RX),     
   	.RX_DV(RX_DV),
   	.PHY_RX_CLOCK(PHY_RX_CLOCK),         

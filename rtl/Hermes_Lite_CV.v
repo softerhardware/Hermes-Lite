@@ -83,7 +83,7 @@ parameter IP = {8'd0,8'd0,8'd0,8'd0};
 // Clock Frequency
 //parameter CLK_FREQ = 61440000;
 parameter CLK_FREQ = 73728000;
-
+// Added
 // Number of Receivers
 parameter NR = 2; // number of receivers to implement
 
@@ -154,6 +154,7 @@ hermes_lite_core #(
 	) 
 
 	hermes_lite_core_inst(
+	.clk50mhz(1'b0),
 	.exp_present(exp_present),
 	.AD9866clkX1(AD9866clkX1),
 

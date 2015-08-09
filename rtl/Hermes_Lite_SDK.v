@@ -119,6 +119,7 @@ hermes_lite_core #(
 	) 
 
 	hermes_lite_core_inst(
+	.clk50mhz(clk50mhz),
 	.exp_present(exp_present),
 	.AD9866clkX1(AD9866clkX1),
 

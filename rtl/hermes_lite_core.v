@@ -26,6 +26,7 @@
 
 module hermes_lite_core(
 
+	input clk50mhz,
 	input exp_present,
 	input AD9866clkX1,
 
@@ -76,6 +77,7 @@ module hermes_lite_core(
   	output [3:0]PHY_TX,
   	output PHY_TX_EN,              //PHY Tx enable
   	input  PHY_TX_CLOCK,           //PHY Tx data clock
+  	output PHY_TX_CLOCK_out,	   //Output for RGMII
   	input  [3:0]PHY_RX,     
   	input  RX_DV,                  //PHY has data flag
   	input  PHY_RX_CLOCK,           //PHY Rx data clock
@@ -181,6 +183,8 @@ wire reset;
 
 ethernet #(.MAC(MAC), .IP(IP), .Hermes_serialno(Hermes_serialno)) ethernet_inst (
 
+	.clk50mhz(clk50mhz),
+
 	// Send to ethernet
 	.Tx_clock_2_o(Tx_clock_2),
 	.Tx_fifo_rdreq_o(Tx_fifo_rdreq),
@@ -207,6 +211,7 @@ ethernet #(.MAC(MAC), .IP(IP), .Hermes_serialno(Hermes_serialno)) ethernet_inst 
   	.PHY_TX(PHY_TX),
   	.PHY_TX_EN(PHY_TX_EN),              //PHY Tx enable
   	.PHY_TX_CLOCK(PHY_TX_CLOCK),           //PHY Tx data clock
+  	.PHY_TX_CLOCK_out(PHY_TX_CLOCK_out),
   	.PHY_RX(PHY_RX),     
   	.RX_DV(RX_DV),                  //PHY has data flag
   	.PHY_RX_CLOCK(PHY_RX_CLOCK),           //PHY Rx data clock
@@ -1776,7 +1781,7 @@ Led_flash Flash_LED3(.clock(AD9866clkX1), .signal(rxclipn | txclipn), .LED(leds[
 `endif
 
 Led_flash Flash_LED4(.clock(IF_clk), .signal(this_MAC), .LED(leds[4]), .period(half_second));
-Led_flash Flash_LED5(.clock(IF_clk), .signal(PHY_TX_EN), .LED(leds[5]), .period(half_second));
+//Led_flash Flash_LED5(.clock(IF_clk), .signal(PHY_TX_EN), .LED(leds[5]), .period(half_second));
 Led_flash Flash_LED6(.clock(IF_clk), .signal(IF_SYNC_state == SYNC_RX_1_2), .LED(leds[6]), .period(half_second));	
 
 assign leds[7] = agc_delaycnt[25];
