@@ -287,20 +287,25 @@ begin
 							    end
 //					// read next two bytes and look for lease time, DHCP server IP address or end 
 						  243: begin  
-									 option[15:8] <= rx_data;
-									 rx_byte_no <=  rx_byte_no + 9'd1;
+									option[15:8] <= rx_data;
+									if (rx_data == 8'hFF) begin // early exit if no padding in ACK
+									 	dhcp_success <= 1'b1;
+										dhcp_failed  <= 1'b0;	
+										rx_state <= RX_IDLE;
+									end										 
+									rx_byte_no <=  rx_byte_no + 9'd1;
 								 end 
 					     244: begin 
 									option[7:0] <= rx_data;
 									rx_byte_no <=  rx_byte_no + 9'd1;
 								 end 
 						  245: begin 
-									if (option[15:8] == 8'hFF) begin 		// end of DHCP data
-										dhcp_success <= 1'b1;
-										dhcp_failed  <= 1'b0;	
-										rx_state <= RX_IDLE;	
-									end 
-									else if (option == 16'h3304) begin 					// get lease time 
+									//if (option[15:8] == 8'hFF) begin 		// end of DHCP data
+									//	dhcp_success <= 1'b1;
+									//	dhcp_failed  <= 1'b0;	
+									//	rx_state <= RX_IDLE;	
+									//end 
+									if (option == 16'h3304) begin 					// get lease time 
 										lease[31:24] <= rx_data;
 										rx_byte_no <= 246;  					   
 									end

@@ -23,6 +23,7 @@ module ethernet (
 	input IF_rst_i,
 	output reset_o,
 	input [1:0] dipsw_i,
+	input [7:0] AssignNR,
 
     // MII Ethernet PHY
   	output [3:0] PHY_TX,
@@ -482,7 +483,7 @@ Tx_MAC Tx_MAC_inst (.Tx_clock(Tx_clock), .Tx_clock_2(Tx_clock_2), .IF_rst(IF_rst
 			        .Hermes_serialno(Hermes_serialno),
 			        .sp_fifo_rddata(sp_fifo_rddata), .sp_fifo_rdreq(sp_fifo_rdreq), 
 			        .sp_fifo_rdused(), .wide_spectrum(wide_spectrum), .have_sp_data(sp_data_ready),
-					  .AssignIP(AssignIP), .IDHermesLite(dipsw[0])
+					  .AssignIP(AssignIP), .IDHermesLite(dipsw[0]), .AssignNR(AssignNR)
 			        ); 
 
 //------------------------ sequence ARP and Ping requests -----------------------------------

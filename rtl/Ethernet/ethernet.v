@@ -23,6 +23,7 @@ module ethernet (
 	input IF_rst_i,
 	output reset_o,
 	input [1:0] dipsw_i,
+	input [7:0] AssignNR,
 
 	//hardware pins
 	output [3:0]PHY_TX,
@@ -136,6 +137,7 @@ Tx_send tx_send_inst(
 	.IP_valid(1'b1), 
 	.Hermes_serialno(Hermes_serialno), 
 	.IDHermesLite(dipsw_i[0]),
+	.AssignNR(AssignNR),
 	.PHY_Tx_data(PHY_Tx_data_i), 
 	.PHY_Tx_rdused(PHY_Tx_rdused_i), 
 	.Tx_fifo_rdreq(Tx_fifo_rdreq_o),

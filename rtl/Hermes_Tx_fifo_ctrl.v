@@ -80,8 +80,8 @@ output reg             Tx_fifo_clr;
 input  wire            Tx_IQ_mic_rdy;
 input  wire     [63:0] Tx_IQ_mic_data;
 
-output reg       [2:0] IF_chan; // which IF_mic_IQ_Data is needed
-input  wire      [2:0] IF_last_chan;
+output reg       [4:0] IF_chan; // which IF_mic_IQ_Data is needed
+input  wire      [4:0] IF_last_chan;
 
 input  wire            clean_dash;       // debounced dash
 input  wire            clean_dot;        // debounced dot
@@ -138,7 +138,7 @@ localparam  AD_IDLE               = 0,
             AD_ERR                = 13;
 
 reg [6:0] loop_cnt, num_loops;
-reg [5:0] pad_cnt, pad_loops;
+reg [6:0] pad_cnt, pad_loops;
 
 always @*
 begin
@@ -147,26 +147,74 @@ begin
     1: num_loops = 35; //(512 - 8)bytes/14 - 1 = 35
     2: num_loops = 24; //(512 - 8)bytes/20 - 1 = 24.2
     3: num_loops = 18; //(512 - 8)bytes/26 - 1 = 18.38
-	 4: num_loops = 14; //(512 - 8)bytes/32 - 1 = 14.75
-   5: num_loops = 12;
-   6: num_loops = 10;
-   7: num_loops = 9;
-    default: num_loops = 62;
+    4: num_loops = 14; //(512 - 8)bytes/32 - 1 = 14.75
+    5: num_loops = 12;
+    6: num_loops = 10;
+    7: num_loops = 9;
+    8: num_loops = 8;
+    9: num_loops = 7;
+   10: num_loops = 6;
+   11: num_loops = 5;
+   12: num_loops = 5;
+   13: num_loops = 4;
+   14: num_loops = 4;
+   15: num_loops = 4;
+   16: num_loops = 3;
+   17: num_loops = 3;
+   18: num_loops = 3;
+   19: num_loops = 3;
+   20: num_loops = 2;
+   21: num_loops = 2;
+   22: num_loops = 2;
+   23: num_loops = 2;
+   24: num_loops = 2;
+   25: num_loops = 2;
+   26: num_loops = 2;
+   27: num_loops = 1;
+   28: num_loops = 1;
+   29: num_loops = 1;
+   30: num_loops = 1;
+   31: num_loops = 1;
+   default: num_loops = 1;
   endcase
 end
 
 always @*
 begin
   case (IF_last_chan)
-    0: pad_loops = 0;  
-    1: pad_loops = 0;  
-    2: pad_loops = 2;  
-    3: pad_loops = 5; 
+    0: pad_loops = 0;
+    1: pad_loops = 0;
+    2: pad_loops = 2;
+    3: pad_loops = 5;
 	  4: pad_loops = 12;
-    5: pad_loops = 5;  
-    6: pad_loops = 10; 
+    5: pad_loops = 5;
+    6: pad_loops = 10;
     7: pad_loops = 2;
-    default: pad_loops = 0;
+    8: pad_loops = 0;
+    9: pad_loops = 4;
+   10: pad_loops = 14;
+   11: pad_loops = 30;
+   12: pad_loops = 12;
+   13: pad_loops = 37;
+   14: pad_loops = 22;
+   15: pad_loops = 7;
+   16: pad_loops = 44;
+   17: pad_loops = 32;
+   18: pad_loops = 20;
+   19: pad_loops = 8;
+   20: pad_loops = 60;
+   21: pad_loops = 51;
+   22: pad_loops = 42;
+   23: pad_loops = 33;
+   24: pad_loops = 24;
+   25: pad_loops = 15;
+   26: pad_loops = 6;
+   27: pad_loops = 82;
+   28: pad_loops = 76;
+   29: pad_loops = 70;
+   30: pad_loops = 64;
+   31: pad_loops = 58;
+   default: pad_loops = 0;
   endcase
 end
 

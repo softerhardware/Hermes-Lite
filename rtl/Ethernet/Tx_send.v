@@ -32,6 +32,7 @@ module Tx_send (
 	input IP_valid,
 	input [7:0] Hermes_serialno,
 	input IDHermesLite,
+	input  [8:0]AssignNR,
 
 	input [7:0] PHY_Tx_data,
 	input [10:0] PHY_Tx_rdused,
@@ -76,6 +77,19 @@ reg [10:0] byte_no;
 reg [7:0] tx_data;
 
 assign udp_tx_data = tx_data;
+
+wire [7:0] emuID [0:9];
+assign emuID[0]  = IDHermesLite ? 8'h06 : 8'h01;
+// emuID for SkimSrv / aka CW Skimmer HERMESLT
+assign emuID[1]  = "H";
+assign emuID[2]  = "E";
+assign emuID[3]  = "R";
+assign emuID[4]  = "M";
+assign emuID[5]  = "E";
+assign emuID[6]  = "S";
+assign emuID[7]  = "L";
+assign emuID[8]  = "T";
+assign emuID[9]  = AssignNR;
 
 always @ (posedge tx_clock)	
 begin
@@ -187,7 +201,7 @@ DISCOVER1:
 
 DISCOVER2:
 	begin
-		if (byte_no < 11'd59) begin // Total-1 	
+		if (byte_no < 11'd59) begin // Total-1
 			if (udp_tx_active) begin
 				case (byte_no)
 					 11'd0: tx_data <= Type_2;					
@@ -198,11 +212,21 @@ DISCOVER2:
 					 11'd5: tx_data <= This_MAC[23:16];
 					 11'd6: tx_data <= This_MAC[15:8];
 					 11'd7: tx_data <= This_MAC[7:0];
-					 11'd8: tx_data <=  Hermes_serialno;
-					 default: tx_data <= IDHermesLite ? 8'h06 : 8'h01; 
+					 11'd8: tx_data <= Hermes_serialno;
+					 11'd9: tx_data <= emuID[0]; // IDHermesLite ? 8'h06 : 8'h01;
+					 11'd10: tx_data <= emuID[1]; // "H"
+					 11'd11: tx_data <= emuID[2]; // "E"
+					 11'd12: tx_data <= emuID[3]; // "R"
+					 11'd13: tx_data <= emuID[4]; // "M"
+					 11'd14: tx_data <= emuID[5]; // "E"
+					 11'd15: tx_data <= emuID[6]; // "S"
+					 11'd16: tx_data <= emuID[7]; // "L"
+					 11'd17: tx_data <= emuID[8]; // "T"
+					 11'd18: tx_data <= emuID[9]; // NR
+					 default: tx_data <= emuID[0];
 				endcase				
 				byte_no <= byte_no + 11'd1;
-			end 
+			end
 		end
 		else begin
 			state <= START;

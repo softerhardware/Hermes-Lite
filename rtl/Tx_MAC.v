@@ -109,7 +109,7 @@ module Tx_MAC (Tx_clock, Tx_clock_2, IF_rst, Send_ARP,ping_reply,
 			   IP_valid, DHCP_IP, DHCP_MAC, DHCP_request_renew, DHCP_request_renew_sent,
 			   Hermes_serialno,
 			   sp_fifo_rddata, sp_fifo_rdreq, sp_fifo_rdempty, sp_fifo_rdused, have_sp_data,
-				 AssignIP, IDHermesLite);
+				 AssignIP, IDHermesLite, AssignNR);
 			   
 			   
 			   
@@ -150,6 +150,7 @@ input  [12:0]sp_fifo_rdused;	// SP_fifo contents
 input  have_sp_data;				// high when sp_fifo is full.
 input  [31:0]AssignIP;			// IP address read from EEPROM
 input IDHermesLite;
+input  [7:0]AssignNR;
 
 output LED;							// show MAC is doing something!
 output Tx_fifo_rdreq;			// high to indicate read from Tx fifo required
@@ -290,6 +291,18 @@ wire [15:0]UDP_DHCP_req_length;
 wire [15:0]DHCP_req_renew_length;
 wire [15:0]UDP_DHCP_req_renew_length;
 
+wire [7:0] emuID [0:9];
+assign emuID[0]  = IDHermesLite ? 8'h06 : 8'h01;
+// emuID for SkimSrv / aka CW Skimmer HERMESLT
+assign emuID[1]  = "H";
+assign emuID[2]  = "E";
+assign emuID[3]  = "R";
+assign emuID[4]  = "M";
+assign emuID[5]  = "E";
+assign emuID[6]  = "S";
+assign emuID[7]  = "L";
+assign emuID[8]  = "T";
+assign emuID[9]  = AssignNR;
 
 reg [9:0] rdaddress;
 reg [7:0] pkt_data;
@@ -966,7 +979,12 @@ METIS_DISCOVERY:
 			state_Tx <= METIS_DISCOVERY;
 		end
 		else if (zero_count < 50)begin				// send 50 x 0x06s *** tidy code, Hermes ID for PC code.
-			Tx_data <= IDHermesLite ? 8'h06 : 8'h01;
+			if (zero_count < 10)begin
+				Tx_data <= emuID[zero_count];
+			end
+			else begin
+				Tx_data <= emuID[0];
+			end
 			zero_count <= zero_count + 1'b1;
 			state_Tx <= METIS_DISCOVERY;	
 		end 
