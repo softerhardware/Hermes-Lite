@@ -71,8 +71,8 @@ PREAMBLE1:
 // byte_cnt is 1 starting in PREAMBLE2
 PREAMBLE2:
 	begin
-		if (rx_valid && !broadcast && rx_data == 8'h01) rx_state <= SEND_TO_FIFO;
-		else if (rx_valid && !broadcast && rx_data == 8'h04) rx_state <= RUN;	
+		if (rx_valid && rx_data == 8'h01) rx_state <= SEND_TO_FIFO;
+		else if (rx_valid && rx_data == 8'h04) rx_state <= RUN;	
 		else if (rx_valid && broadcast && rx_data == 8'h02) rx_state <= METIS_DISCOVERY;
 		else if (rx_valid && broadcast && !run && rx_data == 8'h03) rx_state <= WRITEIP;
 		else rx_state <= START;

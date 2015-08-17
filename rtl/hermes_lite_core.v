@@ -97,6 +97,7 @@ module hermes_lite_core(
 // Ethernet Interface
 parameter MAC;
 parameter IP;
+parameter GIGABIT = 0;
 
 // ADC Oscillator
 parameter CLK_FREQ = 61440000;
@@ -318,17 +319,26 @@ SP_fifo  SPF (.aclr(C122_rst | !run), .wrclk (AD9866clkX1), .rdclk(Tx_clock_2),
 sp_rcv_ctrl SPC (.clk(AD9866clkX1), .reset(C122_rst), .sp_fifo_wrempty(sp_fifo_wrempty),
                  .sp_fifo_wrfull(sp_fifo_wrfull), .write(sp_fifo_wrreq), .have_sp_data(have_sp_data));	
 				 
-// the wideband data is presented too fast for the PC to swallow so slow down to 12500/4096 = 3kHz
-// use a counter and when zero enable the wide spectrum data
+// the wideband data is presented too fast for the PC to swallow so slow down 
 
-reg [15:0]sp_delay;   
 wire sp_data_ready;
 
-always @ (posedge Tx_clock_2)
-		sp_delay <= sp_delay + 15'd1;
-		
-assign sp_data_ready = (sp_delay == 0 && have_sp_data); 
-      
+generate
+	if (GIGABIT == 0) begin: SLOWTXCLOCK
+		// rate is 12.5e6/2**16
+		reg [15:0]sp_delay;   
+		always @ (posedge Tx_clock_2)
+			sp_delay <= sp_delay + 15'd1;
+		assign sp_data_ready = (sp_delay == 0 && have_sp_data); 
+    end else begin: FASTTXCLOCK
+    	// rate is 125e6/2**19
+ 		reg [18:0]sp_delay;   
+		always @ (posedge Tx_clock_2)
+			sp_delay <= sp_delay + 15'd1;
+		assign sp_data_ready = (sp_delay == 0 && have_sp_data);    	
+	end
+endgenerate
+
 assign IF_mic_Data = 0;
 
 //---------------------------------------------------------
@@ -1781,7 +1791,7 @@ Led_flash Flash_LED3(.clock(AD9866clkX1), .signal(rxclipn | txclipn), .LED(leds[
 `endif
 
 Led_flash Flash_LED4(.clock(IF_clk), .signal(this_MAC), .LED(leds[4]), .period(half_second));
-//Led_flash Flash_LED5(.clock(IF_clk), .signal(PHY_TX_EN), .LED(leds[5]), .period(half_second));
+Led_flash Flash_LED5(.clock(IF_clk), .signal(run), .LED(leds[5]), .period(half_second));
 Led_flash Flash_LED6(.clock(IF_clk), .signal(IF_SYNC_state == SYNC_RX_1_2), .LED(leds[6]), .period(half_second));	
 
 assign leds[7] = agc_delaycnt[25];

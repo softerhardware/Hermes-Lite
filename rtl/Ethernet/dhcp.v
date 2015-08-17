@@ -296,22 +296,25 @@ begin
 								 end 
 						  245: begin 
 									if (option[15:8] == 8'hFF) begin 		// end of DHCP data
-												dhcp_success <= 1'b1;
-												dhcp_failed  <= 1'b0;	
-												rx_state <= RX_IDLE;	
+										dhcp_success <= 1'b1;
+										dhcp_failed  <= 1'b0;	
+										rx_state <= RX_IDLE;	
 									end 
 									else if (option == 16'h3304) begin 					// get lease time 
-												lease[31:24] <= rx_data;
-												rx_byte_no <= 246;  					   
+										lease[31:24] <= rx_data;
+										rx_byte_no <= 246;  					   
 									end
 									else  if (option == 16'h3604) begin				// get DHCP sever IP address
-												server_ip[31:24] <= rx_data;
-												rx_byte_no <= 249; 				
+										server_ip[31:24] <= rx_data;
+										rx_byte_no <= 249; 				
 									end 
+									else if (option[7:0] == 8'h01) begin // Handle size 1 option case
+										rx_byte_no <= 243;
+									end
 									else begin
-											skip <= option[7:0];							// skip these number of bytes then return
-											rx_byte_no <= 252;							
-											end
+										skip <= option[7:0];							// skip these number of bytes then return
+										rx_byte_no <= 252;							
+										end
 								  end 
 								  
 						  246: begin 
@@ -357,7 +360,13 @@ begin
 		default: rx_state <= RX_IDLE;	
 	endcase
 	
-	else 	rx_state <= RX_IDLE;	// !(dhcp_rx_active && rx_enable)	
+	else begin // !(dhcp_rx_active && rx_enable)
+		if (!rx_enable) begin
+			dhcp_success <= 1'b0;
+			dhcp_failed <= 1'b0;
+		end
+		rx_state <= RX_IDLE;
+	end		
 end
 
 endmodule

@@ -534,6 +534,7 @@ assign Rx_enable_o = Rx_enable;
 assign Rx_fifo_data_o = Rx_fifo_data;
 
 assign this_MAC_o = this_MAC;
+
 assign run_o = run;
 assign sp_fifo_rdreq_o = sp_fifo_rdreq;
 

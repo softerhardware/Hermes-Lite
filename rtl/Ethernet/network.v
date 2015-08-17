@@ -49,7 +49,7 @@ module network (
 
   //status output
   output speed_1Gbit,
-  output [4:0] network_state,  
+  output [3:0] network_state,  
   output [7:0] network_status,
   output static_ip_assigned,
   output dhcp_timeout,
@@ -191,30 +191,30 @@ always @(negedge clock_2_5MHz)
 		  end
 
       // wait for dhcp success, fail or time out.  Do time out here since same clock speed for 100/1000T
-		// If DHCP provided IP address then set lease timeout to lease/2 seconds.
+		  // If DHCP provided IP address then set lease timeout to lease/2 seconds.
       ST_DHCP:
-        begin
-		  dhcp_tx_enable <= 1'b0;			// clear dhcp flag
+      begin
+		    dhcp_tx_enable <= 1'b0;			// clear dhcp flag
 			  if (dhcp_success) begin 
 					local_ip <= ip_accept;
-					if (lease == 32'd0) begin 
-						dhcp_renew_timer <= 43_200 * 2_500_000;  // use 43,200 seconds (12 hours) if no lease time set
-						state <= ST_DHCP_RENEW;
-					end 
-					else
-					begin 
-						dhcp_renew_timer <= (lease * 2_500_000) >> 1;  // set timer to half lease time.
-						state <= ST_DHCP_RENEW;
-					end 
+          dhcp_timer <= 24'd12_500_000; // renew after success needs another 5 seconds 
+					if (lease == 32'd0) dhcp_renew_timer <= 43_200 * 2_500_000;  // use 43,200 seconds (12 hours) if no lease time set
+          else dhcp_renew_timer <= (lease * 2_500_000) >> 1;  // set timer to half lease time.
+          state <= ST_DHCP_RENEW; 
 			  end 
-			  else if (dhcp_failed || (dhcp_timer == 0)) begin  // use apipa  
-					 local_ip <= apipa_ip;
-					 state <= ST_RUNNING;
-			  end
-		     else dhcp_timer <= dhcp_timer - 24'd1;
+        else if (dhcp_timer == 0) begin  // use apipa  
+           local_ip <= apipa_ip;
+           state <= ST_RUNNING;
+        end
+        else if (dhcp_failed && dhcp_timer[19:0] == 0) begin  // attempt again every ~.4 seconds
+          dhcp_renew_timer <= 38'h020000; // delay 50 ms
+          dhcp_timer <= dhcp_timer - 24'd1; 
+          state <= ST_DHCP_RENEW;
+        end
+		    else dhcp_timer <= dhcp_timer - 24'd1;
 		  end
         
-		ST_DHCP_RENEW:  // DHCP IP address obtained 
+		  ST_DHCP_RENEW:  // DHCP IP address obtained 
 		  begin
 				dhcp_enable <= 1'b0;				// disable dhcp receive
 				if (dhcp_renew_timer == 0)

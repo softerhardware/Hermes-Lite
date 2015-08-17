@@ -63,6 +63,7 @@ wire [10:0] udp_tx_length;
 wire udp_tx_enable;
 wire udp_tx_active;
 
+wire [3:0] network_state;
 wire [47:0] local_mac;
 
 network #(.MAC(MAC), .IP(IP)) network_inst(
@@ -105,7 +106,8 @@ network #(.MAC(MAC), .IP(IP)) network_inst(
   
   	.SO(1'b0),                  
   	.MODE2(1'b1),
-  	.network_status(network_status)
+  	.network_status(network_status),
+  	.network_state(network_state)
 );
 
 Rx_recv rx_recv_inst(
@@ -124,10 +126,11 @@ Rx_recv rx_recv_inst(
 // Only synchronizing one signal as run and wide_spectrum can take time to resolve meta stable state
 wire discovery_reply_sync;
 sync sync_inst1(.clock(tx_clock), .sig_in(discovery_reply), .sig_out(discovery_reply_sync));
+wire Tx_reset;
 
 Tx_send tx_send_inst(
 	.tx_clock(tx_clock),  
-	.Tx_reset(1'b0), 
+	.Tx_reset(Tx_reset), 
 	.run(run), 
 	.wide_spectrum(wide_spectrum), 
 	.IP_valid(1'b1), 
@@ -151,9 +154,13 @@ Tx_send tx_send_inst(
 assign Tx_clock_2_o = tx_clock;
 assign PHY_data_clock_o = rx_clock;
 //assign This_MAC_o = local_mac;
-assign this_MAC_o = 1'b0;
+assign this_MAC_o = network_status[0];
+
 assign run_o = run;
 assign reset_o = ~PHY_RESET_N;
+
+// Set Tx_reset (no sdr send) if not in RUNNING or DHCP RENEW state
+assign Tx_reset = network_state[3:1] != 3'b100;
 
 
 endmodule

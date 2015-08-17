@@ -87,6 +87,8 @@ parameter CLK_FREQ = 73728000;
 // Number of Receivers
 parameter NR = 7; // number of receivers to implement
 
+parameter GIGABIT = 1;
+
 
 
 // Clocks
@@ -118,7 +120,8 @@ hermes_lite_core #(
 	.MAC(MAC),
 	.IP(IP),
 	.CLK_FREQ(CLK_FREQ),
-	.NR(NR)
+	.NR(NR),
+	.GIGABIT(GIGABIT)
 	) 
 
 	hermes_lite_core_inst(
