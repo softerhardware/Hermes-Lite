@@ -144,7 +144,7 @@ parameter  Hermes_serialno = 8'd31;     // Serial number of this version
 localparam Penny_serialno = 8'd00;      // Use same value as equ1valent Penny code 
 localparam Merc_serialno = 8'd00;       // Use same value as equivalent Mercury code
 
-localparam RX_FIFO_SZ  = 4096;          // 16 by 4096 deep RX FIFO
+localparam RX_FIFO_SZ  = 8192;          // 16 by 4096 deep RX FIFO
 localparam TX_FIFO_SZ  = 1024;          // 16 by 1024 deep TX FIFO  
 localparam SP_FIFO_SZ = 2048;           // 16 by 8192 deep SP FIFO, was 16384 but wouldn't fit
 
@@ -1370,8 +1370,9 @@ generate
         if (IF_rst) IF_frequency[c+1] <= 32'd0;
         else if (IF_Rx_save) begin
             if (IF_Rx_ctrl_0[7:1] == ((c < 7) ? c+2 : c+11)) begin
-                if (IF_last_chan >= c) IF_frequency[c+1] <= freqcomp[56:25];
-                else IF_frequency[c+1] <= IF_frequency[0];
+              //if (IF_last_chan >= c) 
+              IF_frequency[c+1] <= freqcomp[56:25];
+              //else IF_frequency[c+1] <= IF_frequency[0];
             end                 
         end
     end
