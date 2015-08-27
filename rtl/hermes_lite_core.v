@@ -144,7 +144,7 @@ parameter  Hermes_serialno = 8'd31;     // Serial number of this version
 localparam Penny_serialno = 8'd00;      // Use same value as equ1valent Penny code 
 localparam Merc_serialno = 8'd00;       // Use same value as equivalent Mercury code
 
-localparam RX_FIFO_SZ  = 8192;          // 16 by 4096 deep RX FIFO
+localparam RX_FIFO_SZ  = 4096;          // 16 by 4096 deep RX FIFO
 localparam TX_FIFO_SZ  = 1024;          // 16 by 1024 deep TX FIFO  
 localparam SP_FIFO_SZ = 2048;           // 16 by 8192 deep SP FIFO, was 16384 but wouldn't fit
 
@@ -619,6 +619,16 @@ wire              IF_IQ_Data_rdy;
 wire         [47:0] IF_IQ_Data;
 wire             test_strobe3;
 
+// Pipeline for adc fanout
+reg [11:0] adcpipe [0:3];
+always @ (posedge AD9866clkX1) begin
+    adcpipe[0] <= temp_ADC;
+    adcpipe[1] <= temp_ADC;
+    adcpipe[2] <= temp_ADC;
+    adcpipe[3] <= temp_ADC;
+end
+
+
 // set the decimation rate 40 = 48k.....2 = 960k
     
     reg [5:0] rate;
@@ -668,7 +678,7 @@ generate
     .frequency(C122_sync_phase_word[c]),
     .out_strobe(strobe[c]),
     //input
-    .in_data(temp_ADC),
+    .in_data(adcpipe[c/8]),
     //output
     .out_data_I(rx_I[c]),
     .out_data_Q(rx_Q[c])
@@ -1140,7 +1150,7 @@ begin
     SYNC_FINISH:
     begin    
       IF_Rx_fifo_wreq  = IF_PHY_drdy;
-      if (IF_SYNC_frame_cnt == ((512-8)/2)) begin  // frame ended, go get sync again
+      if (IF_PHY_drdy & (IF_SYNC_frame_cnt == ((512-8)/2)-1)) begin  // frame ended, go get sync again
         IF_SYNC_state_next = SYNC_IDLE;
       end 
       else IF_SYNC_state_next = SYNC_FINISH;
@@ -1258,7 +1268,8 @@ begin
   if (IF_rst)
   begin // set up default values - 0 for now
     // RX_CONTROL_1
-    {IF_DFS1, IF_DFS0} <= 2'b00;    // decode speed 
+    IF_DFS1 <= 1'b0; // decode speed
+    IF_DFS0 <= 1'b0; 
     // RX_CONTROL_2
 //    IF_mode            <= 1'b0;       // decode mode, normal or Class E PA
     IF_OC              <= 7'b0;     // decode open collectors on Hermes
@@ -1296,7 +1307,8 @@ begin
     if (IF_Rx_ctrl_0[7:1] == 7'b0000_000)
     begin
       // RX_CONTROL_1
-      {IF_DFS1, IF_DFS0}  <= IF_Rx_ctrl_1[1:0]; // decode speed 
+      IF_DFS1  <= IF_Rx_ctrl_1[1]; // decode speed 
+      IF_DFS0  <= IF_Rx_ctrl_1[0]; // decode speed 
       // RX_CONTROL_2
 //      IF_mode             <= IF_Rx_ctrl_2[0];   // decode mode, normal or Class E PA
       IF_OC               <= IF_Rx_ctrl_2[7:1]; // decode open collectors on Penelope
@@ -1342,6 +1354,32 @@ end
 wire [63:0] freqcomp;
 assign freqcomp = {IF_Rx_ctrl_1, IF_Rx_ctrl_2, IF_Rx_ctrl_3, IF_Rx_ctrl_4} * M2 + M3;
 
+// Pipeline freqcomp
+reg [31:0] freqcompp [0:3];
+reg IF_Rx_savep;
+reg [6:0] chanp [0:3];
+
+always @ (posedge IF_clk) begin
+    if (IF_Rx_save) begin
+        freqcompp[0] <= freqcomp[56:25];
+        freqcompp[1] <= freqcomp[56:25];
+        freqcompp[2] <= freqcomp[56:25];
+        freqcompp[3] <= freqcomp[56:25];  
+        chanp[0] <= IF_Rx_ctrl_0[7:1];
+        chanp[1] <= IF_Rx_ctrl_0[7:1];
+        chanp[2] <= IF_Rx_ctrl_0[7:1];
+        chanp[3] <= IF_Rx_ctrl_0[7:1];    
+    end
+end
+
+always @ (posedge IF_clk) begin
+    if (IF_rst)
+        IF_Rx_savep <= 1'b0;
+    else
+        IF_Rx_savep <= IF_Rx_save;
+end
+
+
 always @ (posedge IF_clk)
 begin 
   if (IF_rst)
@@ -1349,16 +1387,16 @@ begin
     IF_frequency[0] <= 32'd0;
     IF_frequency[1] <= 32'd0;
   end
-  else if (IF_Rx_save)
+  else if (IF_Rx_savep)
   begin
-    if (IF_Rx_ctrl_0[7:1] == 7'b0000_001) begin // decode IF_frequency[0]
-        IF_frequency[0]   <= freqcomp[56:25];
+    if (chanp[0] == 7'b0000_001) begin // decode IF_frequency[0]
+        IF_frequency[0]   <= freqcompp[0]; //freqcomp[56:25];
         if (!IF_duplex && (IF_last_chan == 5'b00000)) IF_frequency[1] <= IF_frequency[0];
     end
         
-    if (IF_Rx_ctrl_0[7:1] == 7'b0000_010) begin // decode Rx1 frequency
+    if (chanp[0] == 7'b0000_010) begin // decode Rx1 frequency
         if (!IF_duplex && (IF_last_chan == 5'b00000)) IF_frequency[1] <= IF_frequency[0];
-        else IF_frequency[1] <= freqcomp[56:25];
+        else IF_frequency[1] <= freqcompp[0]; //freqcomp[56:25];
     end
   end
 end
@@ -1368,10 +1406,10 @@ generate
   for (c = 1; c < NR; c = c + 1) begin: RXIFFREQ
     always @ (posedge IF_clk) begin
         if (IF_rst) IF_frequency[c+1] <= 32'd0;
-        else if (IF_Rx_save) begin
-            if (IF_Rx_ctrl_0[7:1] == ((c < 7) ? c+2 : c+11)) begin
+        else if (IF_Rx_savep) begin
+            if (chanp[c/8] == ((c < 7) ? c+2 : c+11)) begin
               //if (IF_last_chan >= c) 
-              IF_frequency[c+1] <= freqcomp[56:25];
+                IF_frequency[c+1] <= freqcompp[c/8]; //freqcomp[56:25];
               //else IF_frequency[c+1] <= IF_frequency[0];
             end                 
         end

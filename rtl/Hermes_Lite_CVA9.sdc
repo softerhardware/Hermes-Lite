@@ -121,7 +121,8 @@ set_clock_groups -asynchronous -group { \
 					-group {ifclocks_cv:ifclocks_cv_inst|ifclocks_cv_0002:ifclocks_cv_inst|altera_pll:altera_pll_i|outclk_wire[0] \
 					ifclocks_cv:ifclocks_cv_inst|ifclocks_cv_0002:ifclocks_cv_inst|altera_pll:altera_pll_i|outclk_wire[2]} \
 					-group {ifclocks_cv:ifclocks_cv_inst|ifclocks_cv_0002:ifclocks_cv_inst|altera_pll:altera_pll_i|outclk_wire[1]} \
-					-group {AD9866clk BCLK} 
+					-group {AD9866clk BCLK} \
+					-group {clk}
 
 
 #**************************************************************
