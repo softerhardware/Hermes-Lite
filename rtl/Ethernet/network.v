@@ -431,11 +431,12 @@ mac_recv mac_recv_inst(
   
   
 ip_recv ip_recv_inst(
+  // in
+  .local_ip(local_ip),
   //out
   .active(ip_rx_active),
   .is_icmp(rx_is_icmp), 
   .remote_ip(remote_ip),
-
   .clock(rx_clock), 
   .rx_enable(ip_rx_enable),
   .broadcast(broadcast),

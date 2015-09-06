@@ -27,6 +27,7 @@ module ip_recv(
   input rx_enable,
   input [7:0] data,
   input broadcast,
+  input [31:0] local_ip,
 
   //output
   output active,
@@ -79,40 +80,40 @@ always @(posedge clock)
 			 16: temp_remote_ip[7:0]   <= data;
 				
           //verify broadcast - or save to_ip		 
-			 17: begin 
-						remote_ip <= temp_remote_ip;
-						if (broadcast) begin 
-							if(data != 8'd255) state <= ST_DONE;  
-					  end
-					  else  to_ip[31-:8] <= data;  // save the ip address this packet is addressed to
-				  end
-				  
-			 18: if (broadcast) begin
-						if (data != 8'd255) state <= ST_DONE;
-				  end 
-				  else  to_ip[23-:8] <= data;
-				  
-			 19: if (broadcast) begin 
-						if(data != 8'd255) state <= ST_DONE;
-				  end 
-				  else  to_ip[15-:8] <= data;
-				  
-				  
-			 20: 	if (broadcast) begin
-						if(data != 8'd255) state <= ST_DONE; 
-						else if (byte_no == header_len) begin
-							 byte_no <= 11'd1;
-							 state <= ST_PAYLOAD;
-						end
-					end				
-					else begin
-						to_ip[7-:8] <= data;
-						if (byte_no == header_len) begin
-							 byte_no <= 11'd1;
-							 state <= ST_PAYLOAD;
-					   end 
-				  end 
-            
+	  17: begin 
+	     remote_ip <= temp_remote_ip;
+	     if (broadcast) begin 
+		if (data != 8'd255 && data != local_ip[31-:8]) state <= ST_DONE;  
+	     end
+	     else  to_ip[31-:8] <= data;  // save the ip address this packet is addressed to
+	  end
+	  
+	  18: if (broadcast) begin
+	     if (data != 8'd255 && data != local_ip[23-:8]) state <= ST_DONE;
+	  end 
+	  else  to_ip[23-:8] <= data;
+	  
+	  19: if (broadcast) begin 
+	     if (data != 8'd255 && data != local_ip[15-:8]) state <= ST_DONE;
+	  end 
+	  else  to_ip[15-:8] <= data;
+	  
+	  
+	  20: 	if (broadcast) begin
+	     if(data != 8'd255) state <= ST_DONE; 
+	     else if (byte_no == header_len) begin
+		byte_no <= 11'd1;
+		state <= ST_PAYLOAD;
+	     end
+	  end				
+	  else begin
+	     to_ip[7-:8] <= data;
+	     if (byte_no == header_len) begin
+		byte_no <= 11'd1;
+		state <= ST_PAYLOAD;
+	     end 
+	  end 
+          
           default
             if (byte_no == header_len) state <= ST_PAYLOAD;
         endcase    
