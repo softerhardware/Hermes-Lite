@@ -23,84 +23,49 @@
 # and any changes you make may be lost or overwritten.
 
 
-set_global_assignment -name DEVICE 5CEFA2F23C8
+set_global_assignment -name DEVICE 5CEFA9F23C8
 set_global_assignment -name FAMILY "Cyclone V"
 set_global_assignment -name TOP_LEVEL_ENTITY Hermes_Lite
-set_global_assignment -name ORIGINAL_QUARTUS_VERSION 14.0
-set_global_assignment -name PROJECT_CREATION_TIME_DATE "12:01:06  NOVEMBER 30, 2014"
+set_global_assignment -name ORIGINAL_QUARTUS_VERSION 15.0.2
+set_global_assignment -name PROJECT_CREATION_TIME_DATE "10:35:10  SEPTEMBER 17, 2015"
 set_global_assignment -name LAST_QUARTUS_VERSION 15.0.2
 set_global_assignment -name MIN_CORE_JUNCTION_TEMP 0
 set_global_assignment -name MAX_CORE_JUNCTION_TEMP 85
-set_global_assignment -name USE_CONFIGURATION_DEVICE ON
-set_global_assignment -name FORCE_CONFIGURATION_VCCIO ON
-set_global_assignment -name RESERVE_ALL_UNUSED_PINS_WEAK_PULLUP "AS INPUT TRI-STATED"
-set_global_assignment -name ALLOW_POWER_UP_DONT_CARE OFF
-set_global_assignment -name POWER_PRESET_COOLING_SOLUTION "23 MM HEAT SINK WITH 200 LFPM AIRFLOW"
-set_global_assignment -name POWER_BOARD_THERMAL_MODEL "NONE (CONSERVATIVE)"
-set_global_assignment -name STRATIX_DEVICE_IO_STANDARD "3.3-V LVCMOS"
-set_global_assignment -name VERILOG_INPUT_VERSION SYSTEMVERILOG_2005
-set_global_assignment -name VERILOG_SHOW_LMF_MAPPING_MESSAGES OFF
-set_global_assignment -name CYCLONEII_RESERVE_NCEO_AFTER_CONFIGURATION "USE AS REGULAR IO"
-set_global_assignment -name GENERATE_RBF_FILE ON
-set_global_assignment -name CRC_ERROR_OPEN_DRAIN OFF
-set_global_assignment -name OUTPUT_IO_TIMING_NEAR_END_VMEAS "HALF VCCIO" -rise
-set_global_assignment -name OUTPUT_IO_TIMING_NEAR_END_VMEAS "HALF VCCIO" -fall
-set_global_assignment -name OUTPUT_IO_TIMING_FAR_END_VMEAS "HALF SIGNAL SWING" -rise
-set_global_assignment -name OUTPUT_IO_TIMING_FAR_END_VMEAS "HALF SIGNAL SWING" -fall
-set_global_assignment -name SYNTH_TIMING_DRIVEN_SYNTHESIS ON
-set_global_assignment -name ADV_NETLIST_OPT_SYNTH_WYSIWYG_REMAP ON
-set_global_assignment -name FITTER_EFFORT "STANDARD FIT"
-set_global_assignment -name ROUTER_TIMING_OPTIMIZATION_LEVEL MAXIMUM
-set_global_assignment -name OPTIMIZE_MULTI_CORNER_TIMING ON
-set_global_assignment -name TIMEQUEST_MULTICORNER_ANALYSIS ON
-set_global_assignment -name ROUTER_CLOCKING_TOPOLOGY_ANALYSIS ON
+set_global_assignment -name ERROR_CHECK_FREQUENCY_DIVISOR 256
 set_global_assignment -name OPTIMIZE_HOLD_TIMING "ALL PATHS"
-set_global_assignment -name CYCLONEII_OPTIMIZATION_TECHNIQUE SPEED
-set_global_assignment -name PHYSICAL_SYNTHESIS_COMBO_LOGIC ON
-set_global_assignment -name PHYSICAL_SYNTHESIS_REGISTER_DUPLICATION ON
-set_global_assignment -name PHYSICAL_SYNTHESIS_REGISTER_RETIMING ON
-set_global_assignment -name STATE_MACHINE_PROCESSING "USER-ENCODED"
-set_global_assignment -name SEARCH_PATH Polyphase_FIR/ -tag from_archive
+set_global_assignment -name OPTIMIZE_MULTI_CORNER_TIMING ON
+set_global_assignment -name AUTO_MERGE_PLLS OFF
+set_global_assignment -name STRATIX_DEVICE_IO_STANDARD "3.3-V LVTTL"
+set_global_assignment -name TIMEQUEST_MULTICORNER_ANALYSIS ON
 set_global_assignment -name SMART_RECOMPILE ON
-set_global_assignment -name RESERVE_DATA0_AFTER_CONFIGURATION "USE AS REGULAR IO"
-set_global_assignment -name RESERVE_DATA1_AFTER_CONFIGURATION "USE AS REGULAR IO"
-set_global_assignment -name RESERVE_FLASH_NCE_AFTER_CONFIGURATION "USE AS REGULAR IO"
-set_global_assignment -name RESERVE_DCLK_AFTER_CONFIGURATION "USE AS REGULAR IO"
-set_global_assignment -name PARTITION_NETLIST_TYPE SOURCE -section_id Top
-set_global_assignment -name PARTITION_COLOR 16764057 -section_id Top
-set_global_assignment -name LL_ROOT_REGION ON -section_id "Root Region"
-set_global_assignment -name LL_MEMBER_STATE LOCKED -section_id "Root Region"
-set_global_assignment -name PARTITION_FITTER_PRESERVATION_LEVEL PLACEMENT_AND_ROUTING -section_id Top
-set_instance_assignment -name CLOCK_SETTINGS IFCLK -to IFCLK
-set_instance_assignment -name CLOCK_SETTINGS CMCLK -to CMCLK
-set_instance_assignment -name CLOCK_SETTINGS CBCLK -to CBCLK
-set_instance_assignment -name CLOCK_SETTINGS CLRCIN -to CLRCIN
-set_instance_assignment -name CLOCK_SETTINGS CLRCOUT -to CLRCOUT
-set_instance_assignment -name CLOCK_SETTINGS TLV2208_125Mhz -to LTC2208_125Mhz
-set_instance_assignment -name CLOCK_SETTINGS OSC_10MHz -to OSC_10MHZ
-set_instance_assignment -name GLOBAL_SIGNAL "GLOBAL CLOCK" -to PHY_CLK125
 set_global_assignment -name PROJECT_OUTPUT_DIRECTORY build
-set_location_assignment PIN_N1 -to leds[7]
-set_location_assignment PIN_N2 -to leds[6]
-set_location_assignment PIN_U1 -to leds[5]
-set_location_assignment PIN_U2 -to leds[4]
-set_location_assignment PIN_W2 -to leds[3]
-set_location_assignment PIN_AA1 -to leds[2]
-set_location_assignment PIN_AA2 -to leds[1]
-set_location_assignment PIN_Y3 -to leds[0]
-set_location_assignment PIN_M16 -to PHY_MDC
-set_location_assignment PIN_N16 -to PHY_MDIO
-set_location_assignment PIN_R11 -to rmii_tx[1]
-set_location_assignment PIN_U11 -to rmii_tx[0]
-set_location_assignment PIN_T10 -to rmii_rx[1]
-set_location_assignment PIN_R9 -to rmii_rx[0]
-set_location_assignment PIN_U12 -to rmii_tx_en
-set_location_assignment PIN_U10 -to rmii_osc
-set_location_assignment PIN_T9 -to rmii_crs_dv
+set_global_assignment -name VERILOG_MACRO "FULLDUPLEX=1"
+set_location_assignment PIN_M8 -to PHY_RX_CLOCK
+set_location_assignment PIN_N21 -to PHY_TX[2]
+set_location_assignment PIN_M20 -to PHY_TX[1]
+set_location_assignment PIN_M21 -to PHY_TX[0]
+set_location_assignment PIN_K21 -to PHY_RESET_N
+set_location_assignment PIN_AB6 -to PHY_RX[0]
+set_location_assignment PIN_N20 -to PHY_TX[3]
+set_location_assignment PIN_V13 -to PHY_MDC
+set_location_assignment PIN_AB12 -to PHY_MDIO
+set_location_assignment PIN_L22 -to PHY_TX_CLOCK_out
+set_location_assignment PIN_K22 -to PHY_TX_EN
+set_location_assignment PIN_AB7 -to PHY_RX[3]
+set_location_assignment PIN_AA7 -to PHY_RX[2]
+set_location_assignment PIN_AB5 -to PHY_RX[1]
+set_location_assignment PIN_V9 -to RX_DV
+set_location_assignment PIN_N8 -to PHY_INT_N
+set_location_assignment PIN_D21 -to leds[7]
+set_location_assignment PIN_D19 -to leds[6]
+set_location_assignment PIN_C21 -to leds[5]
+set_location_assignment PIN_C20 -to leds[4]
+set_location_assignment PIN_B21 -to leds[3]
+set_location_assignment PIN_E21 -to leds[2]
+set_location_assignment PIN_E19 -to leds[1]
+set_location_assignment PIN_B17 -to leds[0]
 set_location_assignment PIN_H13 -to clk50mhz
 set_location_assignment PIN_H18 -to extreset
-set_global_assignment -name ACTIVE_SERIAL_CLOCK FREQ_25MHZ
-set_global_assignment -name STRATIXV_CONFIGURATION_SCHEME "ACTIVE SERIAL X1"
 set_location_assignment PIN_Y16 -to ad9866_pga[5]
 set_location_assignment PIN_Y15 -to ad9866_pga[4]
 set_location_assignment PIN_AA15 -to ad9866_pga[3]
@@ -108,22 +73,22 @@ set_location_assignment PIN_AB15 -to ad9866_pga[2]
 set_location_assignment PIN_Y14 -to ad9866_pga[1]
 set_location_assignment PIN_AA14 -to ad9866_pga[0]
 set_location_assignment PIN_N9 -to ad9866_rxclk
-set_location_assignment PIN_U22 -to ad9866_adio[11]
-set_location_assignment PIN_V21 -to ad9866_adio[10]
-set_location_assignment PIN_W21 -to ad9866_adio[9]
-set_location_assignment PIN_W22 -to ad9866_adio[8]
-set_location_assignment PIN_Y21 -to ad9866_adio[7]
-set_location_assignment PIN_Y22 -to ad9866_adio[6]
-set_location_assignment PIN_AA22 -to ad9866_adio[5]
-set_location_assignment PIN_AB21 -to ad9866_adio[4]
-set_location_assignment PIN_AB22 -to ad9866_adio[3]
-set_location_assignment PIN_AA20 -to ad9866_adio[2]
-set_location_assignment PIN_Y20 -to ad9866_adio[1]
-set_location_assignment PIN_AB20 -to ad9866_adio[0]
-set_location_assignment PIN_Y19 -to ad9866_rxen
-set_location_assignment PIN_AA18 -to ad9866_txclk
-set_location_assignment PIN_AA19 -to ad9866_txen
-set_location_assignment PIN_V15 -to AD9866clk
+set_location_assignment PIN_U22 -to ad9866_tx[5]
+set_location_assignment PIN_V21 -to ad9866_tx[4]
+set_location_assignment PIN_W21 -to ad9866_tx[3]
+set_location_assignment PIN_W22 -to ad9866_tx[2]
+set_location_assignment PIN_Y21 -to ad9866_tx[1]
+set_location_assignment PIN_Y22 -to ad9866_tx[0]
+set_location_assignment PIN_AA22 -to ad9866_rx[5]
+set_location_assignment PIN_AB21 -to ad9866_rx[4]
+set_location_assignment PIN_AB22 -to ad9866_rx[3]
+set_location_assignment PIN_AA20 -to ad9866_rx[2]
+set_location_assignment PIN_Y20 -to ad9866_rx[1]
+set_location_assignment PIN_AB20 -to ad9866_rx[0]
+set_location_assignment PIN_Y19 -to ad9866_rxsync
+set_location_assignment PIN_AA18 -to ad9866_txquietn
+set_location_assignment PIN_AA19 -to ad9866_txsync
+set_location_assignment PIN_W16 -to AD9866clk
 ##set_location_assignment PIN_V13 -to altclk
 set_location_assignment PIN_AA17 -to ad9866_sclk
 set_location_assignment PIN_AB18 -to ad9866_sdio
@@ -151,11 +116,41 @@ set_location_assignment PIN_T8 -to nADCCS
 set_location_assignment PIN_N6 -to cwkey_i
 set_location_assignment PIN_R5 -to cwkey_o
 set_location_assignment PIN_P14 -to ptt_i
-set_global_assignment -name VHDL_FILE RMII2MII_conv.vhd
-set_global_assignment -name SDC_FILE Hermes_Lite_CV.sdc
-set_global_assignment -name VERILOG_FILE Hermes_Lite_CV.v
+set_global_assignment -name PARTITION_NETLIST_TYPE SOURCE -section_id Top
+set_global_assignment -name PARTITION_FITTER_PRESERVATION_LEVEL PLACEMENT_AND_ROUTING -section_id Top
+set_global_assignment -name PARTITION_COLOR 16764057 -section_id Top
+set_global_assignment -name POWER_PRESET_COOLING_SOLUTION "23 MM HEAT SINK WITH 200 LFPM AIRFLOW"
+set_global_assignment -name POWER_BOARD_THERMAL_MODEL "NONE (CONSERVATIVE)"
+set_global_assignment -name VERILOG_INPUT_VERSION SYSTEMVERILOG_2005
+set_global_assignment -name VERILOG_SHOW_LMF_MAPPING_MESSAGES OFF
+set_global_assignment -name SDC_FILE Hermes_Lite_FD_CVA9.sdc
+set_global_assignment -name VERILOG_FILE Hermes_Lite_CVA9.v
 set_global_assignment -name VERILOG_FILE hermes_lite_core.v
-set_global_assignment -name VERILOG_FILE ethernet.v
+set_global_assignment -name VERILOG_FILE Ethernet/cdc_sync.v
+set_global_assignment -name VERILOG_FILE Ethernet/udp_send.v
+set_global_assignment -name VERILOG_FILE Ethernet/udp_recv.v
+set_global_assignment -name VERILOG_FILE Ethernet/sync.v
+set_global_assignment -name VERILOG_FILE Ethernet/rgmii_send.v
+set_global_assignment -name VERILOG_FILE Ethernet/rgmii_recv.v
+set_global_assignment -name VERILOG_FILE Ethernet/phy_cfg.v
+set_global_assignment -name VERILOG_FILE Ethernet/ethernet.v
+set_global_assignment -name VERILOG_FILE Ethernet/network.v
+set_global_assignment -name VERILOG_FILE Ethernet/mdio.v
+set_global_assignment -name VERILOG_FILE Ethernet/mac_send.v
+set_global_assignment -name VERILOG_FILE Ethernet/mac_recv.v
+set_global_assignment -name VERILOG_FILE Ethernet/ip_send.v
+set_global_assignment -name VERILOG_FILE Ethernet/ip_recv.v
+set_global_assignment -name VERILOG_FILE Ethernet/icmp_fifo.v
+set_global_assignment -name QIP_FILE Ethernet/icmp_fifo.qip
+set_global_assignment -name VERILOG_FILE Ethernet/icmp.v
+set_global_assignment -name VERILOG_FILE Ethernet/dhcp.v
+set_global_assignment -name VERILOG_FILE Ethernet/ddio_out.v
+set_global_assignment -name VERILOG_FILE Ethernet/ddio_in.v
+set_global_assignment -name VERILOG_FILE Ethernet/crc32.v
+set_global_assignment -name VERILOG_FILE Ethernet/arp.v
+set_global_assignment -name VERILOG_FILE Ethernet/Rx_recv.v
+set_global_assignment -name VERILOG_FILE Ethernet/Tx_send.v
+set_global_assignment -name QIP_FILE Ethernet/phyclocks.qip
 set_global_assignment -name VERILOG_FILE myhdl/ad9866.v
 set_global_assignment -name VERILOG_FILE Polyphase_FIR/firfilt.v
 set_global_assignment -name VERILOG_FILE Polyphase_FIR/CicInterpM5.v
@@ -183,16 +178,11 @@ set_global_assignment -name LICENSE_FILE Polyphase_FIR/coefL8.dat
 set_global_assignment -name VERILOG_FILE PHY_fifo.v
 set_global_assignment -name VERILOG_FILE sp_rcv_ctrl.v
 set_global_assignment -name VERILOG_FILE CRC32.v
-set_global_assignment -name VERILOG_FILE ASMI.v
 set_global_assignment -name VERILOG_FILE PHY_Rx_fifo.v
 set_global_assignment -name VERILOG_FILE Led_flash.v
-set_global_assignment -name VERILOG_FILE MDIO.v
-set_global_assignment -name VERILOG_FILE Rx_MAC.v
-set_global_assignment -name VERILOG_FILE Tx_MAC.v
 set_global_assignment -name VERILOG_FILE ASMI_interface.v
 set_global_assignment -name VERILOG_FILE DHCP.v
 set_global_assignment -name VERILOG_FILE EEPROM.v
-set_global_assignment -name VERILOG_FILE EPCS_fifo.v
 set_global_assignment -name VERILOG_FILE Tx_fifo.v
 set_global_assignment -name VERILOG_FILE varcic.v
 set_global_assignment -name VERILOG_FILE cdc_mcp.v
@@ -213,23 +203,11 @@ set_global_assignment -name VERILOG_FILE Hermes_ADC.v
 set_global_assignment -name QIP_FILE SP_fifo.qip
 set_global_assignment -name QIP_FILE PHY_fifo.qip
 set_global_assignment -name QIP_FILE ASMI.qip
-set_global_assignment -name QIP_FILE EPCS_fifo.qip
 set_global_assignment -name QIP_FILE Tx_fifo.qip
 set_global_assignment -name QIP_FILE PHY_Rx_fifo.qip
 set_global_assignment -name QIP_FILE ifclocks_cv.qip
 set_global_assignment -name SIP_FILE ifclocks_cv.sip
 set_global_assignment -name QIP_FILE clkmux_cv/synthesis/clkmux_cv.qip
-set_instance_assignment -name CURRENT_STRENGTH_NEW 4MA -to rmii_crs_dv
-set_instance_assignment -name SLEW_RATE 1 -to rmii_rx[1]
-set_instance_assignment -name SLEW_RATE 1 -to rmii_rx[0]
-set_instance_assignment -name SLEW_RATE 1 -to rmii_tx[1]
-set_instance_assignment -name SLEW_RATE 1 -to rmii_tx[0]
-set_instance_assignment -name SLEW_RATE 1 -to rmii_tx_en
-set_instance_assignment -name SLEW_RATE 1 -to PHY_MDC
-set_instance_assignment -name SLEW_RATE 1 -to PHY_MDIO
-set_instance_assignment -name CURRENT_STRENGTH_NEW 4MA -to rmii_osc
-set_instance_assignment -name CURRENT_STRENGTH_NEW 4MA -to rmii_rx[1]
-set_instance_assignment -name CURRENT_STRENGTH_NEW 4MA -to rmii_rx[0]
 set_global_assignment -name ENABLE_OCT_DONE OFF
 set_global_assignment -name ENABLE_CONFIGURATION_PINS OFF
 set_global_assignment -name ENABLE_BOOT_SEL_PIN OFF
@@ -249,4 +227,6 @@ set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to ADCMISO
 set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to nADCCS
 set_instance_assignment -name WEAK_PULL_UP_RESISTOR ON -to cwkey_i
 set_instance_assignment -name WEAK_PULL_UP_RESISTOR ON -to ptt_i
+set_global_assignment -name ALLOW_REGISTER_MERGING OFF
+set_global_assignment -name ALLOW_REGISTER_RETIMING OFF
 set_instance_assignment -name PARTITION_HIERARCHY root_partition -to | -section_id Top

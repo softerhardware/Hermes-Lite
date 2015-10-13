@@ -72,6 +72,8 @@ module hermes_lite_core(
 
     input cwkey_i,
     output cwkey_o,
+
+    input ptt_i,
  
     // MII Ethernet PHY
     output [3:0]PHY_TX,
@@ -971,7 +973,7 @@ assign OVERFLOW = (~leds[0] | ~leds[3]) & ~FPGA_PTT;
 Hermes_Tx_fifo_ctrl #(RX_FIFO_SZ, TX_FIFO_SZ) TXFC 
            (IF_rst, IF_clk, IF_tx_fifo_wdata, IF_tx_fifo_wreq, IF_tx_fifo_full,
             IF_tx_fifo_used, IF_tx_fifo_clr, IF_tx_IQ_mic_rdy,
-            IF_tx_IQ_mic_data, IF_chan, IF_last_chan, clean_dash, clean_dot, cwkey, OVERFLOW,
+            IF_tx_IQ_mic_data, IF_chan, IF_last_chan, clean_dash, clean_dot, (cwkey | clean_ptt), OVERFLOW,
             Penny_serialno, Merc_serialno, Hermes_serialno, Penny_ALC, AIN1, AIN2,
             AIN3, AIN4, AIN6, IO4, IO5, IO6, IO8, VNA_start, VNA);
 
@@ -1418,7 +1420,7 @@ generate
 endgenerate
 
 
-assign FPGA_PTT = IF_Rx_ctrl_0[0] | cwkey; // IF_Rx_ctrl_0 only updated when we get correct sync sequence
+assign FPGA_PTT = IF_Rx_ctrl_0[0] | cwkey | clean_ptt; // IF_Rx_ctrl_0 only updated when we get correct sync sequence
 
 
 //------------------------------------------------------------
@@ -1619,6 +1621,13 @@ assign clean_dot = 0;
 
 //debounce de_dash(.clean_pb(clean_dash), .pb(~KEY_DASH), .clk(IF_clk));
 assign clean_dash = 0;
+
+
+
+// 5 ms debounce with 48 MHz clock
+wire clean_ptt;
+debounce de_ptt(.clean_pb(clean_ptt), .pb(~ptt_i), .clk(IF_clk));
+
 
 
 // AD9866 Instance
