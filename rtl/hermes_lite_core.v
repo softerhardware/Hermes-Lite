@@ -673,7 +673,36 @@ generate
         IQ_sync (.a_data ({rx_I[c], rx_Q[c]}), .a_clk(AD9866clkX1),.b_clk(IF_clk), .a_data_rdy(strobe[c]),
                 .a_rst(C122_rst), .b_rst(IF_rst), .b_data(IF_M_IQ_Data[c]), .b_data_ack(IF_M_IQ_Data_rdy[c]));
 
-    receiver #(.CICRATE(CICRATE)) receiver_inst (
+    
+`ifdef FULLDUPLEX
+
+if((c==3 && NR>3) || (c==1 && NR<=3))
+begin
+//    wire signed [23:0] psout_data_I2;
+//	 wire signed [23:0] psout_data_Q2;
+//	 assign rx_I[c] = psout_data_I2 <<< (FPGA_PTT? 2:0);
+//	 assign rx_Q[c] = psout_data_Q2 <<< (FPGA_PTT? 2:0);
+	 
+	 receiver #(.CICRATE(CICRATE)) receiver_inst (
+    //control
+    .clock(AD9866clkX1),
+    .rate(rate),
+    .frequency(C122_sync_phase_word[c]),
+    .out_strobe(strobe[c]),
+    //input
+	 .in_data(FPGA_PTT ? DACD : adcpipe[c/8]), 
+//	  .in_data((FPGA_PTT & IF_Pure_signal) ? DACD : adcpipe[c/8]), 
+   //output
+  //  .out_data_I(psout_data_I2),
+  //  .out_data_Q(psout_data_Q2)
+    .out_data_I(rx_I[c]),
+    .out_data_Q(rx_Q[c])
+    ); 
+	 
+	end 
+else 
+
+	receiver #(.CICRATE(CICRATE)) receiver_inst (
     //control
     .clock(AD9866clkX1),
     .rate(rate),
@@ -685,7 +714,22 @@ generate
     .out_data_I(rx_I[c]),
     .out_data_Q(rx_Q[c])
     );
-
+	 
+ `else    
+	 receiver #(.CICRATE(CICRATE)) receiver_inst (
+    //control
+    .clock(AD9866clkX1),
+    .rate(rate),
+    .frequency(C122_sync_phase_word[c]),
+    .out_strobe(strobe[c]),
+    //input
+	  .in_data(adcpipe[c/8]),
+    //output
+    .out_data_I(rx_I[c]),
+    .out_data_Q(rx_Q[c])
+    );
+`endif	 
+	 
     cdc_sync #(32)
         freq (.siga(IF_frequency[c+1]), .rstb(C122_rst), .clkb(AD9866clkX1), .sigb(C122_frequency_HZ[c])); // transfer Rx1 frequency
 end
@@ -968,7 +1012,12 @@ assign IO4 = 1'b1;
 assign IO5 = 1'b1;
 assign IO6 = 1'b1;
 assign IO8 = 1'b1;
+`ifdef FULLDUPLEX
+//allow overflow message during tx to set pure signal feedback level
+assign OVERFLOW = (~leds[0] | ~leds[3]) ;
+`else
 assign OVERFLOW = (~leds[0] | ~leds[3]) & ~FPGA_PTT;
+`endif
 
 Hermes_Tx_fifo_ctrl #(RX_FIFO_SZ, TX_FIFO_SZ) TXFC 
            (IF_rst, IF_clk, IF_tx_fifo_wdata, IF_tx_fifo_wreq, IF_tx_fifo_full,
@@ -1264,6 +1313,7 @@ reg   [5:0] Alex_manual_HPF;        // Alex HPF relay selection in manual mode
 reg   [4:0] Hermes_atten;           // 0-31 dB Heremes attenuator value
 reg         Hermes_atten_enable; // enable/disable bit for Hermes attenuator
 reg         TR_relay_disable;       // Alex T/R relay disable option
+reg         IF_Pure_signal;              // 
 
 always @ (posedge IF_clk)
 begin 
@@ -1302,6 +1352,7 @@ begin
      IF_Line_In_Gain      <= 5'b0;      // default line-in gain at min
      Hermes_atten         <= 5'b0;      // default zero input attenuation
      Hermes_atten_enable <= 1'b0;    // default disable Hermes attenuator
+     IF_Pure_signal           <= 1'b0;      // default disable pure signal
     
   end
   else if (IF_Rx_save)                  // all Rx_control bytes are ready to be saved
@@ -1345,7 +1396,8 @@ begin
     if (IF_Rx_ctrl_0[7:1] == 7'b0001_010)
     begin
       IF_Line_In_Gain   <= IF_Rx_ctrl_2[4:0];       // decode line-in gain setting
-      Hermes_atten      <= IF_Rx_ctrl_4[4:0];    // decode input attenuation setting
+      IF_Pure_signal    <= IF_Rx_ctrl_2[6];       // decode pure signal setting
+		Hermes_atten      <= IF_Rx_ctrl_4[4:0];    // decode input attenuation setting
       Hermes_atten_enable <= IF_Rx_ctrl_4[5];    // decode Hermes attenuator enable/disable
     end
   end
@@ -1437,7 +1489,9 @@ wire [5:0] gain_value;
 assign gain_value = {~IF_DITHER, ~Hermes_atten};
 
 `ifdef FULLDUPLEX
-assign ad9866_pga = (FPGA_PTT | VNA) ? ((VNA & Preamp) ? DUPRXMAXGAIN : DUPRXMINGAIN) : (IF_RAND ? agc_value : gain_value);
+//assign ad9866_pga = (FPGA_PTT | VNA) ? ((VNA & Preamp) ? DUPRXMAXGAIN : DUPRXMINGAIN) : (IF_RAND ? agc_value : gain_value);
+//allow gain changes during tx 
+assign ad9866_pga = ( VNA) ? ((VNA & Preamp) ? DUPRXMAXGAIN : DUPRXMINGAIN) : (IF_RAND ? agc_value : gain_value);
 `else
 assign ad9866_pga = IF_RAND ? agc_value : gain_value;
 `endif

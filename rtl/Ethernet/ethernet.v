@@ -46,6 +46,7 @@ parameter Hermes_serialno;
 wire [7:0] network_status;
 //wire iPHY_RESET_N;
 
+wire dst_unreachable;
 wire udp_tx_request;
 wire tx_clock;
 wire rx_clock;
@@ -80,6 +81,7 @@ network #(.MAC(MAC), .IP(IP)) network_inst(
 	.assign_ip(32'h00000000),
 	.port_ID(8'h00),
 	.run(run),
+        .dst_unreachable(dst_unreachable),
 
 	.tx_clock(tx_clock),
 	.rx_clock(rx_clock),
@@ -114,7 +116,8 @@ network #(.MAC(MAC), .IP(IP)) network_inst(
 Rx_recv rx_recv_inst(
 	.rx_clk(rx_clock),
 	.run(run), 
-	.wide_spectrum(wide_spectrum), 
+	.wide_spectrum(wide_spectrum),
+        .dst_unreachable(dst_unreachable),
 	.discovery_reply(discovery_reply),
 	.to_port(to_port), 
 	.broadcast(broadcast),
@@ -166,3 +169,4 @@ assign Tx_reset = network_state[3:1] != 3'b100;
 
 
 endmodule
+

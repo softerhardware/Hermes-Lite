@@ -34,7 +34,8 @@ module Rx_recv (
 	input rx_valid,
 	input [7:0] rx_data,
 	output [7:0] rx_fifo_data,
-	output reg rx_fifo_enable
+	output reg rx_fifo_enable,
+        input dst_unreachable
 );
 
 // Receive states
@@ -59,6 +60,11 @@ START:
 	begin
 		rx_fifo_enable <= 1'b0;
 		if (rx_valid && rx_data == 8'hef && to_port == 1024) rx_state <= PREAMBLE1;
+                else if (dst_unreachable) begin
+                   run <= 1'b0;
+                   wide_spectrum <= 1'b0;
+                   rx_state <= START;
+                end
 		else rx_state <= START;
 	end
 

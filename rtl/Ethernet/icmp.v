@@ -31,6 +31,7 @@ module icmp (
   input [47:0] remote_mac,
   input [31:0] remote_ip, 
  
+  output dst_unreachable,
   output tx_request, 
   output tx_active,
   output reg [7:0] tx_data,
@@ -46,7 +47,15 @@ module icmp (
 //                               receive
 //-----------------------------------------------------------------------------
 localparam HEADER_LEN = 16'd4;
-localparam ST_IDLE = 6'd1, ST_HEADER = 6'd2, ST_PAYLOAD = 6'd4, ST_TXREQ = 6'd8, ST_TX = 6'd16, ST_DONE = 6'd32;
+localparam 
+	ST_IDLE 		= 6'd1, 
+	ST_HEADER 		= 6'd2, 
+	ST_PAYLOAD 		= 6'd3, 
+	ST_TXREQ 		= 6'd4, 
+	ST_TX 			= 6'd5, 
+	ST_DONE 		= 6'd6,
+	ST_UNREACHABLE 	= 6'd7;
+	
 reg[5:0] state = ST_IDLE;
 reg [2:0] byte_no;
 reg [31:0] sum;				
@@ -57,6 +66,9 @@ wire fifo_full, sending_sync;
 always @(posedge rx_clock)
     case (state)
       ST_IDLE:
+      	begin
+      	// clear ICMP dest unreachable flag
+      	dst_unreachable <= 1'b0;
         //packet start
         if (rx_enable)
           begin 
@@ -64,8 +76,12 @@ always @(posedge rx_clock)
           sum <= 32'h0;
           destination_mac <= remote_mac;
           destination_ip <= remote_ip;
-          state <= (rx_data == 8'h08) ? ST_HEADER : ST_DONE; 
-          end  
+          // detection of ICMP dest/port unreachable packet
+          if (rx_data == 8'h03) state <= ST_UNREACHABLE;
+          else
+            state <= (rx_data == 8'h08) ? ST_HEADER : ST_DONE; 
+          end // if (rx_enable)
+        end  
 
       ST_HEADER:    
         //premature end of packet
@@ -99,6 +115,13 @@ always @(posedge rx_clock)
       
       //end of discarded packet
       ST_DONE: if (!rx_enable) state <= ST_IDLE;
+      
+      // Detection of ICMP dest/port unreachable packet
+      ST_UNREACHABLE:
+        begin
+          dst_unreachable <= 1'b1;
+          state <= ST_DONE;
+        end
     endcase
       
         

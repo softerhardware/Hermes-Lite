@@ -45,6 +45,7 @@ module network (
 	output broadcast,
 	output IP_write_done,
 	output [15:0]to_port,
+	output dst_unreachable,
 
 
   //status output
@@ -497,6 +498,7 @@ icmp icmp_inst (
   .destination_mac(icmp_destination_mac),  
   .destination_ip(icmp_destination_ip),
   .length(icmp_length),
+  .dst_unreachable(dst_unreachable),
 
   .remote_mac(remote_mac_sync),
   .remote_ip(remote_ip_sync),
