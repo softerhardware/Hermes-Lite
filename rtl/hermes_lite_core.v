@@ -894,7 +894,7 @@ generate
     if (NT == 1) begin: SINGLETX
 
         //gain of 4
-        assign txsum = C122_cordic_i_out  >>> 2;
+        assign txsum = (C122_cordic_i_out  >>> 2); // + {15'h0000, C122_cordic_i_out[1]};
 
     end else begin: DUALTX
         wire signed [15:0] C122_cordic_tx2_i_out;
@@ -909,8 +909,15 @@ generate
     end
 endgenerate
 
+// LFSR for dither
+//reg [15:0] lfsr = 16'h0001;
+//always @ (negedge AD9866clkX1 or negedge extreset)
+//    if (~extreset) lfsr <= 16'h0001;
+//    else lfsr <= {lfsr[0],lfsr[15],lfsr[14] ^ lfsr[0], lfsr[13] ^ lfsr[0], lfsr[12], lfsr[11] ^ lfsr[0], lfsr[10:1]};
+
+
 always @ (negedge AD9866clkX1)
-    DACD <= txsum[11:0];
+    DACD <= txsum[11:0]; // + {10'h0,lfsr[2:1]};
 
 
 

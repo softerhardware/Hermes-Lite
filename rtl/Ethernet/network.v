@@ -348,7 +348,8 @@ wire [31:0] icmp_destination_ip;
 wire ip_tx_enable = icmp_tx_active || udp_tx_active;
 wire [7:0] ip_tx_data_in = tx_is_icmp? icmp_data : udp_data;
 wire [15:0] ip_tx_length = tx_is_icmp? icmp_length : udp_length;
-wire [31:0] destination_ip = tx_is_icmp? icmp_destination_ip : (tx_is_dhcp ? dhcp_destination_ip : udp_destination_ip_sync);
+wire [31:0] destination_ip = tx_is_icmp? icmp_destination_ip : (tx_is_dhcp ? dhcp_destination_ip : (run ? run_destination_ip :udp_destination_ip_sync));
+
 //ip_send out
 wire [7:0] ip_tx_data;
 wire ip_tx_active;
@@ -358,7 +359,7 @@ wire mac_tx_enable = arp_tx_active || ip_tx_active;
 wire [7:0] mac_tx_data_in = tx_is_arp? arp_tx_data : ip_tx_data;
 wire [47:0] destination_mac = tx_is_arp  ? arp_destination_mac  : 
 										tx_is_icmp ? icmp_destination_mac :
-										tx_is_dhcp ? dhcp_destination_mac : udp_destination_mac_sync;
+										tx_is_dhcp ? dhcp_destination_mac : (run ? run_destination_mac : udp_destination_mac_sync);
 //mac_send out
 wire [7:0] mac_tx_data;
 wire mac_tx_active;
@@ -376,9 +377,16 @@ wire [7:0] dhcp_udp_tx_data          = tx_is_dhcp ? dhcp_tx_data          : udp_
 wire [15:0]local_port				    = tx_is_dhcp ? 16'd68 		           : 16'd1024; 
 
 reg [15:0] run_destination_port;
+reg [31:0] run_destination_ip;
+reg [47:0] run_destination_mac;
 
 // Hold destination port once run is set
-always @(posedge tx_clock) if (!run) run_destination_port <= udp_destination_port_sync;
+always @(posedge tx_clock) 
+	if (!run) begin
+		run_destination_port <= udp_destination_port_sync;
+		run_destination_ip <= udp_destination_ip_sync;
+		run_destination_mac <= udp_destination_mac_sync;
+	end
 
 wire [15:0]dhcp_udp_destination_port = tx_is_dhcp ? dhcp_destination_port : (run ? run_destination_port : udp_destination_port_sync); 
 wire dhcp_rx_active;
