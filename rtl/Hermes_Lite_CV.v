@@ -82,8 +82,8 @@ parameter MAC = {8'h00,8'h1c,8'hc0,8'ha2,8'h22,8'h5c};
 parameter IP = {8'd0,8'd0,8'd0,8'd0};
 
 // Clock Frequency
-//parameter CLK_FREQ = 61440000;
-parameter CLK_FREQ = 73728000;
+parameter CLK_FREQ = 61440000;
+//parameter CLK_FREQ = 73728000;
 // Added
 // Number of Receivers
 parameter NR = 2; // number of receivers to implement
