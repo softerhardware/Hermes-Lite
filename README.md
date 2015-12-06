@@ -9,10 +9,13 @@ This is a work in progress to create a low-cost software defined radio HF transc
  * [GitHub](https://github.com/softerhardware/Hermes-Lite) for all open source hardware, software and firmware.
   * Hermes-Lite [schematic](https://github.com/softerhardware/Hermes-Lite/raw/master/pcb/hermeslite.pdf), [BOM](https://github.com/softerhardware/Hermes-Lite/raw/master/pcb/bom.xls) and [PCB](https://www.oshpark.com/profiles/SofterHardware).
   * Basic RF front end [schematic](https://github.com/softerhardware/Hermes-Lite/raw/master/frontend/basic/frontend.pdf), [BOM](https://github.com/softerhardware/Hermes-Lite/raw/master/frontend/basic/bom.xls) and [PCB](https://www.oshpark.com/profiles/SofterHardware).
-  * [Power Amplifiers](https://github.com/W9JSW/Hermes-Lite/tree/Amplifiers).
  * [GitHub Issues](https://github.com/softerhardware/Hermes-Lite/issues) to track all bugs, feature requests and planning.
  * [Version 2.0 Architecture](https://github.com/softerhardware/Hermes-Lite/wiki/Hermes-Lite-2.0)
-
+ * External Hermes-Lite Hardware Links
+  * [W9JSW's Hermes-Lite Power Amplifiers and Filters](https://github.com/W9JSW/Hermes-Lite/tree/Amplifiers).
+  * [IN3OTD's Hermes-Lite Experiments](http://www.qsl.net/in3otd/ham_radio/Hermes-Lite/Hermes-Lite.html).
+  * [IK1XPV's Hermes-Lite Audio Out](http://www.steila.com/blog/index.php?controller=post&action=view&id_post=4).
+  * [AB4OJ's Hermes-Lite Test Report](http://www.ab4oj.com/sdr/hermes_lite/hl_notes.pdf).
 
 
  
