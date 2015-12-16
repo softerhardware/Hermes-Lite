@@ -18,6 +18,10 @@ set_time_format -unit ns -decimal_places 3
 create_clock -period 73.728MHz	  [get_ports AD9866clk]		-name AD9866clk
 create_clock -period 24.000MHz	  [get_ports clk]			-name clk
 
+create_clock -period 73.728MHz	[get_ports ad9866_rxclk] -name ad9866_rxclk
+create_clock -period 73.728MHz  [get_ports ad9866_txclk] -name ad9866_txclk
+
+
 
 #*************************************************************************************
 # Create Generated Clock
@@ -27,7 +31,7 @@ create_clock -period 24.000MHz	  [get_ports clk]			-name clk
 
 
 create_clock -name clk50mhz				-period 20.000 	[get_ports {clk50mhz}]
-create_clock -name PHY_RX_CLOCK 			-period 8.000 	-waveform {2 6} [get_ports {PHY_RX_CLOCK}]
+create_clock -name PHY_RX_CLOCK 		-period 8.000 	-waveform {2 6} [get_ports {PHY_RX_CLOCK}]
 
 #virtual base clocks on required inputs
 create_clock -name virt_PHY_RX_CLOCK 	-period 8.000
@@ -167,3 +171,23 @@ set_false_path -fall_from [get_clocks clock_125MHz] -fall_to [get_clocks tx_outp
 set_false_path -rise_from [get_clocks clock_125MHz] -rise_to [get_clocks tx_output_clock] -hold
 
 
+
+
+## AD9866 RX Path
+
+## rxen is not time critical and is on 48 MHz clock
+set_output_delay -add_delay -max -clock AD9866clk -reference_pin [get_ports ad9866_rxclk] 1 [get_ports {ad9866_rxen}]
+set_output_delay -add_delay -min -clock AD9866clk -reference_pin [get_ports ad9866_rxclk] -2.5 [get_ports {ad9866_rxen}]
+ 
+set_input_delay -add_delay -max -clock AD9866clk -reference_pin [get_ports ad9866_rxclk] 4.0 [get_ports {ad9866_adio[*]}]
+set_input_delay -add_delay -min -clock AD9866clk -reference_pin [get_ports ad9866_rxclk] 1.5 [get_ports {ad9866_adio[*]}]
+
+
+## AD9866 TX Path
+
+## txen is not time critical and is on 48 MHz clock
+set_output_delay -add_delay -max -clock AD9866clk -reference_pin [get_ports ad9866_txclk] 1 [get_ports {ad9866_txen}]
+set_output_delay -add_delay -min -clock AD9866clk -reference_pin [get_ports ad9866_txclk] -2.5 [get_ports {ad9866_txen}]
+
+set_output_delay -add_delay -max -clock AD9866clk -reference_pin [get_ports ad9866_txclk] 1 [get_ports {ad9866_adio[*]}]
+set_output_delay -add_delay -min -clock AD9866clk -reference_pin [get_ports ad9866_txclk] -2.5 [get_ports {ad9866_adio[*]}]

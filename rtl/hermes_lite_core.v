@@ -137,6 +137,9 @@ assign AssignNR = NR;
 // Number of transmitters Be very careful when using more than 1 transmitter!
 parameter NT = 1;
 
+// Experimental Predistort On=1 Off=0
+parameter PREDISTORT = 1;
+
 wire FPGA_PTT;
 
 parameter M_TPD   = 4;
@@ -384,6 +387,12 @@ wire rxgoodlvlp = (temp_ADC[11:9] == 3'b011);
 wire rxgoodlvln = (temp_ADC[11:9] == 3'b100);
 
 
+// Pipeline DACD just before IO, negedge as in historical RTL
+reg [11:0] DACDp;
+always @ (negedge AD9866clkX1)
+    DACDp <= DACD;
+
+
 `ifdef FULLDUPLEX
 
 reg [11:0] ad9866_rx_stage;
@@ -408,7 +417,7 @@ always @(posedge ad9866_rxclk)
     begin
         if (iad9866_txsync) begin
             iad9866_txsync <= 1'b0;
-            ad9866_tx_stage <= ( (FPGA_PTT | VNA) ? DACD : 12'b000);
+            ad9866_tx_stage <= ( (FPGA_PTT | VNA) ? DACDp : 12'b000);
         end else begin
             iad9866_txsync <= 1'b1;
         end
@@ -439,7 +448,7 @@ assign ad9866_rxclk = AD9866clkX1;
 assign ad9866_txclk = AD9866clkX1;
 
 // RX/TX port
-assign ad9866_adio = FPGA_PTT ? DACD : 12'bZ;
+assign ad9866_adio = FPGA_PTT ? DACDp : 12'bZ;
 
 `endif
 
@@ -447,6 +456,13 @@ assign ad9866_adio = FPGA_PTT ? DACD : 12'bZ;
 assign exp_ptt_n = FPGA_PTT;
 assign userout = IF_OC;
 
+
+// Pipeline RX
+//`ifndef FULLDUPLEX
+//reg [11:0] rxadcpipe;
+//always @ (posedge AD9866clkX1)
+//  rxadcpipe <= ad9866_adio;
+//`endif
 
 // Test sine wave
 reg [3:0] incnt;
@@ -676,33 +692,33 @@ generate
     
 `ifdef FULLDUPLEX
 
-if((c==3 && NR>3) || (c==1 && NR<=3))
+if((c==3 && NR>3))// || (c==1 && NR<=3))
 begin
 //    wire signed [23:0] psout_data_I2;
-//	 wire signed [23:0] psout_data_Q2;
-//	 assign rx_I[c] = psout_data_I2 <<< (FPGA_PTT? 2:0);
-//	 assign rx_Q[c] = psout_data_Q2 <<< (FPGA_PTT? 2:0);
-	 
-	 receiver #(.CICRATE(CICRATE)) receiver_inst (
+//   wire signed [23:0] psout_data_Q2;
+//   assign rx_I[c] = psout_data_I2 <<< (FPGA_PTT? 2:0);
+//   assign rx_Q[c] = psout_data_Q2 <<< (FPGA_PTT? 2:0);
+     
+     receiver #(.CICRATE(CICRATE)) receiver_inst (
     //control
     .clock(AD9866clkX1),
     .rate(rate),
     .frequency(C122_sync_phase_word[c]),
     .out_strobe(strobe[c]),
     //input
-	 .in_data(FPGA_PTT ? DACD : adcpipe[c/8]), 
-//	  .in_data((FPGA_PTT & IF_Pure_signal) ? DACD : adcpipe[c/8]), 
+     .in_data(FPGA_PTT ? DACD : adcpipe[c/8]), 
+//    .in_data((FPGA_PTT & IF_Pure_signal) ? DACD : adcpipe[c/8]), 
    //output
   //  .out_data_I(psout_data_I2),
   //  .out_data_Q(psout_data_Q2)
     .out_data_I(rx_I[c]),
     .out_data_Q(rx_Q[c])
     ); 
-	 
-	end 
+     
+    end 
 else 
 
-	receiver #(.CICRATE(CICRATE)) receiver_inst (
+    receiver #(.CICRATE(CICRATE)) receiver_inst (
     //control
     .clock(AD9866clkX1),
     .rate(rate),
@@ -714,22 +730,22 @@ else
     .out_data_I(rx_I[c]),
     .out_data_Q(rx_Q[c])
     );
-	 
+     
  `else    
-	 receiver #(.CICRATE(CICRATE)) receiver_inst (
+     receiver #(.CICRATE(CICRATE)) receiver_inst (
     //control
     .clock(AD9866clkX1),
     .rate(rate),
     .frequency(C122_sync_phase_word[c]),
     .out_strobe(strobe[c]),
     //input
-	  .in_data(adcpipe[c/8]),
+      .in_data(adcpipe[c/8]),
     //output
     .out_data_I(rx_I[c]),
     .out_data_Q(rx_Q[c])
     );
-`endif	 
-	 
+`endif   
+     
     cdc_sync #(32)
         freq (.siga(IF_frequency[c+1]), .rstb(C122_rst), .clkb(AD9866clkX1), .sigb(C122_frequency_HZ[c])); // transfer Rx1 frequency
 end
@@ -855,6 +871,7 @@ CicInterpM5 #(.RRRR(RRRR), .IBITS(20), .OBITS(16), .GBITS(GBITS)) in2 ( AD9866cl
 // Code rotates input at set frequency and produces I & Q 
 
 wire signed [14:0] C122_cordic_i_out;
+wire signed [14:0] C122_cordic_q_out;
 wire signed [31:0] C122_phase_word_Tx;
 
 wire signed [15:0] I;
@@ -870,7 +887,7 @@ assign                  Q = (VNA | cwkey) ? 0 : y2_r;                   // takin
 
 cpl_cordic #(.OUT_WIDTH(16))
         cordic_inst (.clock(AD9866clkX1), .frequency(C122_phase_word_Tx), .in_data_I(I),            
-        .in_data_Q(Q), .out_data_I(C122_cordic_i_out), .out_data_Q());      
+        .in_data_Q(Q), .out_data_I(C122_cordic_i_out), .out_data_Q(C122_cordic_q_out));      
                  
 /* 
   We can use either the I or Q output from the CORDIC directly to drive the DAC.
@@ -889,25 +906,33 @@ cpl_cordic #(.OUT_WIDTH(16))
 reg [11:0] DACD;
 
 
+
 wire signed [15:0] txsum;
+wire signed [15:0] txsumq;
+
 generate
     if (NT == 1) begin: SINGLETX
 
         //gain of 4
         assign txsum = (C122_cordic_i_out  >>> 2); // + {15'h0000, C122_cordic_i_out[1]};
+          assign txsumq = (C122_cordic_q_out  >>> 2);
 
     end else begin: DUALTX
         wire signed [15:0] C122_cordic_tx2_i_out;
+        wire signed [15:0] C122_cordic_tx2_q_out;
         
         // Hardwire second TX frequency to second RX
         cpl_cordic #(.OUT_WIDTH(16))
             cordic_tx2_inst (.clock(AD9866clkX1), .frequency(C122_sync_phase_word[1]), .in_data_I(I),           
-            .in_data_Q(Q), .out_data_I(C122_cordic_tx2_i_out), .out_data_Q());
+            .in_data_Q(Q), .out_data_I(C122_cordic_tx2_i_out), .out_data_Q(C122_cordic_tx2_q_out));
 
         assign txsum = (C122_cordic_i_out + C122_cordic_tx2_i_out) >>> 3;
+        assign txsumq = (C122_cordic_q_out + C122_cordic_tx2_q_out) >>> 3;
         
     end
 endgenerate
+
+
 
 // LFSR for dither
 //reg [15:0] lfsr = 16'h0001;
@@ -916,8 +941,93 @@ endgenerate
 //    else lfsr <= {lfsr[0],lfsr[15],lfsr[14] ^ lfsr[0], lfsr[13] ^ lfsr[0], lfsr[12], lfsr[11] ^ lfsr[0], lfsr[10:1]};
 
 
-always @ (negedge AD9866clkX1)
+
+// apply amplitude & phase linearity correction
+
+/*
+Lookup tables
+These are sent continuously in the unused audio out packets sent to the radio.
+The left channel is an index into the table and the right channel has the value.
+Indexes 0-4097 go into DACLUTI and 4096-8191 go to DACLUTQ. 
+The values are sent as signed 16bit numbers but the value is never bigger than 13 bits.
+
+DACLUTI has the out of phase distortion and DACLUTQ has the in phase distortion.
+
+The tables can represent arbitary functions, for now my console software just uses a power series
+
+DACLUTI[x] = 0x + gain2*sin(phase2)*x^2 +  gain3*sin(phase3)*x^3 + gain4*sin(phase4)*x^4 + gain5*sin(phase5)*x^5
+DACLUTQ[x] = 1x + gain2*cos(phase2)*x^2 +  gain3*cos(phase3)*x^3 + gain4*cos(phase4)*x^4 + gain5*cos(phase5)*x^5
+
+The table indexes are signed so the tables are in 2's complement order ie. 0,1,2...2047,-2048,-2047...-1. 
+
+The table values are scaled to keep the output of DACLUTI[I]-DACLUTI[Q]+DACLUTQ[(I+Q)/root2] to fit in 12 bits,
+the intermediate values and table values can be larger. 
+Zero input produces centre of the dac range output(signed 0) so with some settings one end or the other of the dac range is not used.
+
+The predistortion is turned on and off by a new command and control packet this follows the last of the 32 receiver frequencies.
+There is a sub index so this can be used for many other things.
+control cc packet
+
+c0 101011x
+c1 sub index 0 for predistortion control-
+c2 mode 0 off 1 on, (higher numbers can be used to experiment without so much fpga recompilation).
+
+*/
+
+generate
+if (PREDISTORT == 1) begin: PD1
+
+// lookup tables for dac phase and amplitude linearity correction
+reg signed [12:0] DACLUTI[4096];
+reg signed [12:0] DACLUTQ[4096];
+
+wire signed [15:0] distorted_dac;
+
+wire signed [15:0] iplusq;
+wire signed [15:0] iplusq_over_root2;
+
+reg signed [15:0] txsumr;
+reg signed [15:0] txsumqr;
+reg signed [15:0] iplusqr;
+
+assign iplusq = txsum+txsumq;
+
+always @ (posedge AD9866clkX1)
+begin
+    txsumr<=txsum;
+    txsumqr<=txsumq;
+    iplusqr<=iplusq;
+end
+//approximation to dividing by root 2 to reduce lut size, the error can be corrected in the lut data
+assign iplusq_over_root2 = iplusqr+(iplusqr>>>2)+(iplusqr>>>3)+(iplusqr>>>5);
+
+reg signed [15:0] txsumr2;
+reg signed [15:0] txsumqr2;
+reg signed [15:0] iplusq_over_root2r;
+
+
+always @ (posedge AD9866clkX1)
+begin
+    txsumr2<=txsumr;
+    txsumqr2<=txsumqr;
+    iplusq_over_root2r<=iplusq_over_root2;
+end
+    assign distorted_dac = DACLUTI[txsumr2[11:0]]-DACLUTI[txsumqr2[11:0]]+DACLUTQ[iplusq_over_root2r[12:1]];
+
+always @ (posedge AD9866clkX1)
+case( IF_Predistortion[1:0] )
+    0: DACD <= txsum[11:0];
+    1: DACD <= distorted_dac[11:0];
+    //other modes
+    default: DACD <= txsum[11:0];
+endcase
+
+end else
+
+always @ (posedge AD9866clkX1)
     DACD <= txsum[11:0]; // + {10'h0,lfsr[2:1]};
+
+endgenerate
 
 
 
@@ -927,7 +1037,6 @@ wire txclipn = (C122_cordic_i_out[13:2] == 12'b100000000000);
 wire txgoodlvlp = (C122_cordic_i_out[13:11] == 3'b011);
 wire txgoodlvln = (C122_cordic_i_out[13:11] == 3'b100);
 
-//`endif
 
 //------------------------------------------------------------
 //  Set Power Output 
@@ -1321,6 +1430,7 @@ reg   [4:0] Hermes_atten;           // 0-31 dB Heremes attenuator value
 reg         Hermes_atten_enable; // enable/disable bit for Hermes attenuator
 reg         TR_relay_disable;       // Alex T/R relay disable option
 reg         IF_Pure_signal;              // 
+reg   [3:0]  IF_Predistortion;              // 
 
 always @ (posedge IF_clk)
 begin 
@@ -1355,11 +1465,12 @@ begin
      Alex_manual          <= 1'b0;      // default manual Alex filter selection (0 = auto selection, 1 = manual selection)
      Alex_manual_HPF      <= 6'b0;      // default manual settings, no Alex HPF filters selected
      Alex_6m_preamp   <= 1'b0;      // default not set
-     Alex_manual_LPF      <= 7'b0;      // default manual settings, no Alex LPF filters selected
-     IF_Line_In_Gain      <= 5'b0;      // default line-in gain at min
-     Hermes_atten         <= 5'b0;      // default zero input attenuation
-     Hermes_atten_enable <= 1'b0;    // default disable Hermes attenuator
-     IF_Pure_signal           <= 1'b0;      // default disable pure signal
+     Alex_manual_LPF      <= 7'b0;     // default manual settings, no Alex LPF filters selected
+     IF_Line_In_Gain      <= 5'b0;     // default line-in gain at min
+     Hermes_atten         <= 5'b0;     // default zero input attenuation
+     Hermes_atten_enable <= 1'b0;       // default disable Hermes attenuator
+     IF_Pure_signal      <= 1'b0;      // default disable pure signal
+     IF_Predistortion    <= 4'b0000;   // default disable predistortion
     
   end
   else if (IF_Rx_save)                  // all Rx_control bytes are ready to be saved
@@ -1404,9 +1515,17 @@ begin
     begin
       IF_Line_In_Gain   <= IF_Rx_ctrl_2[4:0];       // decode line-in gain setting
       IF_Pure_signal    <= IF_Rx_ctrl_2[6];       // decode pure signal setting
-		Hermes_atten      <= IF_Rx_ctrl_4[4:0];    // decode input attenuation setting
+        Hermes_atten      <= IF_Rx_ctrl_4[4:0];    // decode input attenuation setting
       Hermes_atten_enable <= IF_Rx_ctrl_4[5];    // decode Hermes attenuator enable/disable
     end
+     if (IF_Rx_ctrl_0[7:1] == 7'b0101_011)
+    begin
+     // DACLUT[{IF_Rx_ctrl_1[3:0], IF_Rx_ctrl_2[7:0]}]<= {IF_Rx_ctrl_3[3:0], IF_Rx_ctrl_4[7:0]};
+      if(IF_Rx_ctrl_1==8'b0000_0000)//predistortion control sub index
+      begin
+      IF_Predistortion <= IF_Rx_ctrl_2[3:0];
+      end
+     end
   end
 end 
 
@@ -1519,7 +1638,7 @@ assign ad9866_pga = IF_RAND ? agc_value : gain_value;
 
 reg   [2:0] IF_PWM_state;      // state for PWM
 reg   [2:0] IF_PWM_state_next; // next state for PWM
-//reg  [15:0] IF_Left_Data;      // Left 16 bit PWM data for D/A converter
+reg  [15:0] IF_Left_Data;      // Left 16 bit PWM data for D/A converter
 //reg  [15:0] IF_Right_Data;     // Right 16 bit PWM data for D/A converter
 reg  [15:0] IF_I_PWM;          // I 16 bit PWM data for D/A conveter
 reg  [15:0] IF_Q_PWM;          // Q 16 bit PWM data for D/A conveter
@@ -1535,6 +1654,11 @@ localparam PWM_IDLE     = 0,
            PWM_I_AUDIO  = 4,
            PWM_Q_AUDIO  = 5;
 
+
+generate
+
+if(PREDISTORT==1) begin: PD2
+
 always @ (posedge IF_clk) 
 begin
   if (IF_rst)
@@ -1543,12 +1667,20 @@ begin
     IF_PWM_state   <= #IF_TPD IF_PWM_state_next;
 
   // get Left audio
-//  if (IF_PWM_state == PWM_LEFT)
-//    IF_Left_Data   <= #IF_TPD IF_Rx_fifo_rdata;
+  if (IF_PWM_state == PWM_LEFT)
+    IF_Left_Data   <= #IF_TPD IF_Rx_fifo_rdata;
 
   // get Right audio
-//  if (IF_PWM_state == PWM_RIGHT)
-//    IF_Right_Data  <= #IF_TPD IF_Rx_fifo_rdata;
+  if (IF_PWM_state == PWM_RIGHT)
+  begin
+    //IF_Right_Data  <= #IF_TPD IF_Rx_fifo_rdata;
+
+     if(IF_Left_Data[12] )
+        PD1.DACLUTQ[IF_Left_Data[11:0]]<= IF_Rx_fifo_rdata[12:0];
+    else
+        PD1.DACLUTI[IF_Left_Data[11:0]]<= IF_Rx_fifo_rdata[12:0];
+            
+    end
 
   // get I audio
   if (IF_PWM_state == PWM_I_AUDIO)
@@ -1559,6 +1691,34 @@ begin
     IF_Q_PWM       <= #IF_TPD IF_Rx_fifo_rdata;
 
 end
+
+
+end else begin
+  
+
+always @ (posedge IF_clk) 
+begin
+  if (IF_rst)
+    IF_PWM_state   <= #IF_TPD PWM_IDLE;
+  else
+    IF_PWM_state   <= #IF_TPD IF_PWM_state_next;
+
+  // get I audio
+  if (IF_PWM_state == PWM_I_AUDIO)
+    IF_I_PWM       <= #IF_TPD IF_Rx_fifo_rdata;
+
+  // get Q audio
+  if (IF_PWM_state == PWM_Q_AUDIO)
+    IF_Q_PWM       <= #IF_TPD IF_Rx_fifo_rdata;
+
+end    
+
+end 
+
+endgenerate
+
+
+
 
 always @*
 begin
