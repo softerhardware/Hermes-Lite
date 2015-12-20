@@ -18,9 +18,14 @@ set_time_format -unit ns -decimal_places 3
 create_clock -period 73.728MHz	  [get_ports AD9866clk]		-name AD9866clk
 
 create_clock -period 24.000MHz	  [get_ports clk]			-name clk
-create_clock -period 147.456MHz	  [get_ports ad9866_rxclk]				-name ad9866_rxclk
 
-
+##create_clock -period 147.456MHz	  [get_ports ad9866_rxclk]				-name ad9866_rxclk
+create_clock -period 147.456MHz -waveform {1 4.391}	  [get_ports ad9866_rxclk]				-name ad9866_rxclk
+##create_clock -period 147.456MHz -waveform {2 5.391}	  [get_ports ad9866_rxclk]				-name ad9866_rxclk
+##create_clock -period 147.456MHz -waveform {3 6.391}	  [get_ports ad9866_rxclk]				-name ad9866_rxclk
+##create_clock -period 147.456MHz -waveform {4 7.391}	  [get_ports ad9866_rxclk]				-name ad9866_rxclk
+##create_clock -period 147.456MHz -waveform {5 8.391}	  [get_ports ad9866_rxclk]				-name ad9866_rxclk
+##create_clock -period 147.456MHz -waveform {6 9.391}	  [get_ports ad9866_rxclk]				-name ad9866_rxclk
 
 #*************************************************************************************
 # Create Generated Clock
