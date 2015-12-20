@@ -24,7 +24,7 @@ def loadCaptureData(fn):
 
 class Spectrum:
 
-    def __init__(self,(xincr,cdfa),averages=1,normalize=False,Z=50.0,window=None,other=None):
+    def __init__(self,(xincr,cdfa),averages=1,normalize=False,Z=50.0,window=None,carrier=None,other=None):
 
         if other:
             self.sa = np.copy(other.sa)
@@ -41,8 +41,8 @@ class Spectrum:
         self.sa = None
 
         fftia = pyfftw.n_byte_align_empty(n, 16, 'float32')
-        fftoa = pyfftw.n_byte_align_empty(n/2 + 1, 16, 'complex64')
-        fft = pyfftw.FFTW(fftia,fftoa,flags=('FFTW_ESTIMATE',),planning_timelimit=60.0)
+        self.fftoa = pyfftw.n_byte_align_empty(n/2 + 1, 16, 'complex64')
+        fft = pyfftw.FFTW(fftia,self.fftoa,flags=('FFTW_ESTIMATE',),planning_timelimit=60.0)
 
         if window: w = window(n)
 
@@ -55,9 +55,9 @@ class Spectrum:
             fft()
 
             if self.sa != None:
-                self.sa = self.sa + np.abs(fftoa)
+                self.sa = self.sa + np.abs(self.fftoa)
             else:
-                self.sa = np.abs(fftoa)
+                self.sa = np.abs(self.fftoa)
 
         if averages > 1: 
             print "Averaging"
@@ -80,6 +80,11 @@ class Spectrum:
 
         self.mhz2bin = len(self.sa) * 1e6 * 2 * xincr
         self.bin2mhz = 1.0/self.mhz2bin
+
+        ## Add carrier if requested
+        if carrier:
+            self.sa[int(self.mhz2bin*carrier[0])] = carrier[1]
+
 
         self.carrier = self.sa.max(),self.sa.argmax() * self.bin2mhz
         print "Carrier power is",self.carrier[0],"dBm at",self.carrier[1],"MHz."
@@ -129,8 +134,10 @@ class Spectrum:
         else:
             print "Found {0} peaks".format(len(peaks))
 
+        print "|  MHz  |  dB  |"
+        print "| -----:| ----:|"
         for (db,mhz) in peaks:
-            print "{0:10.6f} MHz  {1:7.2f} dB".format(mhz,db)
+            print "| {0:10.6f} | {1:7.2f} |".format(mhz,db)
 
     def findPeaks(self,sl=None,order=2,clipdb=None):
 
@@ -143,7 +150,7 @@ class Spectrum:
 
         if clipdb: 
             normcarrier = self.sa.max()
-            sa = np.clip(sa,normcarrier-clipdb,normcarrier+1)
+            sa = np.clip(sa,-clipdb,normcarrier+1)
 
         res = signal.argrelmax(sa,order=order)[0]
 

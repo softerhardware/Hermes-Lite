@@ -75,3 +75,28 @@ class CaptureData:
         self.data = self.t.tostring()
 
         self.preamble = u'0,0,0,0,2.000000e-09,0,0,{0},0,115\n'.format(1.0/20)
+
+    def createsynthetic2(self,f1,f2,f3,noise=None):
+        totaltime = 24.0e6 /1000.0e6
+        t = np.linspace(0,totaltime,24000000)
+        ## 20 dBm
+        a20 = .000316180 * np.sin(2*np.pi*f1*1e6 * t)
+        ## 10 dBm
+        a10 = .000223838 * np.sin( (2*np.pi*f2*1e6 * t) + .1)
+        ## 5 dBm
+        a5 = .000501 * np.sin( (2*np.pi*f3*1e6 * t) + .3)
+        w = a20+a10+a5
+        ## Possible noise
+        if noise:
+            if not (0.0 < noise <= 1.0): noise = 0.5  
+            w = w + np.random.normal(0.0, scale=noise, size=24000000) 
+        
+        ## Max peak is 4.724, scale by 20, min peak near 0
+        w = (w /.001) + 3
+        ##offset = abs(w.min())+0.005
+        ##w = 20 * (w + offset)
+        print "Min,Max",w.min(),w.max()
+        self.t = np.round(w).astype(np.uint8)
+        self.data = self.t.tostring()
+
+        self.preamble = u'0,0,0,0,1.000000e-09,0,0,{0},0,115\n'.format(0.001)
