@@ -79,10 +79,10 @@ always @(sen_n, dut1_pc, gain) begin: AD9866_DUT1_COMB
         start = 1;
         datain = 2123;
     end
-    else if (((dut1_pc == 11) && sen_n)) begin
-        start = 1;
-        datain = 4228;
-    end
+//    else if (((dut1_pc == 11) && sen_n)) begin
+//        start = 1;
+//        datain = 4228;
+//    end
     else if (((dut1_pc == 13) && sen_n)) begin
         start = 1;
         datain = 4352;
@@ -95,10 +95,10 @@ always @(sen_n, dut1_pc, gain) begin: AD9866_DUT1_COMB
         start = 1;
         datain = {8'ha, 2'h1, gain[6-1:0]};
     end
-    else if (((dut1_pc == 21) && sen_n)) begin
-        start = 1;
-        datain = {8'h10, 5'h10, gain[9-1:6]};
-    end
+//    else if (((dut1_pc == 21) && sen_n)) begin
+//        start = 1;
+//        datain = {8'h10, 5'h10, gain[9-1:6]};
+//    end
     else begin
         start = 0;
         datain = 0;
