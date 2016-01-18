@@ -109,23 +109,23 @@ parameter CLK_FREQ = 61440000;
 //localparam M2 = 32'd2345624805;
 // 61440000-400
 //localparam M2 = 32'd2345640077;
-localparam M2 = (CLK_FREQ == 61440000) ? 32'd2345640077 : 32'd1954687338;
+localparam M2 = (CLK_FREQ == 61440000) ? 32'd2345640077 : (CLK_FREQ == 79872000) ? 32'd1804326773 : 32'd1954687338;
 
 // M3 = 2^24 to round as version 2.7
 localparam M3 = 32'd16777216;
 
 // Decimation rates
-localparam RATE48 =  (CLK_FREQ == 61440000) ? 6'd16 : 6'd24;
-localparam RATE96 =  (CLK_FREQ == 61440000) ? 6'd08 : 6'd12;
-localparam RATE192 = (CLK_FREQ == 61440000) ? 6'd04 : 6'd06;
-localparam RATE384 = (CLK_FREQ == 61440000) ? 6'd02 : 6'd03;
+localparam RATE48 =  (CLK_FREQ == 73728000) ? 6'd24 : 6'd16;
+localparam RATE96 =  (CLK_FREQ == 73728000) ? 6'd12 : 6'd08;
+localparam RATE192 = (CLK_FREQ == 73728000) ? 6'd06 : 6'd04;
+localparam RATE384 = (CLK_FREQ == 73728000) ? 6'd03 : 6'd02;
 
-localparam CICRATE = (CLK_FREQ == 61440000) ? 6'd10 : 6'd08;
-localparam GBITS = (CLK_FREQ == 61440000) ? 30 : 31;
-localparam RRRR = (CLK_FREQ == 61440000) ? 160 : 192;
+localparam CICRATE = (CLK_FREQ == 61440000) ? 6'd10 : (CLK_FREQ == 79872000) ? 6'd13 : 6'd08;
+localparam GBITS = (CLK_FREQ == 61440000) ? 30 : (CLK_FREQ == 79872000) ? 33 : 31;
+localparam RRRR = (CLK_FREQ == 61440000) ? 160 : (CLK_FREQ == 79872000) ? 208 : 192;
 
 // VNA Settings
-localparam VNATXGAIN = 7'h10;
+localparam VNATXGAIN = 6'h10;
 localparam DUPRXMAXGAIN = 6'h12;
 localparam DUPRXMINGAIN = 6'h06;
 
@@ -138,7 +138,7 @@ assign AssignNR = NR;
 parameter NT = 1;
 
 // Experimental Predistort On=1 Off=0
-parameter PREDISTORT = 1;
+parameter PREDISTORT = 0;
 
 wire FPGA_PTT;
 
@@ -152,6 +152,32 @@ localparam Merc_serialno = 8'd00;       // Use same value as equivalent Mercury 
 localparam RX_FIFO_SZ  = 4096;          // 16 by 4096 deep RX FIFO
 localparam TX_FIFO_SZ  = 1024;          // 16 by 1024 deep TX FIFO  
 localparam SP_FIFO_SZ = 2048;           // 16 by 8192 deep SP FIFO, was 16384 but wouldn't fit
+
+
+localparam bit [0:19][8:0] initarray = {
+    // First bit is 1'b1 for write enable to that address
+    {1'b1,8'h80}, // Address 0x00, enable 4 wire SPI
+    {1'b0,8'h00}, // Address 0x01,
+    {1'b0,8'h00}, // Address 0x02, 
+    {1'b0,8'h00}, // Address 0x03, 
+    {1'b0,8'h00}, // Address 0x04, 
+    {1'b0,8'h00}, // Address 0x05, 
+    {1'b0,8'h00}, // Address 0x06,
+    {1'b1,8'h21}, // Address 0x07, Initiate DC offset calibration and RX filter on
+    {1'b1,8'h4b}, // Address 0x08, RX filter f-3db at ~34 MHz after scaling
+    {1'b0,8'h00}, // Address 0x09, 
+    {1'b0,8'h00}, // Address 0x0a, 
+    {1'b1,8'h20}, // Address 0x0b, RX gain only on PGA
+    {1'b1,8'h41}, // Address 0x0c, TX twos complement and interpolation factor 
+    {1'b1,8'h01}, // Address 0x0d, RT twos complement 
+    {1'b0,8'h01}, // Address 0x0e, Enable/Disable IAMP 
+    {1'b0,8'h00}, // Address 0x0f,     
+    {1'b0,8'h84}, // Address 0x10, Select TX gain
+    {1'b1,8'h00}, // Address 0x11, Select TX gain
+    {1'b0,8'h00}, // Address 0x12, 
+    {1'b0,8'h00}  // Address 0x13,     
+};
+
 
 //--------------------------------------------------------------
 // Reset Lines - C122_rst, IF_rst
@@ -174,8 +200,6 @@ wire CLRCLK;
 wire C122_cbclk, C122_cbrise, C122_cbfall;
 Hermes_clk_lrclk_gen #(.CLK_FREQ(CLK_FREQ)) clrgen (.reset(C122_rst), .CLK_IN(AD9866clkX1), .BCLK(C122_cbclk),
                              .Brise(C122_cbrise), .Bfall(C122_cbfall), .LRCLK(CLRCLK));
-
-
 
 
 wire Tx_clock_2;
@@ -360,6 +384,81 @@ assign IF_mic_Data = 0;
  We need to de-ramdomize the LTC2208 data if this is turned on. 
  
 */
+
+// Test sine wave for DAC
+// reg [11:0] cosv;
+// reg [5:0] cosi;
+// always @(posedge AD9866clkX1)
+//     if (cosi < 58) cosi <= cosi + 1;
+//     else cosi <= 0;
+
+// wire [11:0] cosv;
+// always @(cosi)
+//   begin
+//     case (cosi)
+//         6'h00 : cosv = 12'h07fe;
+//         6'h01 : cosv = 12'h0bbe;
+//         6'h02 : cosv = 12'h0c89;
+//         6'h03 : cosv = 12'h07f5;
+//         6'h04 : cosv = 12'h0afe;
+//         6'h05 : cosv = 12'h0d59;
+//         6'h06 : cosv = 12'h07db;
+//         6'h07 : cosv = 12'h0a4e;
+//         6'h08 : cosv = 12'h0e2a;
+//         6'h09 : cosv = 12'h07ad;
+//         6'h0a : cosv = 12'h09b2;
+//         6'h0b : cosv = 12'h0efb;
+//         6'h0c : cosv = 12'h0768;
+//         6'h0d : cosv = 12'h092e;
+//         6'h0e : cosv = 12'h0fcc;
+//         6'h0f : cosv = 12'h070a;
+//         6'h10 : cosv = 12'h08c4;
+//         6'h11 : cosv = 12'h009c;
+//         6'h12 : cosv = 12'h0693;
+//         6'h13 : cosv = 12'h0873;
+//         6'h14 : cosv = 12'h016d;
+//         6'h15 : cosv = 12'h0603;
+//         6'h16 : cosv = 12'h083a;
+//         6'h17 : cosv = 12'h023f;
+//         6'h18 : cosv = 12'h055c;
+//         6'h19 : cosv = 12'h0815;
+//         6'h1a : cosv = 12'h0310;
+//         6'h1b : cosv = 12'h04a3;
+//         6'h1c : cosv = 12'h0804;
+//         6'h1d : cosv = 12'h03dd;
+//         6'h1e : cosv = 12'h03dd;
+//         6'h1f : cosv = 12'h0804;
+//         6'h20 : cosv = 12'h04a3;
+//         6'h21 : cosv = 12'h0310;
+//         6'h22 : cosv = 12'h0815;
+//         6'h23 : cosv = 12'h055c;
+//         6'h24 : cosv = 12'h023f;
+//         6'h25 : cosv = 12'h083a;
+//         6'h26 : cosv = 12'h0603;
+//         6'h27 : cosv = 12'h016d;
+//         6'h28 : cosv = 12'h0873;
+//         6'h29 : cosv = 12'h0693;
+//         6'h2a : cosv = 12'h009c;
+//         6'h2b : cosv = 12'h08c4;
+//         6'h2c : cosv = 12'h070a;
+//         6'h2d : cosv = 12'h0fcc;
+//         6'h2e : cosv = 12'h092e;
+//         6'h2f : cosv = 12'h0768;
+//         6'h30 : cosv = 12'h0efb;
+//         6'h31 : cosv = 12'h09b2;
+//         6'h32 : cosv = 12'h07ad;
+//         6'h33 : cosv = 12'h0e2a;
+//         6'h34 : cosv = 12'h0a4e;
+//         6'h35 : cosv = 12'h07db;
+//         6'h36 : cosv = 12'h0d59;
+//         6'h37 : cosv = 12'h0afe;
+//         6'h38 : cosv = 12'h07f5;
+//         6'h39 : cosv = 12'h0c89;
+//         default : cosv = 12'h0bbe;
+//     endcase
+//   end
+
+
 
 reg [11:0]temp_ADC;
 //reg [15:0] temp_DACD; // for pre-distortion Tx tests
@@ -1853,155 +1952,22 @@ debounce de_ptt(.clean_pb(clean_ptt), .pb(~ptt_i), .clk(IF_clk));
 
 // AD9866 Instance
 wire ad9866rqst;
-wire [6:0] ad9866_drive_level;
-reg [8:0] dd;
+wire [5:0] dd;
 
 // Linear mapping from 0to255 to 0to39
 `ifdef FULLDUPLEX
-assign ad9866_drive_level = VNA ? VNATXGAIN : (IF_Drive_Level >> 1);
+assign dd = VNA ? VNATXGAIN : ((IF_Drive_Level+4) >> 3) + (IF_Drive_Level >> 5);
 `else
-assign ad9866_drive_level = (IF_Drive_Level >> 1);
+assign dd = ((IF_Drive_Level+4) >> 3) + (IF_Drive_Level >> 5);
 `endif
 
-always @*
-    case (ad9866_drive_level)
-        0 : dd=9'h000;
-        1 : dd=9'h040;
-        2 : dd=9'h040;
-        3 : dd=9'h040;
-        4 : dd=9'h040;
-        5 : dd=9'h040;
-        6 : dd=9'h040;
-        7 : dd=9'h040;
-        8 : dd=9'h040;
-        9 : dd=9'h040;
-        10 : dd=9'h040;
-        11 : dd=9'h040;
-        12 : dd=9'h040;
-        13 : dd=9'h040;
-        14 : dd=9'h040;
-        15 : dd=9'h040;
-        16 : dd=9'h041;
-        17 : dd=9'h041;
-        18 : dd=9'h041;
-        19 : dd=9'h041;
-        20 : dd=9'h041;
-        21 : dd=9'h042;
-        22 : dd=9'h042;
-        23 : dd=9'h042;
-        24 : dd=9'h042;
-        25 : dd=9'h042;
-        26 : dd=9'h043;
-        27 : dd=9'h043;
-        28 : dd=9'h043;
-        29 : dd=9'h043;
-        30 : dd=9'h043;
-        31 : dd=9'h044;
-        32 : dd=9'h044;
-        33 : dd=9'h044;
-        34 : dd=9'h044;
-        35 : dd=9'h045;
-        36 : dd=9'h045;
-        37 : dd=9'h045;
-        38 : dd=9'h045;
-        39 : dd=9'h046;
-        40 : dd=9'h046;
-        41 : dd=9'h046;
-        42 : dd=9'h046;
-        43 : dd=9'h047;
-        44 : dd=9'h047;
-        45 : dd=9'h047;
-        46 : dd=9'h047;
-        47 : dd=9'h048;
-        48 : dd=9'h048;
-        49 : dd=9'h048;
-        50 : dd=9'h049;
-        51 : dd=9'h049;
-        52 : dd=9'h049;
-        53 : dd=9'h04a;
-        54 : dd=9'h04a;
-        55 : dd=9'h04a;
-        56 : dd=9'h04b;
-        57 : dd=9'h04b;
-        58 : dd=9'h04b;
-        59 : dd=9'h080;
-        60 : dd=9'h080;
-        61 : dd=9'h080;
-        62 : dd=9'h081;
-        63 : dd=9'h081;
-        64 : dd=9'h081;
-        65 : dd=9'h082;
-        66 : dd=9'h082;
-        67 : dd=9'h082;
-        68 : dd=9'h083;
-        69 : dd=9'h083;
-        70 : dd=9'h083;
-        71 : dd=9'h084;
-        72 : dd=9'h084;
-        73 : dd=9'h084;
-        74 : dd=9'h085;
-        75 : dd=9'h085;
-        76 : dd=9'h085;
-        77 : dd=9'h086;
-        78 : dd=9'h086;
-        79 : dd=9'h086;
-        80 : dd=9'h087;
-        81 : dd=9'h087;
-        82 : dd=9'h087;
-        83 : dd=9'h088;
-        84 : dd=9'h088;
-        85 : dd=9'h088;
-        86 : dd=9'h089;
-        87 : dd=9'h089;
-        88 : dd=9'h089;
-        89 : dd=9'h08a;
-        90 : dd=9'h08a;
-        91 : dd=9'h08a;
-        92 : dd=9'h08b;
-        93 : dd=9'h08b;
-        94 : dd=9'h08b;
-        95 : dd=9'h100;
-        96 : dd=9'h100;
-        97 : dd=9'h100;
-        98 : dd=9'h101;
-        99 : dd=9'h101;
-        100 : dd=9'h102;
-        101 : dd=9'h102;
-        102 : dd=9'h103;
-        103 : dd=9'h103;
-        104 : dd=9'h104;
-        105 : dd=9'h104;
-        106 : dd=9'h105;
-        107 : dd=9'h105;
-        108 : dd=9'h106;
-        109 : dd=9'h106;
-        110 : dd=9'h107;
-        111 : dd=9'h107;
-        112 : dd=9'h108;
-        113 : dd=9'h108;
-        114 : dd=9'h109;
-        115 : dd=9'h109;
-        116 : dd=9'h10a;
-        117 : dd=9'h10a;
-        118 : dd=9'h10b;
-        119 : dd=9'h10b;
-        120 : dd=9'h134;
-        121 : dd=9'h134;
-        122 : dd=9'h135;
-        123 : dd=9'h135;
-        124 : dd=9'h136;
-        125 : dd=9'h136;
-        126 : dd=9'h137;
-        127 : dd=9'h137;
-    endcase
-
-reg [8:0] lastdd;
+reg [5:0] lastdd;
 always @ (posedge ad9866spiclk)
     lastdd <= dd;
 
 assign ad9866rqst = dd != lastdd;
 
-ad9866 ad9866_inst(.reset(~ad9866_rst_n),.clk(ad9866spiclk),.sclk(ad9866_sclk),.sdio(ad9866_sdio),.sdo(ad9866_sdo),.sen_n(ad9866_sen_n),.dataout(),.extrqst(ad9866rqst),.gain(dd));
+ad9866 #(.initarray(initarray)) ad9866_inst(.reset(~ad9866_rst_n),.clk(ad9866spiclk),.sclk(ad9866_sclk),.sdio(ad9866_sdio),.sdo(ad9866_sdo),.sen_n(ad9866_sen_n),.dataout(),.extrqst(ad9866rqst),.gain(dd));
 
 // Really 0.16 seconds at Hermes-Lite 61.44 MHz clock
 localparam half_second = 10000000; // at 48MHz clock rate

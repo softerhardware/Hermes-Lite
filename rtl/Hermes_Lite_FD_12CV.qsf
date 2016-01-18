@@ -155,7 +155,7 @@ set_global_assignment -name SDC_FILE Hermes_Lite_FD_CV.sdc
 set_global_assignment -name VERILOG_FILE Hermes_Lite_CV.v
 set_global_assignment -name VERILOG_FILE hermes_lite_core.v
 set_global_assignment -name VERILOG_FILE ethernet.v
-set_global_assignment -name VERILOG_FILE myhdl/ad9866.v
+set_global_assignment -name VERILOG_FILE ad9866.v
 set_global_assignment -name VERILOG_FILE Polyphase_FIR/firfilt.v
 set_global_assignment -name VERILOG_FILE Polyphase_FIR/CicInterpM5.v
 set_global_assignment -name VERILOG_FILE Polyphase_FIR/firromI_1024.v

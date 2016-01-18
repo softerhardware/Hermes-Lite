@@ -153,7 +153,7 @@ set_global_assignment -name VERILOG_FILE Ethernet/arp.v
 set_global_assignment -name VERILOG_FILE Ethernet/Rx_recv.v
 set_global_assignment -name VERILOG_FILE Ethernet/Tx_send.v
 set_global_assignment -name QIP_FILE Ethernet/phyclocks.qip
-set_global_assignment -name VERILOG_FILE myhdl/ad9866.v
+set_global_assignment -name VERILOG_FILE ad9866.v
 set_global_assignment -name VERILOG_FILE Polyphase_FIR/firfilt.v
 set_global_assignment -name VERILOG_FILE Polyphase_FIR/CicInterpM5.v
 set_global_assignment -name VERILOG_FILE Polyphase_FIR/firromI_1024.v

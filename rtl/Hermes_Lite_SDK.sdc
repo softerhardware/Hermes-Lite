@@ -73,24 +73,28 @@ set_output_delay -add_delay -max -clock vtxclk 10.0 [get_ports {PHY_TX[*]}]
 set_output_delay -add_delay -min -clock vtxclk -2.0 [get_ports {PHY_TX[*]}]
 
 
-
 ## AD9866 RX Path
 
-set_output_delay -add_delay -max -clock AD9866clk -reference_pin [get_ports ad9866_rxclk] 1.5 [get_ports {ad9866_rxen}]
-set_output_delay -add_delay -min -clock AD9866clk -reference_pin [get_ports ad9866_rxclk] -0.5 [get_ports {ad9866_rxen}]
-
-set_input_delay -add_delay -max -clock AD9866clk -reference_pin [get_ports ad9866_rxclk] 1.5 [get_ports {ad9866_adio[*]}]
-set_input_delay -add_delay -min -clock AD9866clk -reference_pin [get_ports ad9866_rxclk] -0.5 [get_ports {ad9866_adio[*]}]
+## rxen is not time critical and is on 48 MHz clock
+set_output_delay -add_delay -max -clock AD9866clk -reference_pin [get_ports ad9866_rxclk] 1.8 [get_ports {ad9866_rxen}]
+set_output_delay -add_delay -min -clock AD9866clk -reference_pin [get_ports ad9866_rxclk] -5.2 [get_ports {ad9866_rxen}]
+ 
+## Raise to tighten 0.6 is good
+set_input_delay -add_delay -max -clock AD9866clk -reference_pin [get_ports ad9866_rxclk] 0.7 [get_ports {ad9866_adio[*]}]
+## Lower (more negative) to tighten -7.0 is good
+set_input_delay -add_delay -min -clock AD9866clk -reference_pin [get_ports ad9866_rxclk] -2.0 [get_ports {ad9866_adio[*]}]
 
 
 ## AD9866 TX Path
 
+## txen is not time critical and is on 48 MHz clock
+## Raise to tighten 1.7 is good
+set_output_delay -add_delay -max -clock AD9866clk -reference_pin [get_ports ad9866_txclk] 1.8 [get_ports {ad9866_txen}]
+## Lower (more negative) to tighten -5.1 is good
+set_output_delay -add_delay -min -clock AD9866clk -reference_pin [get_ports ad9866_txclk] -5.2 [get_ports {ad9866_txen}]
 
-set_output_delay -add_delay -max -clock AD9866clk -reference_pin [get_ports ad9866_txclk] 1.5 [get_ports {ad9866_txen}]
-set_output_delay -add_delay -min -clock AD9866clk -reference_pin [get_ports ad9866_txclk] -0.5 [get_ports {ad9866_txen}]
-
-set_output_delay -add_delay -max -clock AD9866clk -reference_pin [get_ports ad9866_txclk] 1.5 [get_ports {ad9866_adio[*]}]
-set_output_delay -add_delay -min -clock AD9866clk -reference_pin [get_ports ad9866_txclk] -0.5 [get_ports {ad9866_adio[*]}]
+set_output_delay -add_delay -max -clock AD9866clk -reference_pin [get_ports ad9866_txclk] 1.8 [get_ports {ad9866_adio[*]}]
+set_output_delay -add_delay -min -clock AD9866clk -reference_pin [get_ports ad9866_txclk] -5.2 [get_ports {ad9866_adio[*]}]
 
 
 ## Slow outputs
