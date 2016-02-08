@@ -109,20 +109,21 @@ parameter CLK_FREQ = 61440000;
 //localparam M2 = 32'd2345624805;
 // 61440000-400
 //localparam M2 = 32'd2345640077;
-localparam M2 = (CLK_FREQ == 61440000) ? 32'd2345640077 : (CLK_FREQ == 79872000) ? 32'd1804326773 : 32'd1954687338;
+localparam M2 = (CLK_FREQ == 61440000) ? 32'd2345640077 : (CLK_FREQ == 79872000) ? 32'd1804326773 : (CLK_FREQ == 76800000) ? 32'd1876499845 : 32'd1954687338;
 
 // M3 = 2^24 to round as version 2.7
 localparam M3 = 32'd16777216;
 
 // Decimation rates
-localparam RATE48 =  (CLK_FREQ == 73728000) ? 6'd24 : 6'd16;
-localparam RATE96 =  (CLK_FREQ == 73728000) ? 6'd12 : 6'd08;
-localparam RATE192 = (CLK_FREQ == 73728000) ? 6'd06 : 6'd04;
-localparam RATE384 = (CLK_FREQ == 73728000) ? 6'd03 : 6'd02;
+localparam RATE48  = (CLK_FREQ == 61440000) ? 6'd16 : (CLK_FREQ == 79872000) ? 6'd16 : (CLK_FREQ == 76800000) ? 6'd40 : 6'd24;
+localparam RATE96  =  RATE48  >> 1;
+localparam RATE192 =  RATE96  >> 1;
+localparam RATE384 =  RATE192 >> 1;
 
-localparam CICRATE = (CLK_FREQ == 61440000) ? 6'd10 : (CLK_FREQ == 79872000) ? 6'd13 : 6'd08;
-localparam GBITS = (CLK_FREQ == 61440000) ? 30 : (CLK_FREQ == 79872000) ? 33 : 31;
-localparam RRRR = (CLK_FREQ == 61440000) ? 160 : (CLK_FREQ == 79872000) ? 208 : 192;
+localparam CICRATE = (CLK_FREQ == 61440000) ? 6'd10 : (CLK_FREQ == 79872000) ? 6'd13 : (CLK_FREQ == 76800000) ? 6'd05 : 6'd08;
+localparam GBITS = (CLK_FREQ == 61440000) ? 30 : (CLK_FREQ == 79872000) ? 31 : (CLK_FREQ == 76800000) ? 31 : 31;
+localparam RRRR = (CLK_FREQ == 61440000) ? 160 : (CLK_FREQ == 79872000) ? 208 : (CLK_FREQ == 76800000) ? 200 : 192;
+
 
 // VNA Settings
 localparam VNATXGAIN = 6'h10;
@@ -154,7 +155,56 @@ localparam TX_FIFO_SZ  = 1024;          // 16 by 1024 deep TX FIFO
 localparam SP_FIFO_SZ = 2048;           // 16 by 8192 deep SP FIFO, was 16384 but wouldn't fit
 
 
-localparam bit [0:19][8:0] initarray = {
+localparam bit [0:19][8:0] initarray_nointerpolation = {
+    // First bit is 1'b1 for write enable to that address
+    {1'b1,8'h80}, // Address 0x00, enable 4 wire SPI
+    {1'b0,8'h00}, // Address 0x01,
+    {1'b0,8'h00}, // Address 0x02, 
+    {1'b0,8'h00}, // Address 0x03, 
+    {1'b1,8'h00}, // Address 0x04, // No multiply of oscillator for no interpolation
+    {1'b0,8'h00}, // Address 0x05, 
+    {1'b1,8'h00}, // Address 0x06, // No divide down for FPGA clock
+    {1'b1,8'h21}, // Address 0x07, Initiate DC offset calibration and RX filter on
+    {1'b1,8'h4b}, // Address 0x08, RX filter f-3db at ~34 MHz after scaling
+    {1'b0,8'h00}, // Address 0x09, 
+    {1'b0,8'h00}, // Address 0x0a, 
+    {1'b1,8'h20}, // Address 0x0b, RX gain only on PGA
+    {1'b1,8'h81}, // Address 0x0c, TX twos complement and interpolation factor
+    {1'b1,8'h01}, // Address 0x0d, RT twos complement 
+    {1'b0,8'h01}, // Address 0x0e, Enable/Disable IAMP 
+    {1'b0,8'h00}, // Address 0x0f,     
+    {1'b0,8'h84}, // Address 0x10, Select TX gain
+    {1'b1,8'h00}, // Address 0x11, Select TX gain
+    {1'b0,8'h00}, // Address 0x12, 
+    {1'b0,8'h00}  // Address 0x13,     
+};
+
+localparam bit [0:19][8:0] initarray_2xosc = {
+    // First bit is 1'b1 for write enable to that address
+    {1'b1,8'h80}, // Address 0x00, enable 4 wire SPI
+    {1'b0,8'h00}, // Address 0x01,
+    {1'b0,8'h00}, // Address 0x02, 
+    {1'b0,8'h00}, // Address 0x03, 
+    {1'b1,8'h16}, // Address 0x04, 
+    {1'b0,8'h00}, // Address 0x05, 
+    {1'b0,8'h00}, // Address 0x06,
+    {1'b1,8'h21}, // Address 0x07, Initiate DC offset calibration and RX filter on
+    {1'b1,8'h4b}, // Address 0x08, RX filter f-3db at ~34 MHz after scaling
+    {1'b0,8'h00}, // Address 0x09, 
+    {1'b0,8'h00}, // Address 0x0a, 
+    {1'b1,8'h20}, // Address 0x0b, RX gain only on PGA
+    {1'b1,8'h41}, // Address 0x0c, TX twos complement and interpolation factor 
+    {1'b1,8'h01}, // Address 0x0d, RT twos complement 
+    {1'b0,8'h01}, // Address 0x0e, Enable/Disable IAMP 
+    {1'b0,8'h00}, // Address 0x0f,     
+    {1'b0,8'h84}, // Address 0x10, Select TX gain
+    {1'b1,8'h00}, // Address 0x11, Select TX gain
+    {1'b0,8'h00}, // Address 0x12, 
+    {1'b0,8'h00}  // Address 0x13,     
+};
+
+
+parameter bit [0:19][8:0] initarray_regular = {
     // First bit is 1'b1 for write enable to that address
     {1'b1,8'h80}, // Address 0x00, enable 4 wire SPI
     {1'b0,8'h00}, // Address 0x01,
@@ -177,6 +227,9 @@ localparam bit [0:19][8:0] initarray = {
     {1'b0,8'h00}, // Address 0x12, 
     {1'b0,8'h00}  // Address 0x13,     
 };
+
+parameter bit [0:19][8:0] initarray = initarray_regular;
+
 
 
 //--------------------------------------------------------------

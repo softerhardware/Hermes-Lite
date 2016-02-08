@@ -60,10 +60,10 @@ module Hermes_Lite(
    
     // RMII Ethernet PHY
 (* useioff = 1 *)     output [1:0] rmii_tx,
-	output rmii_tx_en,
+(* useioff = 1 *)	output rmii_tx_en,
 (* useioff = 1 *)     input [1:0] rmii_rx,
     input rmii_osc,
-	input rmii_crs_dv,
+(* useioff = 1 *)	input rmii_crs_dv,
     inout PHY_MDIO,
     output PHY_MDC,
 
@@ -85,6 +85,7 @@ parameter IP = {8'd0,8'd0,8'd0,8'd0};
 //parameter CLK_FREQ = 61440000;
 parameter CLK_FREQ = 73728000;
 //parameter CLK_FREQ = 79872000;
+//parameter CLK_FREQ = 76800000;
 // Added
 // Number of Receivers
 parameter NR = 2; // number of receivers to implement

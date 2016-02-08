@@ -70,8 +70,9 @@ wire decimA_avail, decimB_avail;
 wire signed [13:0] decimA_real, decimA_imag;
 wire signed [15:0] decimB_real, decimB_imag;
 
-localparam VARCICWIDTH =  (CICRATE == 8) ? 37 : 34;
-localparam ACCWIDTH = (CICRATE == 13) ? 30 : 28;
+localparam VARCICWIDTH = (CICRATE == 10) ? 34 : (CICRATE == 13) ? 34 : (CICRATE == 5) ? 41 : 37; // Last is default rate of 8
+localparam ACCWIDTH = (CICRATE == 10) ? 28 : (CICRATE == 13) ? 30 : (CICRATE == 5) ? 25 : 27; // Last is default rate of 8
+
 
 // CIC filter 
 //I channel

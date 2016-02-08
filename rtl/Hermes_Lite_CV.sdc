@@ -16,7 +16,8 @@ set_time_format -unit ns -decimal_places 3
 #
 
 ##create_clock -period 79.872MHz	  [get_ports AD9866clk]		-name AD9866clk
-create_clock -period 73.728MHz	  [get_ports AD9866clk]		-name AD9866clk
+##create_clock -period 73.728MHz	  [get_ports AD9866clk]		-name AD9866clk
+create_clock -period 76.800MHz	  [get_ports AD9866clk]		-name AD9866clk
 create_clock -period 50.000MHz	  [get_ports rmii_osc]		-name rmii_osc
 create_clock -period 24.000MHz	  [get_ports clk]			-name clk
 
@@ -56,11 +57,11 @@ set_clock_groups -asynchronous -group {rmii_osc \
 ## set input delays
 create_clock -period 50.000MHz -name vrmii_osc
 
-set_input_delay -add_delay -max -clock vrmii_osc 14.60 [get_ports {rmii_crs_dv}]
-set_input_delay -add_delay -min -clock vrmii_osc 1.40 [get_ports {rmii_crs_dv}]
+set_input_delay -add_delay -max -clock vrmii_osc 15.00 [get_ports {rmii_crs_dv}]
+set_input_delay -add_delay -min -clock vrmii_osc 2.00 [get_ports {rmii_crs_dv}]
 
-set_input_delay -add_delay -max -clock vrmii_osc 14.60 [get_ports {rmii_rx[*]}]
-set_input_delay -add_delay -min -clock vrmii_osc 1.40 [get_ports {rmii_rx[*]}]
+set_input_delay -add_delay -max -clock vrmii_osc 15.00 [get_ports {rmii_rx[*]}]
+set_input_delay -add_delay -min -clock vrmii_osc 2.00 [get_ports {rmii_rx[*]}]
 
 # set output delays
 set_output_delay -add_delay -max -clock vrmii_osc 6.0 [get_ports {rmii_tx_en}]
