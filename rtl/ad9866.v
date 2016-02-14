@@ -116,11 +116,13 @@ always @(sen_n, dut1_pc, gain, extrqst) begin: AD9866_DUT1_COMB
     initarrayv = {2'b01,gain};
     datain = {8'h0a,initarrayv[7:0]};   
     start = 1'b0;
-    if ((dut1_pc[0] == 1'b0) & sen_n) begin
+    if (sen_n) begin
         if (dut1_pc[5:1] <= 6'h13) begin
-            initarrayv = initarray[dut1_pc[5:1]];
-            datain = {3'h0,dut1_pc[5:1],initarrayv[7:0]};
-            start = initarrayv[8];
+            if (dut1_pc[0] == 1'b0) begin
+                initarrayv = initarray[dut1_pc[5:1]];
+                datain = {3'h0,dut1_pc[5:1],initarrayv[7:0]};
+                start = initarrayv[8];
+            end
         end else begin
             // Send gain code
             start = extrqst;
