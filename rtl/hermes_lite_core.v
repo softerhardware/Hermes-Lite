@@ -203,8 +203,32 @@ localparam bit [0:19][8:0] initarray_2xosc = {
     {1'b0,8'h00}  // Address 0x13,     
 };
 
+localparam bit [0:19][8:0] initarray_disable_IAMP = {
+    // First bit is 1'b1 for write enable to that address
+    {1'b1,8'h80}, // Address 0x00, enable 4 wire SPI
+    {1'b0,8'h00}, // Address 0x01,
+    {1'b0,8'h00}, // Address 0x02, 
+    {1'b0,8'h00}, // Address 0x03, 
+    {1'b0,8'h00}, // Address 0x04, 
+    {1'b0,8'h00}, // Address 0x05, 
+    {1'b0,8'h00}, // Address 0x06,
+    {1'b1,8'h21}, // Address 0x07, Initiate DC offset calibration and RX filter on
+    {1'b1,8'h4b}, // Address 0x08, RX filter f-3db at ~34 MHz after scaling
+    {1'b0,8'h00}, // Address 0x09, 
+    {1'b0,8'h00}, // Address 0x0a, 
+    {1'b1,8'h20}, // Address 0x0b, RX gain only on PGA
+    {1'b1,8'h41}, // Address 0x0c, TX twos complement and interpolation factor 
+    {1'b1,8'h01}, // Address 0x0d, RT twos complement 
+    {1'b1,8'h01}, // Address 0x0e, Enable/Disable IAMP 
+    {1'b0,8'h00}, // Address 0x0f,     
+    {1'b0,8'h84}, // Address 0x10, Select TX gain
+    {1'b1,8'h00}, // Address 0x11, Select TX gain
+    {1'b0,8'h00}, // Address 0x12, 
+    {1'b0,8'h00}  // Address 0x13,     
+};
 
-parameter bit [0:19][8:0] initarray_regular = {
+
+localparam bit [0:19][8:0] initarray_regular = {
     // First bit is 1'b1 for write enable to that address
     {1'b1,8'h80}, // Address 0x00, enable 4 wire SPI
     {1'b0,8'h00}, // Address 0x01,
@@ -228,7 +252,9 @@ parameter bit [0:19][8:0] initarray_regular = {
     {1'b0,8'h00}  // Address 0x13,     
 };
 
-parameter bit [0:19][8:0] initarray = initarray_regular;
+
+localparam disable_IAMP = 1'b0; 
+localparam bit [0:19][8:0] initarray = (disable_IAMP == 1) ? initarray_disable_IAMP : initarray_regular;
 
 
 
@@ -2009,9 +2035,16 @@ wire [5:0] dd;
 
 // Linear mapping from 0to255 to 0to39
 `ifdef FULLDUPLEX
-assign dd = VNA ? VNATXGAIN : ((IF_Drive_Level+4) >> 3) + (IF_Drive_Level >> 5);
+generate
+	if (disable_IAMP == 1) assign dd = VNA ? VNATXGAIN : {2'b00,IF_Drive_Level[7:4]};
+	else assign dd = VNA ? VNATXGAIN : ((IF_Drive_Level+4) >> 3) + (IF_Drive_Level >> 5);
+endgenerate
 `else
-assign dd = ((IF_Drive_Level+4) >> 3) + (IF_Drive_Level >> 5);
+generate
+	if (disable_IAMP == 1) assign dd = {2'b00,IF_Drive_Level[7:4]};
+	else assign dd = ((IF_Drive_Level+4) >> 3) + (IF_Drive_Level >> 5);
+endgenerate
+
 `endif
 
 reg [5:0] lastdd;

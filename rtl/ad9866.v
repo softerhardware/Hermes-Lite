@@ -113,7 +113,7 @@ always @(posedge clk, posedge reset) begin: AD9866_DUT1_FSM
 end
 
 always @(sen_n, dut1_pc, gain, extrqst) begin: AD9866_DUT1_COMB
-    initarrayv = {2'h0,gain};
+    initarrayv = {2'b01,gain};
     datain = {8'h0a,initarrayv[7:0]};   
     start = 1'b0;
     if ((dut1_pc[0] == 1'b0) & sen_n) begin
