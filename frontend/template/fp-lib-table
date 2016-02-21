@@ -1,3 +1,0 @@
-(fp_lib_table
-  (lib (name HERMESLITE)(type KiCad)(uri ${KIPRJMOD}/hermeslite.pretty)(options "")(descr ""))
-)

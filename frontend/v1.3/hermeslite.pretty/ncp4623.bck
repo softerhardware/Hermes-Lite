@@ -1,8 +1,0 @@
-EESchema-DOCLIB  Version 2.0
-#
-$CMP NCP4623
-D 150 mA Low Dropout Voltage Regulator, Fixed Output, SOT-23-5
-K LDO Regulator Fixed Positive
-$ENDCMP
-#
-#End Doc Library
