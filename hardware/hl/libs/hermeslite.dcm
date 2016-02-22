@@ -1,0 +1,33 @@
+EESchema-DOCLIB  Version 2.0
+#
+$CMP CONN_15
+D Symbole general de connexion
+K CONN
+$ENDCMP
+#
+$CMP DIODESCH
+D Diode schottky
+K DEV DIODE
+$ENDCMP
+#
+$CMP DIODESCH2
+D Diode schottky
+K DEV DIODE
+$ENDCMP
+#
+$CMP EDGECONN_6X2
+D Symbole general de connecteur
+K CONN
+$ENDCMP
+#
+$CMP SATA22
+D Symbole general de connexion
+K CONN
+$ENDCMP
+#
+$CMP dipswitch
+D Symbole general de connecteur
+K CONN
+$ENDCMP
+#
+#End Doc Library
