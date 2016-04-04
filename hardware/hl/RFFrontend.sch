@@ -36,7 +36,7 @@ $Descr USLetter 11000 8500
 encoding utf-8
 Sheet 3 6
 Title "RF Frontend"
-Date "2016-02-18"
+Date "2016-04-03"
 Rev "2.0-pre1"
 Comp "SofterHardware"
 Comment1 "KF7O Steve Haynal"
@@ -664,4 +664,6 @@ Wire Wire Line
 	4350 5200 4450 5200
 Connection ~ 4450 5200
 Connection ~ 3850 5500
+Text Notes 1425 1225 0    60   ~ 0
+Control for possible\nTX and RX switches
 $EndSCHEMATC

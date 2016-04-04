@@ -36,7 +36,7 @@ $Descr USLetter 11000 8500
 encoding utf-8
 Sheet 2 6
 Title "Ethernet"
-Date "2016-02-13"
+Date "2016-04-03"
 Rev "2.0-pre1"
 Comp "SofterHardware"
 Comment1 "KF7O Steve Haynal"
