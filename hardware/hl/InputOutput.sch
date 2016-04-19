@@ -35,7 +35,7 @@ EELAYER END
 $Descr USLetter 11000 8500
 encoding utf-8
 Sheet 6 6
-Title "Hermes-Lite Test RF Frontend"
+Title "Hermes-Lite Input Output"
 Date "2016-04-03"
 Rev "2.0-pre1"
 Comp "SofterHardware"

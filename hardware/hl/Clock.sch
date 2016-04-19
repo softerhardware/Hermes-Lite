@@ -497,8 +497,8 @@ $Comp
 L adcosc X2
 U 1 1 56BFC48E
 P 3750 2300
-F 0 "X2" H 3850 2750 60  0000 C CNN
-F 1 "38.4MHz" H 3950 1850 60  0000 C CNN
+F 0 "X2" H 3750 2750 60  0000 C CNN
+F 1 "38.4MHz" H 3750 1850 60  0000 C CNN
 F 2 "" H 3750 2300 60  0000 C CNN
 F 3 "" H 3750 2300 60  0000 C CNN
 	1    3750 2300
@@ -633,14 +633,6 @@ Wire Wire Line
 Text Label 4150 4450 0    60   ~ 0
 CLKSDA
 Text Label 4150 4550 0    60   ~ 0
-CLKSEL
-Wire Wire Line
-	3750 1750 4100 1750
-Text Label 3750 1750 0    60   ~ 0
-CLKSDA
-Wire Wire Line
-	3750 2850 4100 2850
-Text Label 3750 2950 0    60   ~ 0
 CLKSEL
 Wire Wire Line
 	3200 1600 3200 1850
@@ -904,8 +896,6 @@ Text Notes 8800 4650 0    60   ~ 0
 X1 to support 2.5x2.0 or\n3.2x2.5 mm standard\n4-lead SMD packages
 Text Notes 2200 3500 0    60   ~ 0
 X3 to support 2.5x2.0 or\n3.2x2.5 mm standard\n4-lead SMD packages
-Text Notes 4550 1950 0    60   ~ 0
-X2 to support 2.5x2.0 or \n3.2x2.5 or 7.0x5.0 mm\nstandard 4-lead SMD\npackages\n\nSi570 is option for X2\nwith special I2C support
 $Comp
 L C_Small C33
 U 1 1 56C1777C
@@ -1033,4 +1023,6 @@ Text Notes 1325 3900 0    60   ~ 0
 Optional external clock\nfor synchronized radios
 Text Notes 1325 5125 0    60   ~ 0
 Optional external reference\nfor frequency calibration
+Text Notes 4550 1950 0    60   ~ 0
+X2 to support 2.5x2.0 or \n3.2x2.5 or 7.0x5.0 mm\nstandard 4-lead SMD\npackages\n
 $EndSCHEMATC
