@@ -19,6 +19,7 @@
 
 
 //  Metis code copyright 2010, 2011, 2012, 2013 Phil Harman VK6APH
+//  April 2016, N2ADR: Added xid, dhcp_seconds_timer
 
 
 module dhcp (
@@ -38,6 +39,7 @@ module dhcp (
   input tx_enable, 
   input udp_tx_active, 
   input [31:0] remote_ip,  		
+  input [3:0] dhcp_seconds_timer,
   //tx out
   output reg dhcp_tx_request, 
   output reg[7:0] tx_data,
@@ -66,7 +68,15 @@ localparam REQ_TX_LEN = 16'd256;
 reg [8:0] byte_no;
 reg tx_request;
 reg send_discovery;
-reg [8:0]state;
+reg [8:0] state = TX_IDLE;
+
+reg [15:0] xid_sum;		// random-ish number, constant after the first DHCP Discover
+reg xid_done = 0;
+wire [7:0] xid0, xid1, xid2, xid3;
+assign xid0 = local_mac[15:8];	// this is the final transaction ID
+assign xid1 = local_mac[7:0];
+assign xid2 = xid_sum[15:8];
+assign xid3 = xid_sum[7:0];
 
 //---------------------------------------------------------------
 //								DHCP Send
@@ -77,6 +87,8 @@ begin
 	case (state)
 	TX_IDLE:
 		begin
+		if ( ! xid_done)
+			xid_sum <= xid_sum + 1'd1;
 		byte_no <= 9'b1;
 		dhcp_tx_request <= 1'b0;	
 		send_discovery <= 1'b0;
@@ -86,6 +98,7 @@ begin
 	
 	DHCPDISCOVER:
 		begin
+		xid_done <= 1'b1;
 		length <= DIS_TX_LEN;			
 		dhcp_tx_request <= 1'b1;
 			if (udp_tx_enable) begin
@@ -112,7 +125,14 @@ begin
 					case (byte_no)
 				   1: tx_data <= 8'h01;					
 					2: tx_data <= 8'h06;
-					3: tx_data <= 8'h0;     // 24 + 1 zeros
+					3: tx_data <= 8'h0;
+					4: tx_data <= xid0;
+					5: tx_data <= xid1;
+					6: tx_data <= xid2;
+					7: tx_data <= xid3;
+					8: tx_data <= 8'd0;
+					9: tx_data <= {4'd0, dhcp_seconds_timer};
+				  10: tx_data <= 8'd0;		// 18 zeros
 				  28: tx_data <= local_mac[47:40];
 				  29: tx_data <= local_mac[39:32];
 				  30: tx_data <= local_mac[31:24];
@@ -195,6 +215,26 @@ begin
 		RX_OFFER_ACK:
 			begin
 				case (rx_byte_no)	
+							4: begin	// Accept only our own transaction ID
+									if (rx_data != xid0) rx_state <= RX_DONE;
+									rx_byte_no <=  rx_byte_no + 9'd1;
+								end
+
+							5: begin
+									if (rx_data != xid1) rx_state <= RX_DONE;
+									rx_byte_no <=  rx_byte_no + 9'd1;
+								end
+
+							6: begin
+									if (rx_data != xid2) rx_state <= RX_DONE;
+									rx_byte_no <=  rx_byte_no + 9'd1;
+								end
+
+							7: begin
+									if (rx_data != xid3) rx_state <= RX_DONE;
+									rx_byte_no <=  rx_byte_no + 9'd1;
+								end
+
 //// whilst this works, and takes less LEs, but the negative slack is worse. 
 //				16,17,18,19: begin
 //									temp_ip_accept <= {temp_ip_accept[31-8:20],rx_data};
