@@ -19,6 +19,7 @@
 
 
 //  Metis code copyright 2010, 2011, 2012, 2013 Phil Harman VK6APH, Alex Shovkoplyas, VE3NEA.
+//  April 2016, N2ADR: Added dhcp_seconds_timer
 
 
 module network (
@@ -92,7 +93,7 @@ wire clock_2_5MHz;
 wire [1:0] phy_speed;
 wire phy_duplex;
 wire phy_connected = phy_duplex && (phy_speed[1] != phy_speed[0]); 
-assign dhcp_timeout = (dhcp_timer == 0);
+assign dhcp_timeout = (dhcp_seconds_timer == 15);
 
 
 //-----------------------------------------------------------------------------
@@ -121,9 +122,10 @@ localparam
 
 reg [3:0] state = ST_START;
 reg [21:0] settle_cnt;
-reg [23:0] dhcp_timer;
+reg [21:0] dhcp_timer;
 reg dhcp_tx_enable;
 reg [37:0] dhcp_renew_timer;  // holds number of seconds before DHCP IP address must be renewed
+reg [3:0] dhcp_seconds_timer;	// number of seconds since the DHCP request started
 
 
 
@@ -153,7 +155,8 @@ always @(negedge clock_2_5MHz)
         if (eeprom_ready) 
           begin
 			 local_ip <= static_ip; 
-			 dhcp_timer <= 24'd12_500_000;	// set dhcp time out to 5 seconds  
+			 dhcp_timer <= 22'd2_500_000;	// set dhcp timer to one second
+			 dhcp_seconds_timer <= 4'd0;	// zero seconds have elapsed
           state <= ST_PHY_INIT;
           end
     
@@ -193,29 +196,34 @@ always @(negedge clock_2_5MHz)
 
       // wait for dhcp success, fail or time out.  Do time out here since same clock speed for 100/1000T
 		  // If DHCP provided IP address then set lease timeout to lease/2 seconds.
-      ST_DHCP:
-      begin
-		    dhcp_tx_enable <= 1'b0;			// clear dhcp flag
-			  if (dhcp_success) begin 
-					local_ip <= ip_accept;
-          dhcp_timer <= 24'd12_500_000; // renew after success needs another 5 seconds 
-					if (lease == 32'd0) dhcp_renew_timer <= 43_200 * 2_500_000;  // use 43,200 seconds (12 hours) if no lease time set
-          else dhcp_renew_timer <= (lease * 2_500_000) >> 1;  // set timer to half lease time.
-          state <= ST_DHCP_RENEW; 
-			  end 
-        else if (dhcp_timer == 0) begin  // use apipa  
-           local_ip <= apipa_ip;
-           state <= ST_RUNNING;
-        end
-        else if (dhcp_failed && dhcp_timer[19:0] == 0) begin  // attempt again every ~.4 seconds
-          dhcp_renew_timer <= 38'h020000; // delay 50 ms
-          dhcp_timer <= dhcp_timer - 24'd1; 
-          state <= ST_DHCP_RENEW;
-        end
-		    else dhcp_timer <= dhcp_timer - 24'd1;
-		  end
-        
-		  ST_DHCP_RENEW:  // DHCP IP address obtained 
+	ST_DHCP:
+		begin
+			dhcp_tx_enable <= 1'b0;			// clear dhcp flag
+			if (dhcp_success) begin 
+				local_ip <= ip_accept;
+				dhcp_timer <= 22'd2_500_000;	// reset dhcp timers for next Renewal
+				dhcp_seconds_timer <= 4'd0;
+				if (lease == 32'd0) dhcp_renew_timer <= 43_200 * 2_500_000;  // use 43,200 seconds (12 hours) if no lease time set
+				else dhcp_renew_timer <= (lease * 2_500_000) >> 1;  // set timer to half lease time.
+				state <= ST_DHCP_RENEW; 
+			end 
+			else if (dhcp_timer == 0) begin  // another second has elapsed
+				dhcp_renew_timer <= 38'h020000; // delay 50 ms
+				dhcp_timer <= 22'd2_500_000;	// reset dhcp timer to one second
+				dhcp_seconds_timer <= dhcp_seconds_timer + 4'd1;	// dhcp_seconds_timer still has its old value
+				// Retransmit Discover at 1, 3, 7 seconds
+				if (dhcp_seconds_timer == 0 || dhcp_seconds_timer == 2 || dhcp_seconds_timer == 6) begin
+					state <= ST_DHCP_RENEW;		// retransmit the Discover request
+				end
+				else if (dhcp_seconds_timer == 14) begin	// no DHCP Offer received in 15 seconds; use apipa
+					local_ip <= apipa_ip;
+					state <= ST_RUNNING;
+				end
+			end
+			else dhcp_timer <= dhcp_timer - 22'd1;
+		end
+
+	  ST_DHCP_RENEW:  // DHCP IP address obtained 
 		  begin
 				dhcp_enable <= 1'b0;				// disable dhcp receive
 				if (dhcp_renew_timer == 0)
@@ -550,6 +558,7 @@ dhcp dhcp_inst(
   .tx_enable(dhcp_tx_enable),
   .udp_tx_active(udp_tx_active), 
   .remote_ip(remote_ip_sync),				// IP address of DHCP server 
+  .dhcp_seconds_timer(dhcp_seconds_timer),
 
   // tx_out
   .dhcp_tx_request(dhcp_tx_request), 
