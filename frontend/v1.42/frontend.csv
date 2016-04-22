@@ -1,0 +1,45 @@
+Quantity,Package,Value,Reference,Notes,Digikey
+1,BREAKOUT14,RELAYCNT14,CN2,2X7 0.1 inch pin header,
+9,C_0805_HandSoldering,100n,C9 C10 C7 C8 C5 C6 C12 C14 C15,ceramic,
+2,C_0805_HandSoldering,120p,C18,5.00%,
+2,C_0805_HandSoldering,150p,C2 C16,5.00%,
+1,C_0805_HandSoldering,160p,C3,5.00%,
+2,C_0805_HandSoldering,100p,C4 C11 C17,5.00%,
+1,C_0805_HandSoldering,180p,C16,5.00%,
+1,C_0805_HandSoldering,75p,C1,5.00%,
+1,C_0805_HandSoldering,FB,FB2,"Ferite chip, MPZ2012S221A",445-15-1-ND
+1,EDGE,EDGE,CN1,,
+6,Measurement_Point_Round-TH_Small,TST,P7 P8 P5 P6 P10 P4,,
+1,PINHEAD1-2,12V,P1,2X1 0.1 inch pin header for 12 volt power (only needed if no 12V on main board),
+1,PSOP-18,ULN2803,U6,Texas Instruments darlington array,
+1,R_0805_HandSoldering,10k,R3,,
+2,R_0805_HandSoldering,1200,R10 R15,,
+2,R_0805_HandSoldering,22,R12 R13,,
+2,R_0805_HandSoldering,1000,R5 R18,,
+2,R_0805_HandSoldering,2200,R9 R11,,
+2,R_0805_HandSoldering,24  1/4W,R7 R8,"Panasonic ERJ-P06J240V,  Output resistors need ¼ W or more for higher power designs",P24ADCT-ND
+2,R_0805_HandSoldering,240n,L1 L2,"240n inductor  0806, Murata air wound 5% LQW2BASR24J00L",490-5670-1-ND
+4,R_0805_HandSoldering,270n,L3 L6 L7 L8,"270n inductor  0806, Murata air wound 5% LQW2BASR27J00L",490-5671-1-ND
+2,R_0805_HandSoldering,330n,L4 L5,"330n inductor  0806, Murata air wound 5% LQW2BASR33J00L",490-5672-1-ND
+2,R_0805_HandSoldering,33 1%,R1 R2,,
+2,R_0805_HandSoldering,330 1%,R14 R16,,
+1,R_0805_HandSoldering,75 1%,R6,,
+1,R_0805_HandSoldering,560,R4,,
+1,SOD-123,BZT52B12,D2,"Zener diode  SOD-123,  12 volt 5 %",
+1,SOD323,DIODESCH2,D1,"TVS diode, CDSOD323-T05LC",CDSOD323-T05LCT-ND
+1,SOIC-8-N-PAD,OPA2674,U3,"dual op amp, current feedback, SOIC-8, or substitute OPA2677 for higher power",
+1,SOT89-3_Housing,FCX690B,Q1,"NPN transistor in SOT-89, high beta (200 - 300) preferred, but any will work",
+1,TantalC_SizeT_EIA-3528,10u,C13,"Tantalum capacitor, 3528 metric, 20 volts",
+1,TransfBN2402,1:1,T2,BN-43-2402  four turns bifilar (use more turns for BN-61-2402),
+1,TransfBN2402,8:1Z,T1,MABA-010143-FLUX18  or homebrew (see 1.2 frontend),
+1,pe4259,PE4259,U2,"RF switch for transmit/receive to single SMA (optional; otherwise jumper P5 to P8, and P6 to P7)",1046-1011-2-ND
+2,rfconnectorB,SMA/BNC/HDR,P2 P3,SMA RF connector,
+,,,,,
+,,,,Build Option 1. On-Board T/R switch:  Mount PE4259 and P2 (antenna).  Omit P3.,
+,,,,Build Option 2. Separate Rfin and Rfout:  Mount P2 and P3.  Omit PE4259.  Jumper P5 to P8 and P6 to P7.,
+,,,,Build Option 3: There are different filter designs available on the Hermes-Lite group.,
+,,,,Build Option 4: Reduce R7 and R8 for higher power.  See frontend.html.,
+,,,,Build Option 5: Replace the OPA2674 with the OPA2677 package PSO-8 for higher power output,
+,,,,,
+,,,,"The Tx filter design is by Claudio, IN3OTD / DK1CG",
+,,,,"The Rx filter design is by Andrew, G4XZL",

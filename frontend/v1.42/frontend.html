@@ -1,0 +1,90 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="content-type" content="text/html; charset=utf-8">
+<meta name="description" content="Documentation for Hermes-Lite Frontend V1.4">
+<meta name="author" content="James C. Ahlstrom">
+<meta name="keywords" content="hermes, hermes-lite">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+</head><body>
+
+<h2> Hermes-Lite Frontend Version 1.42 (April 2016) </h2>
+
+<p>
+The frontend board 1.42 is a direct replacement for previous 1.2 boards.  It differs in that the output
+is taken directly from the TxDAC, not the IAMP.  It differs from the 1.32 board in that it uses a dual
+op amp and has a higher output level.
+The board can also be used as an experimental
+platform for other filters or for different output power levels.  See the Hermes-Lite Google group for current information.
+</p>
+<p>
+The frontend boards with versions greater than 1.3 MUST USE SPECIAL FIRMWARE.  The firmware for the 1.2 boards will seem to work, but
+will not produce the proper result.  The newer firmware disconnects the IAMP so that it doesn't load the TxDAC.
+</p>
+<p>
+The directory frontend/v4 contains all the KiCad and other files needed to build the board.  Some useful files are:
+</p>
+
+<dl>
+
+<dt>frontend.html</dt>
+<dd>
+This documentation file.
+</dd><br>
+<dt>frontend.pdf</dt>
+<dd>
+The schematic diagram as a PDF file.
+</dd><br>
+<dt>frontend.csv</dt>
+<dd>
+The bill of materials as a comma separated value file.
+</dd><br>
+<dt>gerber/HermesLiteV142.zip</dt>
+<dd>
+The gerber files to make the boards.  The project is also shared on OshPark.
+</dd><br>
+
+</dl>
+
+<h3> Build Option: Transformers </h3>
+<p>
+Transformer T1 is an 8:1 Z with the low impedance side towards the SMA.  You can use a commercial part
+MABA-010143-FLUX18.  Or you can wind your own by following the directions for the 1.2 board.  Transformer T2
+is a 1:1 wound on a BN-43-2402 core, four turns bifilar.  It can carry half a Watt and there is no good
+commercial substitute.  It provides good performance from 1.8 to 29.7 MHz.  If you have only BN-61-2402 cores,
+try to wind 11 turns, or as many as you can manage.  For lower frequencies like the new 630 meter band, you will
+need a transformer designed for lower frequencies.
+</p>
+<h3> Build Option: T/R Switch </h3>
+<p>
+There is an RF switch on board that can be used as a transmit/receive (T/R) switch.  To use it,
+mount the PE4259 switch and the P2 connector (antenna).  Omit P3.
+</p>
+<p>
+Otherwise, omit the PE4259 and mount both P2 (RF output) and P3 (RF input).  Then jumper P5 to P8 and P6 to P7.
+</p>
+<h3> Build Option: Output Resistors </h3>
+<p>
+You can reduce the output back termination resistors R7 and R8 to get up to 6 dB more power.  They are set to 24 ohms to produce about a 50 ohm
+output impedance.  But be aware that an op amp is a voltage source, and if the load impedance is zero you will exceed its maximum
+power dissipation.  Also op amps can become unstable if they drive a capacitive load.  Try using 4.7 ohms each.  Look at the data sheet and proceed with care.
+Do not omit these resistors because there is a small (5 mV) difference in DC level at the outputs, and you don't want a short through T2.
+If your load is an amp with a sensible input impedance, you should be alright.  These resistors dissipate significant power.
+They are specified as 1/4 Watt.  But the DigiKey part number given is for a 1/2 Watt resistor, and that is preferable. If you use a 1/8 Watt
+resistor, try to stay with lower powers and check the temperature.
+</p>
+<h3> Build Option: Other Op Amps and Output Powers </h3>
+<p>
+You can try other op amps and gains.  But current feedback op amps require a specific feedback resistor R14 and R16 for maximum bandwidth.  We don't want maximum bandwidth, so
+it is better to use a larger value to decrease the bandwidth.  To get the required gain, you will need to change R6.  The OPA2677 is an interesting substitute for
+the OPA2674.  It has a pad to solder to the board for greater power dissipation, but is otherwise similar.  Both parts are specified to operate down to
+5 volts in case you want to run from batteries.
+</p>
+<h3> Build Option: Filters </h3>
+<p>
+There may be alternative filter designs available on the Hermes-Lite Google group.
+</p>
+
+</body>
+</html>

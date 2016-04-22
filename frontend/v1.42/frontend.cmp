@@ -1,0 +1,129 @@
+Cmp-Mod V01 Created by Cvpcb (2014-08-05 BZR 5054)-product   date = Tue 25 Nov 2014 08:13:32 PM PST
+
+BeginCmp
+TimeStamp = /544344BB;
+Reference = C1;
+ValeurCmp = 0.1 uF;
+IdModule  = SMD_Packages:SMD-0805;
+EndCmp
+
+BeginCmp
+TimeStamp = /5443416A;
+Reference = C2;
+ValeurCmp = 0.1 uF;
+IdModule  = SMD_Packages:SMD-0805;
+EndCmp
+
+BeginCmp
+TimeStamp = /544340F2;
+Reference = C3;
+ValeurCmp = 0.1 uF;
+IdModule  = SMD_Packages:SMD-0805;
+EndCmp
+
+BeginCmp
+TimeStamp = /5443411D;
+Reference = C4;
+ValeurCmp = 0.1 uF;
+IdModule  = SMD_Packages:SMD-0805;
+EndCmp
+
+BeginCmp
+TimeStamp = /54430BA6;
+Reference = CN1;
+ValeurCmp = EDGE;
+IdModule  = HERMESLITE:EDGE;
+EndCmp
+
+BeginCmp
+TimeStamp = /54755307;
+Reference = CN2;
+ValeurCmp = BREAKOUT;
+IdModule  = HERMESLITE:BREAKOUT;
+EndCmp
+
+BeginCmp
+TimeStamp = /547563D3;
+Reference = CN3;
+ValeurCmp = TXL;
+IdModule  = HERMESLITE:JUMPER;
+EndCmp
+
+BeginCmp
+TimeStamp = /54756604;
+Reference = CN4;
+ValeurCmp = AGND;
+IdModule  = HERMESLITE:JUMPER;
+EndCmp
+
+BeginCmp
+TimeStamp = /54756621;
+Reference = CN5;
+ValeurCmp = AGND;
+IdModule  = HERMESLITE:JUMPER;
+EndCmp
+
+BeginCmp
+TimeStamp = /544342D9;
+Reference = D1;
+ValeurCmp = DIODESCH2;
+IdModule  = HERMESLITE:SOD323;
+EndCmp
+
+BeginCmp
+TimeStamp = /54434516;
+Reference = FB1;
+ValeurCmp = FB;
+IdModule  = SMD_Packages:SMD-0805;
+EndCmp
+
+BeginCmp
+TimeStamp = /544343F7;
+Reference = J1;
+ValeurCmp = 0;
+IdModule  = HERMESLITE:JUMPER;
+EndCmp
+
+BeginCmp
+TimeStamp = /544343B2;
+Reference = J2;
+ValeurCmp = 0;
+IdModule  = HERMESLITE:JUMPER;
+EndCmp
+
+BeginCmp
+TimeStamp = /544340A8;
+Reference = P1;
+ValeurCmp = BNC;
+IdModule  = HERMESLITE:BNCRA;
+EndCmp
+
+BeginCmp
+TimeStamp = /544340D3;
+Reference = P2;
+ValeurCmp = BNC;
+IdModule  = HERMESLITE:BNCRA;
+EndCmp
+
+BeginCmp
+TimeStamp = /5443441E;
+Reference = R1;
+ValeurCmp = 0;
+IdModule  = SMD_Packages:SMD-0805;
+EndCmp
+
+BeginCmp
+TimeStamp = /54434023;
+Reference = T1;
+ValeurCmp = 4:1;
+IdModule  = HERMESLITE:TRANSFREV;
+EndCmp
+
+BeginCmp
+TimeStamp = /54433FF8;
+Reference = T2;
+ValeurCmp = 8:1;
+IdModule  = HERMESLITE:TRANSFREV;
+EndCmp
+
+EndListe
