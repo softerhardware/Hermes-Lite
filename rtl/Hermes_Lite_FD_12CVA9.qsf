@@ -28,7 +28,7 @@ set_global_assignment -name FAMILY "Cyclone V"
 set_global_assignment -name TOP_LEVEL_ENTITY Hermes_Lite
 set_global_assignment -name ORIGINAL_QUARTUS_VERSION 15.0.2
 set_global_assignment -name PROJECT_CREATION_TIME_DATE "10:35:10  SEPTEMBER 17, 2015"
-set_global_assignment -name LAST_QUARTUS_VERSION 15.0.2
+set_global_assignment -name LAST_QUARTUS_VERSION 16.0.0
 set_global_assignment -name MIN_CORE_JUNCTION_TEMP 0
 set_global_assignment -name MAX_CORE_JUNCTION_TEMP 85
 set_global_assignment -name ERROR_CHECK_FREQUENCY_DIVISOR 256
@@ -123,6 +123,27 @@ set_global_assignment -name POWER_PRESET_COOLING_SOLUTION "23 MM HEAT SINK WITH 
 set_global_assignment -name POWER_BOARD_THERMAL_MODEL "NONE (CONSERVATIVE)"
 set_global_assignment -name VERILOG_INPUT_VERSION SYSTEMVERILOG_2005
 set_global_assignment -name VERILOG_SHOW_LMF_MAPPING_MESSAGES OFF
+set_global_assignment -name ENABLE_OCT_DONE OFF
+set_global_assignment -name ENABLE_CONFIGURATION_PINS OFF
+set_global_assignment -name ENABLE_BOOT_SEL_PIN OFF
+set_global_assignment -name AUTO_RESOURCE_SHARING ON
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to exp_ptt_n
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to userout[6]
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to userout[5]
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to userout[4]
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to userout[3]
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to userout[2]
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to userout[1]
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to userout[0]
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to ADCMOSI
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to ADCCLK
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to ADCMISO
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to nADCCS
+set_instance_assignment -name WEAK_PULL_UP_RESISTOR ON -to cwkey_i
+set_instance_assignment -name WEAK_PULL_UP_RESISTOR ON -to ptt_i
+set_global_assignment -name ALLOW_REGISTER_MERGING OFF
+set_global_assignment -name ALLOW_REGISTER_RETIMING OFF
+set_instance_assignment -name PARTITION_HIERARCHY root_partition -to | -section_id Top
 set_global_assignment -name SDC_FILE Hermes_Lite_FD_CVA9.sdc
 set_global_assignment -name VERILOG_FILE Hermes_Lite_CVA9.v
 set_global_assignment -name VERILOG_FILE hermes_lite_core.v
@@ -208,25 +229,4 @@ set_global_assignment -name QIP_FILE PHY_Rx_fifo.qip
 set_global_assignment -name QIP_FILE ifclocks_cv.qip
 set_global_assignment -name SIP_FILE ifclocks_cv.sip
 set_global_assignment -name QIP_FILE clkmux_cv/synthesis/clkmux_cv.qip
-set_global_assignment -name ENABLE_OCT_DONE OFF
-set_global_assignment -name ENABLE_CONFIGURATION_PINS OFF
-set_global_assignment -name ENABLE_BOOT_SEL_PIN OFF
 set_global_assignment -name SOURCE_FILE db/Hermes_Lite_12CV.cmp.rdb
-set_global_assignment -name AUTO_RESOURCE_SHARING ON
-set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to exp_ptt_n
-set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to userout[6]
-set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to userout[5]
-set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to userout[4]
-set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to userout[3]
-set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to userout[2]
-set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to userout[1]
-set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to userout[0]
-set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to ADCMOSI
-set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to ADCCLK
-set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to ADCMISO
-set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to nADCCS
-set_instance_assignment -name WEAK_PULL_UP_RESISTOR ON -to cwkey_i
-set_instance_assignment -name WEAK_PULL_UP_RESISTOR ON -to ptt_i
-set_global_assignment -name ALLOW_REGISTER_MERGING OFF
-set_global_assignment -name ALLOW_REGISTER_RETIMING OFF
-set_instance_assignment -name PARTITION_HIERARCHY root_partition -to | -section_id Top

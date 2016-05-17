@@ -136,7 +136,7 @@ hermes_lite_core #(
 
 	.exp_ptt_n(exp_ptt_n),
 	.userout(userout),
-	.dipsw({1'b0,dipsw}),
+	.dipsw({dipsw[1],dipsw}),
 
 	.cwkey_i(cwkey_i),
 	.cwkey_o(cwkey_o),

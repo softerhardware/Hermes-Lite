@@ -28,7 +28,7 @@ set_global_assignment -name FAMILY "Cyclone V"
 set_global_assignment -name TOP_LEVEL_ENTITY Hermes_Lite
 set_global_assignment -name ORIGINAL_QUARTUS_VERSION 14.0
 set_global_assignment -name PROJECT_CREATION_TIME_DATE "12:01:06  NOVEMBER 30, 2014"
-set_global_assignment -name LAST_QUARTUS_VERSION 15.0.2
+set_global_assignment -name LAST_QUARTUS_VERSION 16.0.0
 set_global_assignment -name MIN_CORE_JUNCTION_TEMP 0
 set_global_assignment -name MAX_CORE_JUNCTION_TEMP 85
 set_global_assignment -name USE_CONFIGURATION_DEVICE ON

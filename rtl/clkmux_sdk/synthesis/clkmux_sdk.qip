@@ -1,8 +1,8 @@
 set_global_assignment -entity "clkmux_sdk" -library "clkmux_sdk" -name IP_TOOL_NAME "Qsys"
-set_global_assignment -entity "clkmux_sdk" -library "clkmux_sdk" -name IP_TOOL_VERSION "14.1"
+set_global_assignment -entity "clkmux_sdk" -library "clkmux_sdk" -name IP_TOOL_VERSION "16.0"
 set_global_assignment -entity "clkmux_sdk" -library "clkmux_sdk" -name IP_TOOL_ENV "Qsys"
 set_global_assignment -library "clkmux_sdk" -name SOPCINFO_FILE [file join $::quartus(qip_path) "../../clkmux_sdk.sopcinfo"]
-set_global_assignment -entity "clkmux_sdk" -library "clkmux_sdk" -name SLD_INFO "QSYS_NAME clkmux_sdk HAS_SOPCINFO 1 GENERATION_ID 1419309945"
+set_global_assignment -entity "clkmux_sdk" -library "clkmux_sdk" -name SLD_INFO "QSYS_NAME clkmux_sdk HAS_SOPCINFO 1 GENERATION_ID 1463111076"
 set_global_assignment -library "clkmux_sdk" -name MISC_FILE [file join $::quartus(qip_path) "../clkmux_sdk.cmp"]
 set_global_assignment -library "clkmux_sdk" -name SLD_FILE [file join $::quartus(qip_path) "clkmux_sdk.debuginfo"]
 set_global_assignment -entity "clkmux_sdk" -library "clkmux_sdk" -name IP_TARGETED_DEVICE_FAMILY "Cyclone IV E"
@@ -15,7 +15,7 @@ set_global_assignment -entity "clkmux_sdk" -library "clkmux_sdk" -name IP_COMPON
 set_global_assignment -entity "clkmux_sdk" -library "clkmux_sdk" -name IP_COMPONENT_REPORT_HIERARCHY "On"
 set_global_assignment -entity "clkmux_sdk" -library "clkmux_sdk" -name IP_COMPONENT_INTERNAL "Off"
 set_global_assignment -entity "clkmux_sdk" -library "clkmux_sdk" -name IP_COMPONENT_VERSION "MS4w"
-set_global_assignment -entity "clkmux_sdk" -library "clkmux_sdk" -name IP_COMPONENT_PARAMETER "QVVUT19HRU5FUkFUSU9OX0lE::MTQxOTMwOTk0NQ==::QXV0byBHRU5FUkFUSU9OX0lE"
+set_global_assignment -entity "clkmux_sdk" -library "clkmux_sdk" -name IP_COMPONENT_PARAMETER "QVVUT19HRU5FUkFUSU9OX0lE::MTQ2MzExMTA3Ng==::QXV0byBHRU5FUkFUSU9OX0lE"
 set_global_assignment -entity "clkmux_sdk" -library "clkmux_sdk" -name IP_COMPONENT_PARAMETER "QVVUT19ERVZJQ0VfRkFNSUxZ::Q3ljbG9uZSBJViBF::QXV0byBERVZJQ0VfRkFNSUxZ"
 set_global_assignment -entity "clkmux_sdk" -library "clkmux_sdk" -name IP_COMPONENT_PARAMETER "QVVUT19ERVZJQ0U=::RVA0Q0UyMkYxN0M3::QXV0byBERVZJQ0U="
 set_global_assignment -entity "clkmux_sdk" -library "clkmux_sdk" -name IP_COMPONENT_PARAMETER "QVVUT19ERVZJQ0VfU1BFRURHUkFERQ==::Nw==::QXV0byBERVZJQ0VfU1BFRURHUkFERQ=="
@@ -24,7 +24,7 @@ set_global_assignment -entity "clkmux_sdk_altclkctrl_0" -library "clkmux_sdk" -n
 set_global_assignment -entity "clkmux_sdk_altclkctrl_0" -library "clkmux_sdk" -name IP_COMPONENT_REPORT_HIERARCHY "Off"
 set_global_assignment -entity "clkmux_sdk_altclkctrl_0" -library "clkmux_sdk" -name IP_COMPONENT_INTERNAL "Off"
 set_global_assignment -entity "clkmux_sdk_altclkctrl_0" -library "clkmux_sdk" -name IP_COMPONENT_AUTHOR "QWx0ZXJhIENvcnBvcmF0aW9u"
-set_global_assignment -entity "clkmux_sdk_altclkctrl_0" -library "clkmux_sdk" -name IP_COMPONENT_VERSION "MTQuMQ=="
+set_global_assignment -entity "clkmux_sdk_altclkctrl_0" -library "clkmux_sdk" -name IP_COMPONENT_VERSION "MTYuMA=="
 set_global_assignment -entity "clkmux_sdk_altclkctrl_0" -library "clkmux_sdk" -name IP_COMPONENT_PARAMETER "REVWSUNFX0ZBTUlMWQ==::Q3ljbG9uZSBJViBF::RGV2aWNlIEZhbWlseQ=="
 set_global_assignment -entity "clkmux_sdk_altclkctrl_0" -library "clkmux_sdk" -name IP_COMPONENT_PARAMETER "Q0xPQ0tfVFlQRQ==::MQ==::SG93IGRvIHlvdSB3YW50IHRvIHVzZSB0aGUgQUxUQ0xLQ1RSTD8="
 set_global_assignment -entity "clkmux_sdk_altclkctrl_0" -library "clkmux_sdk" -name IP_COMPONENT_PARAMETER "TlVNQkVSX09GX0NMT0NLUw==::NA==::SG93IG1hbnkgY2xvY2sgaW5wdXRzIHdvdWxkIHlvdSBsaWtlPw=="
@@ -35,5 +35,5 @@ set_global_assignment -library "clkmux_sdk" -name VERILOG_FILE [file join $::qua
 set_global_assignment -library "clkmux_sdk" -name VERILOG_FILE [file join $::quartus(qip_path) "submodules/clkmux_sdk_altclkctrl_0.v"]
 
 set_global_assignment -entity "clkmux_sdk_altclkctrl_0" -library "clkmux_sdk" -name IP_TOOL_NAME "altclkctrl"
-set_global_assignment -entity "clkmux_sdk_altclkctrl_0" -library "clkmux_sdk" -name IP_TOOL_VERSION "14.1"
+set_global_assignment -entity "clkmux_sdk_altclkctrl_0" -library "clkmux_sdk" -name IP_TOOL_VERSION "16.0"
 set_global_assignment -entity "clkmux_sdk_altclkctrl_0" -library "clkmux_sdk" -name IP_TOOL_ENV "Qsys"

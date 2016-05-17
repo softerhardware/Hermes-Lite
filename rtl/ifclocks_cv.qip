@@ -1,5 +1,5 @@
 set_global_assignment -entity "ifclocks_cv" -library "ifclocks_cv" -name IP_TOOL_NAME "altera_pll"
-set_global_assignment -entity "ifclocks_cv" -library "ifclocks_cv" -name IP_TOOL_VERSION "14.1"
+set_global_assignment -entity "ifclocks_cv" -library "ifclocks_cv" -name IP_TOOL_VERSION "16.0"
 set_global_assignment -entity "ifclocks_cv" -library "ifclocks_cv" -name IP_TOOL_ENV "mwpim"
 set_global_assignment -library "ifclocks_cv" -name MISC_FILE [file join $::quartus(qip_path) "ifclocks_cv.cmp"]
 set_global_assignment -entity "ifclocks_cv" -library "ifclocks_cv" -name IP_TARGETED_DEVICE_FAMILY "Cyclone V"
@@ -11,14 +11,14 @@ set_global_assignment -entity "ifclocks_cv" -library "ifclocks_cv" -name IP_COMP
 set_global_assignment -entity "ifclocks_cv" -library "ifclocks_cv" -name IP_COMPONENT_REPORT_HIERARCHY "Off"
 set_global_assignment -entity "ifclocks_cv" -library "ifclocks_cv" -name IP_COMPONENT_INTERNAL "Off"
 set_global_assignment -entity "ifclocks_cv" -library "ifclocks_cv" -name IP_COMPONENT_AUTHOR "QWx0ZXJhIENvcnBvcmF0aW9u"
-set_global_assignment -entity "ifclocks_cv" -library "ifclocks_cv" -name IP_COMPONENT_VERSION "MTQuMQ=="
+set_global_assignment -entity "ifclocks_cv" -library "ifclocks_cv" -name IP_COMPONENT_VERSION "MTYuMA=="
 set_global_assignment -entity "ifclocks_cv" -library "ifclocks_cv" -name IP_COMPONENT_DESCRIPTION "QWx0ZXJhIFBoYXNlLUxvY2tlZCBMb29wIChBTFRFUkFfUExMKQ=="
 set_global_assignment -entity "ifclocks_cv_0002" -library "ifclocks_cv" -name IP_COMPONENT_NAME "aWZjbG9ja3NfY3ZfMDAwMg=="
 set_global_assignment -entity "ifclocks_cv_0002" -library "ifclocks_cv" -name IP_COMPONENT_DISPLAY_NAME "QWx0ZXJhIFBMTA=="
 set_global_assignment -entity "ifclocks_cv_0002" -library "ifclocks_cv" -name IP_COMPONENT_REPORT_HIERARCHY "Off"
 set_global_assignment -entity "ifclocks_cv_0002" -library "ifclocks_cv" -name IP_COMPONENT_INTERNAL "Off"
 set_global_assignment -entity "ifclocks_cv_0002" -library "ifclocks_cv" -name IP_COMPONENT_AUTHOR "QWx0ZXJhIENvcnBvcmF0aW9u"
-set_global_assignment -entity "ifclocks_cv_0002" -library "ifclocks_cv" -name IP_COMPONENT_VERSION "MTQuMQ=="
+set_global_assignment -entity "ifclocks_cv_0002" -library "ifclocks_cv" -name IP_COMPONENT_VERSION "MTYuMA=="
 set_global_assignment -entity "ifclocks_cv_0002" -library "ifclocks_cv" -name IP_COMPONENT_DESCRIPTION "QWx0ZXJhIFBoYXNlLUxvY2tlZCBMb29wIChBTFRFUkFfUExMKQ=="
 set_global_assignment -entity "ifclocks_cv_0002" -library "ifclocks_cv" -name IP_COMPONENT_PARAMETER "ZGVidWdfcHJpbnRfb3V0cHV0::ZmFsc2U=::ZGVidWdfcHJpbnRfb3V0cHV0"
 set_global_assignment -entity "ifclocks_cv_0002" -library "ifclocks_cv" -name IP_COMPONENT_PARAMETER "ZGVidWdfdXNlX3JiY190YWZfbWV0aG9k::ZmFsc2U=::ZGVidWdfdXNlX3JiY190YWZfbWV0aG9k"
@@ -334,5 +334,5 @@ set_global_assignment -library "ifclocks_cv" -name VERILOG_FILE [file join $::qu
 set_global_assignment -library "ifclocks_cv" -name QIP_FILE [file join $::quartus(qip_path) "ifclocks_cv/ifclocks_cv_0002.qip"]
 
 set_global_assignment -entity "ifclocks_cv_0002" -library "ifclocks_cv" -name IP_TOOL_NAME "altera_pll"
-set_global_assignment -entity "ifclocks_cv_0002" -library "ifclocks_cv" -name IP_TOOL_VERSION "14.1"
+set_global_assignment -entity "ifclocks_cv_0002" -library "ifclocks_cv" -name IP_TOOL_VERSION "16.0"
 set_global_assignment -entity "ifclocks_cv_0002" -library "ifclocks_cv" -name IP_TOOL_ENV "mwpim"

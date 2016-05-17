@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<EnsembleReport name="clkmux_cv" kind="system" version="14.1" fabric="QSYS">
- <!-- Format version 14.1 186 (Future versions may contain additional information.) -->
- <!-- 2014.12.20.10:36:40 -->
+<EnsembleReport name="clkmux_cv" kind="system" version="16.0" fabric="QSYS">
+ <!-- Format version 16.0 211 (Future versions may contain additional information.) -->
+ <!-- 2016.05.13.16:36:24 -->
  <!-- A collection of modules and connections -->
  <parameter name="clockCrossingAdapter">
   <type>com.altera.sopcmodel.ensemble.EClockAdapter</type>
@@ -53,7 +53,7 @@
  </parameter>
  <parameter name="generationId">
   <type>int</type>
-  <value>1419100598</value>
+  <value>1463182583</value>
   <derived>false</derived>
   <enabled>true</enabled>
   <visible>true</visible>
@@ -81,6 +81,14 @@
   <derived>false</derived>
   <enabled>true</enabled>
   <visible>true</visible>
+  <valid>true</valid>
+ </parameter>
+ <parameter name="lockedInterfaceDefinition">
+  <type>com.altera.sopcmodel.definition.BoundaryDefinition</type>
+  <value></value>
+  <derived>false</derived>
+  <enabled>true</enabled>
+  <visible>false</visible>
   <valid>true</valid>
  </parameter>
  <parameter name="maxAdditionalLatency">
@@ -142,7 +150,7 @@
  <module
    name="altclkctrl_0"
    kind="altclkctrl"
-   version="14.1"
+   version="16.0"
    path="altclkctrl_0">
   <!-- Describes a single module. Module parameters are
 the requested settings for a module instance. -->
@@ -211,7 +219,7 @@ the requested settings for a module instance. -->
    <visible>true</visible>
    <valid>true</valid>
   </parameter>
-  <interface name="altclkctrl_input" kind="conduit_end" version="14.1">
+  <interface name="altclkctrl_input" kind="conduit_end" version="16.0">
    <!-- The connection points exposed by a module instance for the
 particular module parameters. Connection points and their
 parameters are a RESULT of the module parameters. -->
@@ -278,7 +286,7 @@ parameters are a RESULT of the module parameters. -->
     <role>clkselect</role>
    </port>
   </interface>
-  <interface name="altclkctrl_output" kind="conduit_end" version="14.1">
+  <interface name="altclkctrl_output" kind="conduit_end" version="16.0">
    <!-- The connection points exposed by a module instance for the
 particular module parameters. Connection points and their
 parameters are a RESULT of the module parameters. -->
@@ -334,7 +342,7 @@ parameters are a RESULT of the module parameters. -->
   <type>com.altera.entityinterfaces.IElementClass</type>
   <subtype>com.altera.entityinterfaces.IModule</subtype>
   <displayName>ALTCLKCTRL</displayName>
-  <version>14.1</version>
+  <version>16.0</version>
  </plugin>
  <plugin>
   <instanceCount>2</instanceCount>
@@ -342,8 +350,8 @@ parameters are a RESULT of the module parameters. -->
   <type>com.altera.entityinterfaces.IElementClass</type>
   <subtype>com.altera.entityinterfaces.IMutableConnectionPoint</subtype>
   <displayName>Conduit</displayName>
-  <version>14.1</version>
+  <version>16.0</version>
  </plugin>
- <reportVersion>14.1 186</reportVersion>
- <uniqueIdentifier>00000000000000E00000014A68FCB4F9</uniqueIdentifier>
+ <reportVersion>16.0 211</reportVersion>
+ <uniqueIdentifier>00000000000000E000000154AC7A687F</uniqueIdentifier>
 </EnsembleReport>

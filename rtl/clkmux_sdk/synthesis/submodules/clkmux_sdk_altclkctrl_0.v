@@ -1,18 +1,18 @@
 //altclkctrl CBX_SINGLE_OUTPUT_FILE="ON" CLOCK_TYPE="Global Clock" DEVICE_FAMILY="Cyclone IV E" ENA_REGISTER_MODE="falling edge" USE_GLITCH_FREE_SWITCH_OVER_IMPLEMENTATION="OFF" clkselect ena inclk outclk
-//VERSION_BEGIN 14.1 cbx_altclkbuf 2014:12:03:18:04:04:SJ cbx_cycloneii 2014:12:03:18:04:04:SJ cbx_lpm_add_sub 2014:12:03:18:04:04:SJ cbx_lpm_compare 2014:12:03:18:04:04:SJ cbx_lpm_decode 2014:12:03:18:04:04:SJ cbx_lpm_mux 2014:12:03:18:04:04:SJ cbx_mgl 2014:12:03:18:06:09:SJ cbx_stratix 2014:12:03:18:04:04:SJ cbx_stratixii 2014:12:03:18:04:04:SJ cbx_stratixiii 2014:12:03:18:04:04:SJ cbx_stratixv 2014:12:03:18:04:04:SJ  VERSION_END
+//VERSION_BEGIN 16.0 cbx_altclkbuf 2016:04:27:18:05:34:SJ cbx_cycloneii 2016:04:27:18:05:34:SJ cbx_lpm_add_sub 2016:04:27:18:05:34:SJ cbx_lpm_compare 2016:04:27:18:05:34:SJ cbx_lpm_decode 2016:04:27:18:05:34:SJ cbx_lpm_mux 2016:04:27:18:05:34:SJ cbx_mgl 2016:04:27:18:06:48:SJ cbx_nadder 2016:04:27:18:05:34:SJ cbx_stratix 2016:04:27:18:05:34:SJ cbx_stratixii 2016:04:27:18:05:34:SJ cbx_stratixiii 2016:04:27:18:05:34:SJ cbx_stratixv 2016:04:27:18:05:34:SJ  VERSION_END
 // synthesis VERILOG_INPUT_VERSION VERILOG_2001
 // altera message_off 10463
 
 
 
-// Copyright (C) 1991-2014 Altera Corporation. All rights reserved.
+// Copyright (C) 1991-2016 Altera Corporation. All rights reserved.
 //  Your use of Altera Corporation's design tools, logic functions 
 //  and other software and tools, and its AMPP partner logic 
 //  functions, and any output files from any of the foregoing 
 //  (including device programming or simulation files), and any 
 //  associated documentation or information are expressly subject 
 //  to the terms and conditions of the Altera Program License 
-//  Subscription Agreement, the Altera Quartus II License Agreement,
+//  Subscription Agreement, the Altera Quartus Prime License Agreement,
 //  the Altera MegaCore Function License Agreement, or other 
 //  applicable license agreement, including, without limitation, 
 //  that your use is for the sole purpose of programming logic 
@@ -71,7 +71,7 @@ module  clkmux_sdk_altclkctrl_0_sub
 		inclk_wire = {inclk},
 		outclk = wire_clkctrl1_outclk;
 endmodule //clkmux_sdk_altclkctrl_0_sub
-//VALID FILE // (C) 2001-2014 Altera Corporation. All rights reserved.
+//VALID FILE // (C) 2001-2016 Altera Corporation. All rights reserved.
 // Your use of Altera Corporation's design tools, logic functions and other 
 // software and tools, and its AMPP partner logic functions, and any output 
 // files any of the foregoing (including device programming or simulation 

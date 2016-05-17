@@ -28,7 +28,7 @@ set_global_assignment -name FAMILY "Cyclone V"
 set_global_assignment -name TOP_LEVEL_ENTITY Hermes_Lite
 set_global_assignment -name ORIGINAL_QUARTUS_VERSION 14.0
 set_global_assignment -name PROJECT_CREATION_TIME_DATE "12:01:06  NOVEMBER 30, 2014"
-set_global_assignment -name LAST_QUARTUS_VERSION 15.0.2
+set_global_assignment -name LAST_QUARTUS_VERSION 16.0.0
 set_global_assignment -name MIN_CORE_JUNCTION_TEMP "-40"
 set_global_assignment -name MAX_CORE_JUNCTION_TEMP 100
 set_global_assignment -name USE_CONFIGURATION_DEVICE ON
@@ -151,6 +151,39 @@ set_location_assignment PIN_T8 -to nADCCS
 set_location_assignment PIN_N6 -to cwkey_i
 set_location_assignment PIN_R5 -to cwkey_o
 set_location_assignment PIN_P14 -to ptt_i
+set_instance_assignment -name CURRENT_STRENGTH_NEW 4MA -to rmii_crs_dv
+set_instance_assignment -name SLEW_RATE 1 -to rmii_rx[1]
+set_instance_assignment -name SLEW_RATE 1 -to rmii_rx[0]
+set_instance_assignment -name SLEW_RATE 1 -to rmii_tx[1]
+set_instance_assignment -name SLEW_RATE 1 -to rmii_tx[0]
+set_instance_assignment -name SLEW_RATE 1 -to rmii_tx_en
+set_instance_assignment -name SLEW_RATE 1 -to PHY_MDC
+set_instance_assignment -name SLEW_RATE 1 -to PHY_MDIO
+set_instance_assignment -name CURRENT_STRENGTH_NEW 4MA -to rmii_osc
+set_instance_assignment -name CURRENT_STRENGTH_NEW 4MA -to rmii_rx[1]
+set_instance_assignment -name CURRENT_STRENGTH_NEW 4MA -to rmii_rx[0]
+set_global_assignment -name ENABLE_OCT_DONE OFF
+set_global_assignment -name ENABLE_CONFIGURATION_PINS OFF
+set_global_assignment -name ENABLE_BOOT_SEL_PIN OFF
+set_global_assignment -name AUTO_RESOURCE_SHARING ON
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to exp_ptt_n
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to userout[6]
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to userout[5]
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to userout[4]
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to userout[3]
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to userout[2]
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to userout[1]
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to userout[0]
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to ADCMOSI
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to ADCCLK
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to ADCMISO
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to nADCCS
+set_instance_assignment -name WEAK_PULL_UP_RESISTOR ON -to cwkey_i
+set_instance_assignment -name WEAK_PULL_UP_RESISTOR ON -to ptt_i
+set_global_assignment -name REMOVE_REDUNDANT_LOGIC_CELLS ON
+set_global_assignment -name ALLOW_ANY_RAM_SIZE_FOR_RECOGNITION ON
+set_global_assignment -name OPTIMIZATION_MODE "HIGH PERFORMANCE EFFORT"
+set_instance_assignment -name PARTITION_HIERARCHY root_partition -to | -section_id Top
 set_global_assignment -name VHDL_FILE RMII2MII_conv.vhd
 set_global_assignment -name SDC_FILE Hermes_Lite_CV.sdc
 set_global_assignment -name VERILOG_FILE Hermes_Lite_CV.v
@@ -215,37 +248,4 @@ set_global_assignment -name QIP_FILE PHY_Rx_fifo.qip
 set_global_assignment -name QIP_FILE ifclocks_cv.qip
 set_global_assignment -name SIP_FILE ifclocks_cv.sip
 set_global_assignment -name QIP_FILE clkmux_cv/synthesis/clkmux_cv.qip
-set_instance_assignment -name CURRENT_STRENGTH_NEW 4MA -to rmii_crs_dv
-set_instance_assignment -name SLEW_RATE 1 -to rmii_rx[1]
-set_instance_assignment -name SLEW_RATE 1 -to rmii_rx[0]
-set_instance_assignment -name SLEW_RATE 1 -to rmii_tx[1]
-set_instance_assignment -name SLEW_RATE 1 -to rmii_tx[0]
-set_instance_assignment -name SLEW_RATE 1 -to rmii_tx_en
-set_instance_assignment -name SLEW_RATE 1 -to PHY_MDC
-set_instance_assignment -name SLEW_RATE 1 -to PHY_MDIO
-set_instance_assignment -name CURRENT_STRENGTH_NEW 4MA -to rmii_osc
-set_instance_assignment -name CURRENT_STRENGTH_NEW 4MA -to rmii_rx[1]
-set_instance_assignment -name CURRENT_STRENGTH_NEW 4MA -to rmii_rx[0]
-set_global_assignment -name ENABLE_OCT_DONE OFF
-set_global_assignment -name ENABLE_CONFIGURATION_PINS OFF
-set_global_assignment -name ENABLE_BOOT_SEL_PIN OFF
 set_global_assignment -name SOURCE_FILE db/Hermes_Lite_12CV.cmp.rdb
-set_global_assignment -name AUTO_RESOURCE_SHARING ON
-set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to exp_ptt_n
-set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to userout[6]
-set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to userout[5]
-set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to userout[4]
-set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to userout[3]
-set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to userout[2]
-set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to userout[1]
-set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to userout[0]
-set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to ADCMOSI
-set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to ADCCLK
-set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to ADCMISO
-set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to nADCCS
-set_instance_assignment -name WEAK_PULL_UP_RESISTOR ON -to cwkey_i
-set_instance_assignment -name WEAK_PULL_UP_RESISTOR ON -to ptt_i
-set_global_assignment -name REMOVE_REDUNDANT_LOGIC_CELLS ON
-set_global_assignment -name ALLOW_ANY_RAM_SIZE_FOR_RECOGNITION ON
-set_global_assignment -name OPTIMIZATION_MODE "HIGH PERFORMANCE EFFORT"
-set_instance_assignment -name PARTITION_HIERARCHY root_partition -to | -section_id Top

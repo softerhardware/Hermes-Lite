@@ -28,7 +28,7 @@ set_global_assignment -name FAMILY "Cyclone IV E"
 set_global_assignment -name TOP_LEVEL_ENTITY Hermes_Lite
 set_global_assignment -name ORIGINAL_QUARTUS_VERSION 14.0
 set_global_assignment -name PROJECT_CREATION_TIME_DATE "15:25:03  NOVEMBER 02, 2014"
-set_global_assignment -name LAST_QUARTUS_VERSION 15.0.2
+set_global_assignment -name LAST_QUARTUS_VERSION 16.0.0
 set_global_assignment -name MIN_CORE_JUNCTION_TEMP 0
 set_global_assignment -name MAX_CORE_JUNCTION_TEMP 85
 set_global_assignment -name DEVICE_FILTER_PACKAGE FBGA
@@ -154,6 +154,22 @@ set_instance_assignment -name CLOCK_SETTINGS CLRCOUT -to CLRCOUT
 set_instance_assignment -name CLOCK_SETTINGS TLV2208_125Mhz -to LTC2208_125Mhz
 set_instance_assignment -name CLOCK_SETTINGS OSC_10MHz -to OSC_10MHZ
 set_instance_assignment -name GLOBAL_SIGNAL "GLOBAL CLOCK" -to PHY_CLK125
+set_global_assignment -name PROJECT_OUTPUT_DIRECTORY build
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to exp_ptt_n
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to userout[6]
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to userout[5]
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to userout[4]
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to userout[3]
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to userout[2]
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to userout[1]
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to userout[0]
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to ADCMOSI
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to ADCCLK
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to ADCMISO
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to nADCCS
+set_instance_assignment -name WEAK_PULL_UP_RESISTOR ON -to cwkey_i
+set_instance_assignment -name WEAK_PULL_UP_RESISTOR ON -to ptt_i
+set_instance_assignment -name PARTITION_HIERARCHY root_partition -to | -section_id Top
 set_global_assignment -name SDC_FILE Hermes_Lite_SDK.sdc
 set_global_assignment -name VERILOG_FILE Hermes_Lite_SDK.v
 set_global_assignment -name VERILOG_FILE hermes_lite_core.v
@@ -221,20 +237,4 @@ set_global_assignment -name QIP_FILE ASMI.qip
 set_global_assignment -name QIP_FILE EPCS_fifo.qip
 set_global_assignment -name QIP_FILE Tx_fifo.qip
 set_global_assignment -name QIP_FILE PHY_Rx_fifo.qip
-set_global_assignment -name PROJECT_OUTPUT_DIRECTORY build
 set_global_assignment -name QIP_FILE ad9866clk_sdk.qip
-set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to exp_ptt_n
-set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to userout[6]
-set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to userout[5]
-set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to userout[4]
-set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to userout[3]
-set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to userout[2]
-set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to userout[1]
-set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to userout[0]
-set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to ADCMOSI
-set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to ADCCLK
-set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to ADCMISO
-set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to nADCCS
-set_instance_assignment -name WEAK_PULL_UP_RESISTOR ON -to cwkey_i
-set_instance_assignment -name WEAK_PULL_UP_RESISTOR ON -to ptt_i
-set_instance_assignment -name PARTITION_HIERARCHY root_partition -to | -section_id Top

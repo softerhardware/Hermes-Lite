@@ -227,6 +227,29 @@ localparam bit [0:19][8:0] initarray_disable_IAMP = {
     {1'b0,8'h00}  // Address 0x13,     
 };
 
+localparam bit [0:19][8:0] initarray_6m = {
+    // First bit is 1'b1 for write enable to that address
+    {1'b1,8'h80}, // Address 0x00, enable 4 wire SPI
+    {1'b0,8'h00}, // Address 0x01,
+    {1'b0,8'h00}, // Address 0x02, 
+    {1'b0,8'h00}, // Address 0x03, 
+    {1'b1,8'h00}, // Address 0x04, // No multiply of oscillator for no interpolation
+    {1'b0,8'h00}, // Address 0x05, 
+    {1'b1,8'h00}, // Address 0x06, // No divide down for FPGA clock
+    {1'b1,8'h20}, // Address 0x07, Initiate DC offset calibration and RX filter *OFF*
+    {1'b1,8'h4b}, // Address 0x08, RX filter f-3db at ~34 MHz after scaling
+    {1'b0,8'h00}, // Address 0x09, 
+    {1'b0,8'h00}, // Address 0x0a, 
+    {1'b1,8'h20}, // Address 0x0b, RX gain only on PGA
+    {1'b1,8'h81}, // Address 0x0c, TX twos complement and interpolation factor
+    {1'b1,8'h01}, // Address 0x0d, RT twos complement 
+    {1'b0,8'h01}, // Address 0x0e, Enable/Disable IAMP 
+    {1'b0,8'h00}, // Address 0x0f,     
+    {1'b0,8'h84}, // Address 0x10, Select TX gain
+    {1'b1,8'h00}, // Address 0x11, Select TX gain
+    {1'b0,8'h00}, // Address 0x12, 
+    {1'b0,8'h00}  // Address 0x13,     
+};
 
 localparam bit [0:19][8:0] initarray_regular = {
     // First bit is 1'b1 for write enable to that address
@@ -253,8 +276,23 @@ localparam bit [0:19][8:0] initarray_regular = {
 };
 
 
-localparam disable_IAMP = 1'b0; 
+localparam disable_IAMP = 1'b1; 
 localparam bit [0:19][8:0] initarray = (disable_IAMP == 1) ? initarray_disable_IAMP : initarray_regular;
+
+// Example initarray initialization
+// Comment out the initarray assignment above and uncomment the desired assignment below
+
+// No interpolation and not filter for 6M
+//localparam bit [0:19][8:0] initarray = initarray_6m;
+
+// Based on dip switch
+// SDK has just two dip switches, dipsw[2]==dipsw[1] in SDK, dipsw[1] 
+// CV has three dip switches
+// CVA9 has four dip switches but only three are currently connected
+// dipsw[2:1] select alternate MAC addresses
+// dipsw[0] selects to identify as hermes or hermes-lite
+// Use dipsw[2:1] for initarray selection. This will also change the MAC but that is okay and may be desirable
+//localparam bit [0:19][8:0] initarray = dipsw[2] ? initarray_6m : initarray_regular;
 
 
 
@@ -1789,16 +1827,28 @@ assign FPGA_PTT = IF_Rx_ctrl_0[0] | cwkey | clean_ptt; // IF_Rx_ctrl_0 only upda
 
 // Hack to use IF_DITHER to switch highest bit of attenuation
 wire [5:0] gain_value;
+reg [5:0] ad9866_pga_d;
 
 assign gain_value = {~IF_DITHER, ~Hermes_atten};
 
+wire [5:0] igain_value;
+assign igain_value = IF_RAND ? agc_value : gain_value;
+
+
+always @(posedge AD9866clkX1) begin
 `ifdef FULLDUPLEX
 //assign ad9866_pga = (FPGA_PTT | VNA) ? ((VNA & Preamp) ? DUPRXMAXGAIN : DUPRXMINGAIN) : (IF_RAND ? agc_value : gain_value);
-//allow gain changes during tx 
-assign ad9866_pga = ( VNA) ? ((VNA & Preamp) ? DUPRXMAXGAIN : DUPRXMINGAIN) : (IF_RAND ? agc_value : gain_value);
+//allow gain changes during tx
+//AD9866 appears to diminish TX if RX gain is more than 1f, ceiling of 1f for receiver if in TX
+	ad9866_pga_d <= VNA ? (Preamp ? DUPRXMAXGAIN : DUPRXMINGAIN) : ((FPGA_PTT & igain_value[5]) ? 6'h1f : igain_value);
 `else
-assign ad9866_pga = IF_RAND ? agc_value : gain_value;
+	ad9866_pga_d <= igain_value;
 `endif
+
+end
+
+assign ad9866_pga = ad9866_pga_d;
+
 
 //---------------------------------------------------------
 //   State Machine to manage PWM interface
