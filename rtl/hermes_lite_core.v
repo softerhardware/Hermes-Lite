@@ -242,8 +242,8 @@ localparam bit [0:19][8:0] initarray_6m = {
     {1'b0,8'h00}, // Address 0x0a, 
     {1'b1,8'h20}, // Address 0x0b, RX gain only on PGA
     {1'b1,8'h81}, // Address 0x0c, TX twos complement and interpolation factor
-    {1'b1,8'h01}, // Address 0x0d, RT twos complement 
-    {1'b0,8'h01}, // Address 0x0e, Enable/Disable IAMP 
+    {1'b1,8'h01}, // Address 0x0d, RX twos complement 
+    {1'b1,8'h01}, // Address 0x0e, Enable/Disable IAMP 
     {1'b0,8'h00}, // Address 0x0f,     
     {1'b0,8'h84}, // Address 0x10, Select TX gain
     {1'b1,8'h00}, // Address 0x11, Select TX gain
@@ -276,14 +276,16 @@ localparam bit [0:19][8:0] initarray_regular = {
 };
 
 
-localparam disable_IAMP = 1'b1; 
-localparam bit [0:19][8:0] initarray = (disable_IAMP == 1) ? initarray_disable_IAMP : initarray_regular;
+localparam disable_IAMP = 1'b0; 
+localparam bit [0:19][8:0] initarray0 = (disable_IAMP == 1) ? initarray_disable_IAMP : initarray_regular;
 
-// Example initarray initialization
-// Comment out the initarray assignment above and uncomment the desired assignment below
+
+// Set initarray1 to other value to select between two configurations
+// Must reset or repower HL to take effect 
+localparam bit [0:19][8:0] initarray1 = initarray0;
 
 // No interpolation and not filter for 6M
-//localparam bit [0:19][8:0] initarray = initarray_6m;
+//localparam bit [0:19][8:0] initarray1 = initarray_6m;
 
 // Based on dip switch
 // SDK has just two dip switches, dipsw[2]==dipsw[1] in SDK, dipsw[1] 
@@ -291,9 +293,7 @@ localparam bit [0:19][8:0] initarray = (disable_IAMP == 1) ? initarray_disable_I
 // CVA9 has four dip switches but only three are currently connected
 // dipsw[2:1] select alternate MAC addresses
 // dipsw[0] selects to identify as hermes or hermes-lite
-// Use dipsw[2:1] for initarray selection. This will also change the MAC but that is okay and may be desirable
-//localparam bit [0:19][8:0] initarray = dipsw[2] ? initarray_6m : initarray_regular;
-
+// Use dipsw[2] is used for initarray selection. This will also change the MAC but that is okay and may be desirable
 
 
 //--------------------------------------------------------------
@@ -2103,7 +2103,7 @@ always @ (posedge ad9866spiclk)
 
 assign ad9866rqst = dd != lastdd;
 
-ad9866 #(.initarray(initarray)) ad9866_inst(.reset(~ad9866_rst_n),.clk(ad9866spiclk),.sclk(ad9866_sclk),.sdio(ad9866_sdio),.sdo(ad9866_sdo),.sen_n(ad9866_sen_n),.dataout(),.extrqst(ad9866rqst),.gain(dd));
+ad9866 #(.initarray0(initarray0), .initarray1(initarray1)) ad9866_inst(.reset(~ad9866_rst_n),.clk(ad9866spiclk),.initarray_sel(dipsw[2]),.sclk(ad9866_sclk),.sdio(ad9866_sdio),.sdo(ad9866_sdo),.sen_n(ad9866_sen_n),.dataout(),.extrqst(ad9866rqst),.gain(dd));
 
 // Really 0.16 seconds at Hermes-Lite 61.44 MHz clock
 localparam half_second = 10000000; // at 48MHz clock rate

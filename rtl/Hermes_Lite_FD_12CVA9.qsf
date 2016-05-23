@@ -143,7 +143,6 @@ set_instance_assignment -name WEAK_PULL_UP_RESISTOR ON -to cwkey_i
 set_instance_assignment -name WEAK_PULL_UP_RESISTOR ON -to ptt_i
 set_global_assignment -name ALLOW_REGISTER_MERGING OFF
 set_global_assignment -name ALLOW_REGISTER_RETIMING OFF
-set_instance_assignment -name PARTITION_HIERARCHY root_partition -to | -section_id Top
 set_global_assignment -name SDC_FILE Hermes_Lite_FD_CVA9.sdc
 set_global_assignment -name VERILOG_FILE Hermes_Lite_CVA9.v
 set_global_assignment -name VERILOG_FILE hermes_lite_core.v
@@ -230,3 +229,4 @@ set_global_assignment -name QIP_FILE ifclocks_cv.qip
 set_global_assignment -name SIP_FILE ifclocks_cv.sip
 set_global_assignment -name QIP_FILE clkmux_cv/synthesis/clkmux_cv.qip
 set_global_assignment -name SOURCE_FILE db/Hermes_Lite_12CV.cmp.rdb
+set_instance_assignment -name PARTITION_HIERARCHY root_partition -to | -section_id Top

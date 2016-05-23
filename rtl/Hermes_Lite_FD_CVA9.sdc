@@ -161,8 +161,28 @@ set_min_delay -from clock_90_125MHz -to tx_output_clock -2
 set_input_delay -add_delay -max -clock ad9866_rxclk 3.78 [get_ports {ad9866_rxsync}]
 set_input_delay -add_delay -min -clock ad9866_rxclk 0.5 [get_ports {ad9866_rxsync}]
 
-set_input_delay -add_delay -max -clock ad9866_rxclk 3.78 [get_ports {ad9866_rx[*]}]
-set_input_delay -add_delay -min -clock ad9866_rxclk 0.5 [get_ports {ad9866_rx[*]}]
+##set_input_delay -add_delay -max -clock ad9866_rxclk 3.78 [get_ports {ad9866_rx[*]}]
+##set_input_delay -add_delay -min -clock ad9866_rxclk 0.5 [get_ports {ad9866_rx[*]}]
+
+## Break out as bits for individual control of delay
+
+set_input_delay -add_delay -max -clock ad9866_rxclk 3.78 [get_ports {ad9866_rx[0]}]
+set_input_delay -add_delay -min -clock ad9866_rxclk 0.5 [get_ports {ad9866_rx[0]}]
+
+set_input_delay -add_delay -max -clock ad9866_rxclk 3.78 [get_ports {ad9866_rx[1]}]
+set_input_delay -add_delay -min -clock ad9866_rxclk 0.5 [get_ports {ad9866_rx[1]}]
+
+set_input_delay -add_delay -max -clock ad9866_rxclk 3.78 [get_ports {ad9866_rx[2]}]
+set_input_delay -add_delay -min -clock ad9866_rxclk 0.5 [get_ports {ad9866_rx[2]}]
+
+set_input_delay -add_delay -max -clock ad9866_rxclk 3.78 [get_ports {ad9866_rx[3]}]
+set_input_delay -add_delay -min -clock ad9866_rxclk 0.5 [get_ports {ad9866_rx[3]}]
+
+set_input_delay -add_delay -max -clock ad9866_rxclk 3.78 [get_ports {ad9866_rx[4]}]
+set_input_delay -add_delay -min -clock ad9866_rxclk 0.5 [get_ports {ad9866_rx[4]}]
+
+set_input_delay -add_delay -max -clock ad9866_rxclk 3.78 [get_ports {ad9866_rx[5]}]
+set_input_delay -add_delay -min -clock ad9866_rxclk 0.5 [get_ports {ad9866_rx[5]}]
 
 
 ## AD9866 TX Path

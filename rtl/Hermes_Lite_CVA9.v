@@ -86,7 +86,7 @@ parameter IP = {8'd0,8'd0,8'd0,8'd0};
 parameter CLK_FREQ = 73728000;
 
 // Number of Receivers
-parameter NR = 12; // number of receivers to implement
+parameter NR = 3; // number of receivers to implement
 
 parameter GIGABIT = 1;
 
