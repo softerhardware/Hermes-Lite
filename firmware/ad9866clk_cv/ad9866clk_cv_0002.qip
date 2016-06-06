@@ -1,4 +1,0 @@
-set_instance_assignment -name PLL_COMPENSATION_MODE DIRECT -to "*ad9866clk_cv_0002*|altera_pll:altera_pll_i*|*"
- 
-set_instance_assignment -name PLL_AUTO_RESET OFF -to "*ad9866clk_cv_0002*|altera_pll:altera_pll_i*|*"
-set_instance_assignment -name PLL_BANDWIDTH_PRESET AUTO -to "*ad9866clk_cv_0002*|altera_pll:altera_pll_i*|*"

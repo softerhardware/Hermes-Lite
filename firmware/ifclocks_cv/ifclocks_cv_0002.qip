@@ -1,4 +1,0 @@
-set_instance_assignment -name PLL_COMPENSATION_MODE DIRECT -to "*ifclocks_cv_0002*|altera_pll:altera_pll_i*|*"
- 
-set_instance_assignment -name PLL_AUTO_RESET OFF -to "*ifclocks_cv_0002*|altera_pll:altera_pll_i*|*"
-set_instance_assignment -name PLL_BANDWIDTH_PRESET AUTO -to "*ifclocks_cv_0002*|altera_pll:altera_pll_i*|*"

@@ -2087,4 +2087,33 @@ Wire Wire Line
 	9550 1575 9550 1625
 Text Notes 6275 6575 0    60   ~ 0
 Op Amp Design by Jim N2ADR\nTX Filter Design by Claudio IN3OTD/DK1CG\nRX Filter Design by Andrew G4XZL
+$Comp
+L R R38
+U 1 1 5754C3F1
+P 4325 1475
+F 0 "R38" V 4225 1525 39  0000 C CNN
+F 1 "10K" V 4325 1475 39  0000 C CNN
+F 2 "" V 4255 1475 50  0001 C CNN
+F 3 "" H 4325 1475 50  0000 C CNN
+	1    4325 1475
+	0    -1   -1   0   
+$EndComp
+$Comp
+L VCC #PWR?
+U 1 1 5754C8DB
+P 4075 1475
+F 0 "#PWR?" H 4075 1325 50  0001 C CNN
+F 1 "VCC" V 4075 1650 39  0000 C CNN
+F 2 "" H 4075 1475 50  0000 C CNN
+F 3 "" H 4075 1475 50  0000 C CNN
+	1    4075 1475
+	0    -1   -1   0   
+$EndComp
+Wire Wire Line
+	4075 1475 4175 1475
+Wire Wire Line
+	4475 1475 4575 1475
+Wire Wire Line
+	4575 1475 4575 1200
+Connection ~ 4575 1200
 $EndSCHEMATC

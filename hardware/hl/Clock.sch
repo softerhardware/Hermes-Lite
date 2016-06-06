@@ -763,28 +763,6 @@ F 3 "" H 3300 4250 60  0000 C CNN
 	-1   0    0    1   
 $EndComp
 $Comp
-L R R27
-U 1 1 56C0BBAA
-P 3775 4900
-F 0 "R27" H 3675 5025 39  0000 C CNN
-F 1 "4.7K" V 3775 4900 39  0000 C CNN
-F 2 "" V 3705 4900 50  0001 C CNN
-F 3 "" H 3775 4900 50  0000 C CNN
-	1    3775 4900
-	1    0    0    -1  
-$EndComp
-$Comp
-L GND #PWR070
-U 1 1 56C0BD52
-P 3775 5100
-F 0 "#PWR070" H 3775 4850 39  0001 C CNN
-F 1 "GND" H 3775 4950 39  0001 C CNN
-F 2 "" H 3775 5100 50  0000 C CNN
-F 3 "" H 3775 5100 50  0000 C CNN
-	1    3775 5100
-	1    0    0    -1  
-$EndComp
-$Comp
 L Jumper_NO_Small JP2
 U 1 1 56C1456C
 P 3600 4000
@@ -933,8 +911,6 @@ F 3 "" H 4150 4900 50  0000 C CNN
 	1    4150 4900
 	1    0    0    -1  
 $EndComp
-Wire Wire Line
-	3450 4650 3775 4650
 $Comp
 L VCC #PWR072
 U 1 1 56C18A63
@@ -976,10 +952,6 @@ Wire Wire Line
 Wire Wire Line
 	4150 5100 4150 5050
 Connection ~ 4050 5100
-Wire Wire Line
-	3775 5050 3775 5100
-Wire Wire Line
-	3775 4650 3775 4750
 $Comp
 L BNC P2
 U 1 1 5702F700
@@ -1003,10 +975,6 @@ F 3 "" H 3250 5100 50  0000 C CNN
 	0    1    1    0   
 $EndComp
 Wire Wire Line
-	3450 4750 3500 4750
-Wire Wire Line
-	3500 4750 3500 5100
-Wire Wire Line
 	3500 5100 3350 5100
 Wire Wire Line
 	2950 5100 3150 5100
@@ -1027,4 +995,8 @@ Text Notes 1325 5125 0    60   ~ 0
 Optional external reference\nfor frequency calibration
 Text Notes 4550 1950 0    60   ~ 0
 X2 to support 2.5x2.0 or \n3.2x2.5 or 7.0x5.0 mm\nstandard 4-lead SMD\npackages\n
+Wire Wire Line
+	3500 5100 3500 4650
+Wire Wire Line
+	3500 4650 3450 4650
 $EndSCHEMATC
