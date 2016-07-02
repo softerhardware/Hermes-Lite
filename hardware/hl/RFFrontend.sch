@@ -418,21 +418,21 @@ F 3 "" H 3950 2950 50  0000 C CNN
 	1    3950 2950
 	1    0    0    -1  
 $EndComp
-Text GLabel 1150 5500 0    60   Input ~ 0
+Text GLabel 1150 5450 0    60   Input ~ 0
 RFFE_CLK
 Text GLabel 1150 5650 0    60   Input ~ 0
 RFFE_XTAL
 $Comp
 L FPGA U3
 U 2 1 56C94D32
-P 1200 5250
+P 1200 5150
 AR Path="/56C94D32" Ref="U3"  Part="2" 
 AR Path="/56AAFEF4/56C94D32" Ref="U3"  Part="2" 
-F 0 "U3" H 1300 5200 60  0000 C CNN
-F 1 "FPGA" H 1650 5200 60  0000 C CNN
-F 2 "HERMESLITE:MAX10" H 1200 5250 60  0001 C CNN
-F 3 "" H 1200 5250 60  0000 C CNN
-	2    1200 5250
+F 0 "U3" H 1300 5100 60  0000 C CNN
+F 1 "FPGA" H 1650 5100 60  0000 C CNN
+F 2 "HERMESLITE:MAX10" H 1200 5150 60  0001 C CNN
+F 3 "" H 1200 5150 60  0000 C CNN
+	2    1200 5150
 	-1   0    0    -1  
 $EndComp
 $Comp
@@ -792,17 +792,9 @@ Connection ~ 3850 2950
 Wire Wire Line
 	3200 2600 3300 2600
 Wire Wire Line
-	1150 5500 1500 5500
-Wire Wire Line
 	1150 5650 1500 5650
 Wire Wire Line
-	1350 1600 1500 1600
-Wire Wire Line
 	1500 1700 1350 1700
-Wire Wire Line
-	1350 1800 1500 1800
-Wire Wire Line
-	1500 1900 1350 1900
 Wire Wire Line
 	1350 2050 1500 2050
 Wire Wire Line
@@ -857,8 +849,6 @@ Wire Wire Line
 	1500 4950 1350 4950
 Wire Wire Line
 	1350 5050 1500 5050
-Wire Wire Line
-	1500 5150 1350 5150
 Wire Wire Line
 	3650 6750 3900 6750
 Connection ~ 4450 7200
@@ -2116,4 +2106,8 @@ Wire Wire Line
 Wire Wire Line
 	4575 1475 4575 1200
 Connection ~ 4575 1200
+Wire Wire Line
+	1150 5450 1500 5450
+Wire Wire Line
+	1350 1800 1500 1800
 $EndSCHEMATC
