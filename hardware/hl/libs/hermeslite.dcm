@@ -20,6 +20,16 @@ D Symbole general de connecteur
 K CONN
 $ENDCMP
 #
+$CMP JNC
+D Resistor
+K R DEV
+$ENDCMP
+#
+$CMP JNO
+D Resistor
+K R DEV
+$ENDCMP
+#
 $CMP SATA22
 D Symbole general de connexion
 K CONN

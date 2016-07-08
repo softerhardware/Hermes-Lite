@@ -45,31 +45,31 @@ Comment3 ""
 Comment4 ""
 $EndDescr
 $Sheet
-S 2600 1600 2700 1700
+S 1025 1125 2700 1700
+U 56C9CAA0
+F0 "Power and FPGA" 60
+F1 "Power.sch" 60
+$EndSheet
+$Sheet
+S 4125 1125 2700 1700
 U 569C3E05
 F0 "Ethernet" 60
 F1 "Ethernet.sch" 60
 $EndSheet
 $Sheet
-S 2600 3600 2700 1700
-U 56AAFEF4
-F0 "RF Frontend" 60
-F1 "RFFrontend.sch" 60
-$EndSheet
-$Sheet
-S 5850 1600 2700 1700
+S 7225 1125 2700 1700
 U 56B04D05
 F0 "Clock" 60
 F1 "Clock.sch" 60
 $EndSheet
 $Sheet
-S 5850 3600 2700 1700
-U 56C9CAA0
-F0 "Power" 60
-F1 "Power.sch" 60
+S 1025 3650 2700 1700
+U 56AAFEF4
+F0 "RF Frontend" 60
+F1 "RFFrontend.sch" 60
 $EndSheet
 $Sheet
-S 2600 5600 2700 1700
+S 4125 3650 2700 1700
 U 56C6CB95
 F0 "Input Output" 60
 F1 "InputOutput.sch" 60
