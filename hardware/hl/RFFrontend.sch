@@ -2344,17 +2344,17 @@ Connection ~ 4175 750
 Wire Wire Line
 	4375 775  4375 650 
 Connection ~ 4375 650 
-Text Notes 5150 6100 0    60   ~ 0
-PA TR switch RX: include capacitor to PATRRX\nTX power tap sensing: include capacitor to TXTAP\nInstrument RX: include capacitor to Instrument RX connector\nAll 3 capacitors may all be concurrently installed provided at most one antenna is connected at a time.\n
-Text Notes 5150 5050 0    60   ~ 12
+Text Notes 5150 6050 0    60   ~ 0
+PA TR switch RX: include capacitor to PATRRX\nTX power tap sensing: include capacitor to TXTAP\nInstrument RX: include capacitor to Instrument RX connector\nAll 3 capacitors may all be concurrently installed provided at most one antenna is connected at a time.\nBPF to connect at G, exlude existing balun and transformer, and use I2C from Clock page\n
+Text Notes 5150 4900 0    60   ~ 12
 TX Build Options
-Text Notes 5150 5700 0    60   ~ 12
+Text Notes 5150 5550 0    60   ~ 12
 RX Build Options
-Text Notes 5150 5525 0    60   ~ 0
+Text Notes 5150 5375 0    60   ~ 0
 \nSwitched instrument/PA TX: include groups A and B, exclude groups C and D\nOnly PA TX: include group C, exclude groups A, B and D\nOnly instrument TX: include groups D, exclude groups A, B and C\nTermination is in two sections so power output to PA and instrument TX can be varied and dissipation split.\nTotal termination for instrument TX designed to be 24 Ohms on each leg but can be reduced to increase power.
-Text Notes 5150 6750 0    60   ~ 0
+Text Notes 5150 6700 0    60   ~ 0
 Versa Clock: exclude groups E and F\nSynchronized Clock: include group F, exclude group E\nLocal AD9866 Clock: include group E, exclude group F\nGroup E only if layout allows as option for inexpensive local clock with worse phase noise.\nGroup E to support 2.5x2.0 or 3.2x2.5 mm standard 4-lead SMD packages.
-Text Notes 5150 6275 0    60   ~ 12
+Text Notes 5150 6225 0    60   ~ 12
 Clock Build Options
 Text Notes 8175 4275 0    60   ~ 0
 Instrument RX
@@ -2426,4 +2426,8 @@ Text Notes 1600 5150 0    60   ~ 12
 E
 Text Notes 1150 4975 0    60   ~ 12
 E
+Text Notes 3700 4950 0    60   ~ 12
+G
+Text Notes 7225 3725 0    60   ~ 12
+G
 $EndSCHEMATC

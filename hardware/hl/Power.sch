@@ -1583,5 +1583,5 @@ Vb8
 Text Notes 3825 2775 0    60   ~ 0
 JTAG Connector\nFPGA programming\nMay be used as 30 Mb/s \ninterface to SBC
 Text Notes 1625 5425 0    60   ~ 0
-To Do: Add switching power supply. Texas Instruments TPS65265 with \nrecommended schematic and layout from datasheet will be used.
+To Do: Add switching power supply. Texas Instruments TPS65265 with \nrecommended schematic and layout from datasheet will be used. Will\ngenerate 1.2, 2.5 and 3.3V. 
 $EndSCHEMATC
