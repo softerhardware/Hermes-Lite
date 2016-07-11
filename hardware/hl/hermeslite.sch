@@ -34,7 +34,7 @@ EELAYER 25 0
 EELAYER END
 $Descr USLetter 11000 8500
 encoding utf-8
-Sheet 1 6
+Sheet 1 8
 Title "Hermes-Lite"
 Date "2016-02-18"
 Rev "2.0-pre1"
@@ -63,15 +63,27 @@ F0 "Clock" 60
 F1 "Clock.sch" 60
 $EndSheet
 $Sheet
-S 1025 3650 2700 1700
+S 1025 3575 2700 1700
 U 56AAFEF4
 F0 "RF Frontend" 60
 F1 "RFFrontend.sch" 60
 $EndSheet
 $Sheet
-S 4125 3650 2700 1700
+S 4125 3575 2700 1700
 U 56C6CB95
 F0 "Input Output" 60
 F1 "InputOutput.sch" 60
+$EndSheet
+$Sheet
+S 7225 3575 2700 1700
+U 577F376D
+F0 "Filters" 60
+F1 "Filters.sch" 60
+$EndSheet
+$Sheet
+S 1025 6000 2700 1700
+U 577F7295
+F0 "PA" 60
+F1 "PA.sch" 60
 $EndSheet
 $EndSCHEMATC
