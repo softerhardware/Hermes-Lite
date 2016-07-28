@@ -1672,7 +1672,7 @@ Wire Wire Line
 Wire Wire Line
 	4900 2275 5100 2275
 Wire Wire Line
-	5300 2275 5650 2275
+	5300 2275 5700 2275
 Wire Wire Line
 	5500 2275 5500 2600
 Connection ~ 5500 2275
@@ -3613,9 +3613,9 @@ Wire Wire Line
 	1800 5200 1800 5175
 Connection ~ 1800 5175
 Wire Wire Line
-	1375 4725 1350 4725
+	1325 4725 1375 4725
 Wire Wire Line
-	1350 4875 1375 4875
+	1325 4875 1375 4875
 Text Notes 1250 7100 0    60   ~ 0
 Filter design by John W9JSW, Graeme ZL2APV and Glenn VK3PE
 Wire Wire Line
