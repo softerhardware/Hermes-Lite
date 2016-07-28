@@ -25,7 +25,7 @@
     (0 F.Cu signal)
     (1 In1.Cu signal)
     (2 In2.Cu signal)
-    (31 B.Cu signal hide)
+    (31 B.Cu signal)
     (32 B.Adhes user)
     (33 F.Adhes user)
     (34 B.Paste user)
@@ -47,7 +47,7 @@
   )
 
   (setup
-    (last_trace_width 0.35)
+    (last_trace_width 0.2)
     (user_trace_width 0.35)
     (user_trace_width 2)
     (user_trace_width 4)
@@ -77,7 +77,7 @@
     (pad_drill 1.1)
     (pad_to_mask_clearance 0.2)
     (aux_axis_origin 0 0)
-    (visible_elements 7FFEFBFF)
+    (visible_elements 7FFEFFFF)
     (pcbplotparams
       (layerselection 0x00030_80000001)
       (usegerberextensions false)
