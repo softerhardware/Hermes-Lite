@@ -14,7 +14,7 @@ This is a work in progress to create a low-cost software defined radio HF transc
  * External Hermes-Lite Hardware Links
   * [W9JSW's Hermes-Lite Power Amplifiers and Filters](https://github.com/W9JSW/Hermes-Lite/tree/Amplifiers).
   * [IN3OTD's Hermes-Lite Experiments](http://www.qsl.net/in3otd/ham_radio/Hermes-Lite/Hermes-Lite.html).
-  * [IK1XPV's Hermes-Lite Audio Out](http://www.steila.com/blog/index.php?controller=post&action=view&id_post=4).
+  * [JI1UDD's Hermes-Lite 6M Support, Audio Codec and Iambic Keyer](https://github.com/ji1udd/Hermes-Lite/tree/6M).
   * [AB4OJ's Hermes-Lite Test Report](http://www.ab4oj.com/sdr/hermes_lite/hl_notes.pdf).
 
 
