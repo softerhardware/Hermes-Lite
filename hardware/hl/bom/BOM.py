@@ -50,7 +50,7 @@ special = {
 class Octopart:
     db = pickledb.load("octopart.db", False)
 
-    def __init__(self,key=''):
+    def __init__(self,key='&apikey=e2c08378'):
         self.key = key 
 
     def Dump(self):
