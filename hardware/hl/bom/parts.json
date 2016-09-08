@@ -638,8 +638,23 @@
 	"spec":"330nH 350mA 1 Ohm",
 	"assembly":"SMT",
 	"pins":2
+	},	
+
+"L 2.2uH PS": {
+	"mpn":["SRN5020-2R2Y"],
+	"spec":"2.2µH Shielded Wirewound Inductor 2.9A 42 mOhm",
+	"assembly":"SMT",
+	"pins":2
 	},		
 
+"L 3.3uH PS": {
+	"mpn":["SRN5020-3R3M"],
+	"spec":"3.3µH Shielded Wirewound Inductor 2.4A 58 mOhm",
+	"assembly":"SMT",
+	"pins":2
+	},		
+
+		
 "L 2.3uH PS": {
 	"mpn":["NRS6045T2R3NMGK"],
 	"spec":"2.3uH >=3.6A 28.6 mOhm",
