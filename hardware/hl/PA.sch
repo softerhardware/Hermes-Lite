@@ -337,12 +337,12 @@ $EndComp
 $Comp
 L R R94
 U 1 1 578577DF
-P 2550 3100
-F 0 "R94" V 2475 3100 39  0000 C CNN
-F 1 "10" V 2557 3101 39  0000 C CNN
-F 2 "" V 2480 3100 30  0001 C CNN
-F 3 "" H 2550 3100 30  0000 C CNN
-	1    2550 3100
+P 3725 3100
+F 0 "R94" V 3650 3100 39  0000 C CNN
+F 1 "10" V 3732 3101 39  0000 C CNN
+F 2 "" V 3655 3100 30  0001 C CNN
+F 3 "" H 3725 3100 30  0000 C CNN
+	1    3725 3100
 	0    1    1    0   
 $EndComp
 $Comp
@@ -490,8 +490,6 @@ F 3 "" H 6700 3425 30  0000 C CNN
 $EndComp
 Wire Wire Line
 	4975 3100 5050 3100
-Wire Wire Line
-	3475 3100 4775 3100
 Wire Wire Line
 	5000 3350 4975 3350
 Wire Wire Line
@@ -691,8 +689,6 @@ $EndComp
 Wire Wire Line
 	4975 4200 5050 4200
 Wire Wire Line
-	3475 4200 4775 4200
-Wire Wire Line
 	5000 4450 4975 4450
 Wire Wire Line
 	5000 3825 5000 4450
@@ -857,48 +853,16 @@ Wire Wire Line
 	5525 2250 5525 2275
 Connection ~ 5525 2275
 $Comp
-L TRANSF4 T4
-U 1 1 5786A6CA
-P 3325 3650
-F 0 "T4" H 3325 3900 39  0000 C CNN
-F 1 "1:1 Z" H 3325 3350 39  0000 C CNN
-F 2 "" H 3325 3650 50  0001 C CNN
-F 3 "" H 3325 3650 50  0000 C CNN
-F 4 "ClassA" H 3325 3650 60  0001 C CNN "Option"
-	1    3325 3650
-	1    0    0    -1  
-$EndComp
-$Comp
 L R R100
 U 1 1 5786B904
-P 2550 4200
-F 0 "R100" V 2475 4200 39  0000 C CNN
-F 1 "10" V 2557 4201 39  0000 C CNN
-F 2 "" V 2480 4200 30  0001 C CNN
-F 3 "" H 2550 4200 30  0000 C CNN
-	1    2550 4200
+P 3725 4200
+F 0 "R100" V 3650 4200 39  0000 C CNN
+F 1 "10" V 3732 4201 39  0000 C CNN
+F 2 "" V 3655 4200 30  0001 C CNN
+F 3 "" H 3725 4200 30  0000 C CNN
+	1    3725 4200
 	0    1    1    0   
 $EndComp
-$Comp
-L GND #PWR0252
-U 1 1 5786C049
-P 3750 3875
-F 0 "#PWR0252" H 3750 3625 50  0001 C CNN
-F 1 "GND" H 3750 3725 50  0001 C CNN
-F 2 "" H 3750 3875 50  0000 C CNN
-F 3 "" H 3750 3875 50  0000 C CNN
-	1    3750 3875
-	1    0    0    -1  
-$EndComp
-Wire Wire Line
-	3725 3450 3750 3450
-Wire Wire Line
-	3750 3450 3750 3100
-Connection ~ 3750 3100
-Wire Wire Line
-	3725 3850 3750 3850
-Wire Wire Line
-	3750 3850 3750 3875
 $Comp
 L C_Small B98
 U 1 1 578769D8
@@ -939,49 +903,15 @@ Wire Wire Line
 	7725 3450 7725 3475
 Wire Wire Line
 	7700 3050 8000 3050
-Text GLabel 2000 3100 0    39   Input ~ 0
+Text GLabel 3175 3100 0    39   Input ~ 0
 TXPAp
-Text GLabel 2000 4200 0    39   Input ~ 0
+Text GLabel 3175 4200 0    39   Input ~ 0
 TXPAn
 Text GLabel 8250 3050 2    39   Output ~ 0
 TXFILTER
 Wire Wire Line
 	8250 3050 8200 3050
-Text Notes 3225 3250 0    60   ~ 12
-A
-$Comp
-L JNC J19
-U 1 1 578E4AD3
-P 3325 3100
-F 0 "J19" V 3250 3075 39  0000 C CNN
-F 1 "JNC" V 3325 3100 39  0000 C CNN
-F 2 "" V 3255 3100 50  0001 C CNN
-F 3 "" H 3325 3100 50  0000 C CNN
-	1    3325 3100
-	0    1    1    0   
-$EndComp
-$Comp
-L JNC J20
-U 1 1 578E4DB5
-P 3325 4200
-F 0 "J20" V 3250 4175 39  0000 C CNN
-F 1 "JNC" V 3325 4200 39  0000 C CNN
-F 2 "" V 3255 4200 50  0001 C CNN
-F 3 "" H 3325 4200 50  0000 C CNN
-	1    3325 4200
-	0    1    1    0   
-$EndComp
-Text Notes 3225 4350 0    60   ~ 12
-A
-Text Notes 3150 3675 0    60   ~ 12
-B
-Text Notes 775  700  0    60   ~ 12
-Build Options
-Text Notes 775  925  0    60   ~ 0
-Class AB Push Pull: include A, exclude B, C is BN43-202 4 turns primary, 1+1 turns secondary\nClass A: include B, exclude A, exclude mirror PA using bias1, C is BN43-202 2 turns on pins 1/2, 4 turns on pins 4/5. C also supports SMT autotransformer or BN43-202 wound as 4:1Z autotransformer.
-Text Notes 7275 3550 0    60   ~ 12
-C
-Text Notes 775  1200 0    60   ~ 12
+Text Notes 925  800  0    60   ~ 12
 All values are first-cut place holders. To be refined with simulation and experimentation.
 Text Notes 1250 7275 0    60   ~ 12
 Design based on work by Claudio IN3OTD/DK1CG, John W9JSW, and other LDMOS/MOSFET QRP PA designs
@@ -990,51 +920,45 @@ Wire Wire Line
 $Comp
 L R R98
 U 1 1 57959FC4
-P 2825 3650
-F 0 "R98" H 2950 3575 39  0000 C CNN
-F 1 "DNI" V 2832 3651 39  0000 C CNN
-F 2 "" V 2755 3650 30  0001 C CNN
-F 3 "" H 2825 3650 30  0000 C CNN
-	1    2825 3650
+P 4000 3650
+F 0 "R98" H 4125 3575 39  0000 C CNN
+F 1 "DNI" V 4007 3651 39  0000 C CNN
+F 2 "" V 3930 3650 30  0001 C CNN
+F 3 "" H 4000 3650 30  0000 C CNN
+	1    4000 3650
 	-1   0    0    1   
 $EndComp
 $Comp
 L R R97
 U 1 1 5795A3F7
-P 2275 3650
-F 0 "R97" H 2400 3575 39  0000 C CNN
-F 1 "DNI" V 2282 3651 39  0000 C CNN
-F 2 "" V 2205 3650 30  0001 C CNN
-F 3 "" H 2275 3650 30  0000 C CNN
-	1    2275 3650
+P 3450 3650
+F 0 "R97" H 3575 3575 39  0000 C CNN
+F 1 "DNI" V 3457 3651 39  0000 C CNN
+F 2 "" V 3380 3650 30  0001 C CNN
+F 3 "" H 3450 3650 30  0000 C CNN
+	1    3450 3650
 	-1   0    0    1   
 $EndComp
 Wire Wire Line
-	2000 3100 2400 3100
+	3175 3100 3575 3100
 Wire Wire Line
-	2000 4200 2400 4200
+	3175 4200 3575 4200
 Wire Wire Line
-	2700 4200 3175 4200
+	3875 4200 4775 4200
 Wire Wire Line
-	2825 3800 2825 4200
-Connection ~ 2825 4200
+	4000 3800 4000 4200
+Connection ~ 4000 4200
 Wire Wire Line
-	2700 3100 3175 3100
+	3875 3100 4775 3100
 Wire Wire Line
-	2825 3500 2825 3100
-Connection ~ 2825 3100
+	4000 3500 4000 3100
+Connection ~ 4000 3100
 Wire Wire Line
-	2275 3500 2275 3100
-Connection ~ 2275 3100
+	3450 3500 3450 3100
+Connection ~ 3450 3100
 Wire Wire Line
-	2275 3800 2275 4200
-Connection ~ 2275 4200
-Wire Wire Line
-	2925 3450 2825 3450
-Connection ~ 2825 3450
-Wire Wire Line
-	2925 3850 2825 3850
-Connection ~ 2825 3850
+	3450 3800 3450 4200
+Connection ~ 3450 4200
 $Comp
 L DIODESCH D6
 U 1 1 5795C950
@@ -1065,4 +989,6 @@ Connection ~ 6025 3825
 Wire Wire Line
 	5750 4225 6025 4225
 Connection ~ 5750 4225
+Text Notes 7075 3700 0    39   ~ 0
+BN43-202\n4T Primary\n1+1T Secondary
 $EndSCHEMATC
