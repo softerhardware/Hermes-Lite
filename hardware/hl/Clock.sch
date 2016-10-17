@@ -34,10 +34,10 @@ EELAYER 25 0
 EELAYER END
 $Descr USLetter 11000 8500
 encoding utf-8
-Sheet 4 8
+Sheet 4 7
 Title "Clock"
-Date "2016-09-05"
-Rev "2.0-pre2"
+Date "2016-10-16"
+Rev "2.0-pre3"
 Comp "SofterHardware"
 Comment1 "KF7O Steve Haynal"
 Comment2 ""
@@ -144,10 +144,10 @@ Connection ~ 6450 4700
 Connection ~ 6650 4700
 Connection ~ 6850 4700
 $Comp
-L GND #PWR064
+L GND #PWR90
 U 1 1 56B05C80
 P 7875 4975
-F 0 "#PWR064" H 7875 4725 39  0001 C CNN
+F 0 "#PWR90" H 7875 4725 39  0001 C CNN
 F 1 "GND" H 7875 4825 39  0001 C CNN
 F 2 "" H 7875 4975 50  0000 C CNN
 F 3 "" H 7875 4975 50  0000 C CNN
@@ -197,10 +197,10 @@ Wire Wire Line
 Text GLabel 7000 5300 2    39   Output ~ 0
 RFFE_CLK
 $Comp
-L GND #PWR065
+L GND #PWR93
 U 1 1 56B0826C
 P 6400 5800
-F 0 "#PWR065" H 6400 5550 39  0001 C CNN
+F 0 "#PWR93" H 6400 5550 39  0001 C CNN
 F 1 "GND" H 6400 5650 39  0001 C CNN
 F 2 "" H 6400 5800 50  0000 C CNN
 F 3 "" H 6400 5800 50  0000 C CNN
@@ -252,10 +252,10 @@ Connection ~ 4100 4300
 Wire Wire Line
 	3350 4300 3650 4300
 $Comp
-L GND #PWR066
+L GND #PWR87
 U 1 1 56BF7B1E
 P 4300 4600
-F 0 "#PWR066" H 4300 4350 39  0001 C CNN
+F 0 "#PWR87" H 4300 4350 39  0001 C CNN
 F 1 "GND" H 4300 4450 39  0001 C CNN
 F 2 "" H 4300 4600 50  0000 C CNN
 F 3 "" H 4300 4600 50  0000 C CNN
@@ -270,10 +270,10 @@ Wire Wire Line
 	4300 4600 4100 4600
 Connection ~ 4300 4600
 $Comp
-L GND #PWR067
+L GND #PWR88
 U 1 1 56BF7BE2
 P 2750 4625
-F 0 "#PWR067" H 2750 4375 39  0001 C CNN
+F 0 "#PWR88" H 2750 4375 39  0001 C CNN
 F 1 "GND" H 2750 4475 39  0001 C CNN
 F 2 "" H 2750 4625 50  0000 C CNN
 F 3 "" H 2750 4625 50  0000 C CNN
@@ -357,10 +357,10 @@ F 4 "VCO" H 1025 2175 60  0001 C CNN "Option"
 $EndComp
 Connection ~ 5150 2650
 $Comp
-L GND #PWR068
+L GND #PWR85
 U 1 1 56BFC8C6
 P 5150 3200
-F 0 "#PWR068" H 5150 2950 39  0001 C CNN
+F 0 "#PWR85" H 5150 2950 39  0001 C CNN
 F 1 "GND" H 5150 3050 39  0001 C CNN
 F 2 "" H 5150 3200 50  0000 C CNN
 F 3 "" H 5150 3200 50  0000 C CNN
@@ -368,10 +368,10 @@ F 3 "" H 5150 3200 50  0000 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L GND #PWR069
+L GND #PWR84
 U 1 1 56BFF78A
 P 3200 3100
-F 0 "#PWR069" H 3200 2850 39  0001 C CNN
+F 0 "#PWR84" H 3200 2850 39  0001 C CNN
 F 1 "GND" H 3200 2950 39  0001 C CNN
 F 2 "" H 3200 3100 50  0000 C CNN
 F 3 "" H 3200 3100 50  0000 C CNN
@@ -417,9 +417,9 @@ Wire Wire Line
 Wire Wire Line
 	2600 5000 4500 5000
 Text Label 4150 4900 0    39   ~ 0
-SDA
+SDA1
 Text Label 4150 5000 0    39   ~ 0
-SCL
+SCL1
 Wire Wire Line
 	3200 2050 3200 2300
 Wire Wire Line
@@ -440,10 +440,10 @@ Wire Wire Line
 	2850 2450 2850 2050
 Connection ~ 3200 2050
 $Comp
-L GND #PWR070
+L GND #PWR81
 U 1 1 56C0155D
 P 2900 2550
-F 0 "#PWR070" H 2900 2300 39  0001 C CNN
+F 0 "#PWR81" H 2900 2300 39  0001 C CNN
 F 1 "GND" H 2900 2400 39  0001 C CNN
 F 2 "" H 2900 2550 50  0000 C CNN
 F 3 "" H 2900 2550 50  0000 C CNN
@@ -457,9 +457,9 @@ Wire Wire Line
 Wire Wire Line
 	1950 2550 1600 2550
 Text Label 1600 2450 0    39   ~ 0
-SDA
+SDA1
 Text Label 1600 2550 0    39   ~ 0
-SCL
+SCL1
 $Comp
 L R R35
 U 1 1 56C017C3
@@ -493,10 +493,10 @@ Wire Wire Line
 	1350 2600 1350 2700
 Connection ~ 1350 2650
 $Comp
-L GND #PWR071
+L GND #PWR83
 U 1 1 56C01AF9
 P 1350 3100
-F 0 "#PWR071" H 1350 2850 39  0001 C CNN
+F 0 "#PWR83" H 1350 2850 39  0001 C CNN
 F 1 "GND" H 1350 2950 39  0001 C CNN
 F 2 "" H 1350 3100 50  0000 C CNN
 F 3 "" H 1350 3100 50  0000 C CNN
@@ -526,7 +526,7 @@ P 2450 4700
 AR Path="/56C0AFA1" Ref="U?"  Part="3" 
 AR Path="/56B04D05/56C0AFA1" Ref="U2"  Part="3" 
 F 0 "U2" H 2750 4650 60  0000 C CNN
-F 1 "FPGA" H 2800 5150 60  0000 C CNN
+F 1 "FPGA" H 2800 5175 60  0000 C CNN
 F 2 "HERMESLITE:CYCLONEIV" H 2450 4700 60  0001 C CNN
 F 3 "" H 2450 4700 60  0000 C CNN
 	3    2450 4700
@@ -603,8 +603,8 @@ Wire Wire Line
 	3900 5550 4150 5550
 Wire Wire Line
 	4150 5550 4150 5500
-Text Notes 1325 4350 0    60   ~ 0
-Optional external clock\nfor synchronized radios
+Text Notes 925  4475 0    60   ~ 0
+Synchronized radio external clock: \nInclude CL1,B58,R39.\nExclude J23,J25.\n\nSynchronized radio recovered clock:\nInclude J23,J5.\nAdjust R39,R40.\nOptional CL1,B58. 
 Text Notes 4550 2400 0    60   ~ 0
 Group A to support 2.5x2.0 or \n3.2x2.5 or 7.0x5.0 mm\nstandard 4-lead SMD\npackages\n
 Wire Wire Line
@@ -629,12 +629,6 @@ Wire Wire Line
 	5350 3150 5350 2875
 Wire Wire Line
 	5150 2875 5150 3200
-Wire Wire Line
-	4550 2650 4550 2700
-Connection ~ 4550 2650
-Wire Wire Line
-	4550 3150 4550 3000
-Connection ~ 4550 3150
 Connection ~ 5150 3150
 Wire Wire Line
 	4350 2050 4350 2650
@@ -710,10 +704,10 @@ Wire Wire Line
 Connection ~ 6850 4000
 Connection ~ 6450 4200
 $Comp
-L GND #PWR072
+L GND #PWR86
 U 1 1 577F4566
 P 6650 4475
-F 0 "#PWR072" H 6650 4225 39  0001 C CNN
+F 0 "#PWR86" H 6650 4225 39  0001 C CNN
 F 1 "GND" H 6650 4325 39  0001 C CNN
 F 2 "" H 6650 4475 50  0000 C CNN
 F 3 "" H 6650 4475 50  0000 C CNN
@@ -763,60 +757,43 @@ $EndComp
 Wire Wire Line
 	3600 4650 3600 4800
 $Comp
-L JNO J3
-U 1 1 5782ED21
-P 4550 2850
-F 0 "J3" H 4650 2825 39  0000 C CNN
-F 1 "JNO" V 4550 2850 39  0000 C CNN
-F 2 "HERMESLITE:SMD-0603" V 4480 2850 50  0001 C CNN
-F 3 "" H 4550 2850 50  0000 C CNN
-	1    4550 2850
-	1    0    0    -1  
-$EndComp
-$Comp
 L RFD4d DB1
 U 1 1 5782FD26
-P 3300 6850
-F 0 "DB1" H 3250 6450 39  0000 C CNN
-F 1 "RFD4d" H 3300 7350 39  0001 C CNN
-F 2 "HERMESLITE:4x1" H 3300 6500 60  0001 C CNN
-F 3 "" H 3300 6500 60  0000 C CNN
-F 4 "CN4S" H 3300 6850 60  0001 C CNN "Key"
-F 5 "DBRX" H 3300 6850 60  0001 C CNN "Option"
-	1    3300 6850
+P 3375 6550
+F 0 "DB1" H 3325 6150 39  0000 C CNN
+F 1 "RFD4d" H 3375 7050 39  0001 C CNN
+F 2 "HERMESLITE:4x1" H 3375 6200 60  0001 C CNN
+F 3 "" H 3375 6200 60  0000 C CNN
+F 4 "CN4S" H 3375 6550 60  0001 C CNN "Key"
+F 5 "DBRX" H 3375 6550 60  0001 C CNN "Option"
+	1    3375 6550
 	-1   0    0    -1  
 $EndComp
-Text Label 3100 6750 0    39   ~ 0
-SDA
-Text Label 3100 6950 0    39   ~ 0
-SCL
+Text Label 3175 6450 0    39   ~ 0
+SDA1
+Text Label 3175 6650 0    39   ~ 0
+SCL1
 $Comp
-L GND #PWR073
+L GND #PWR95
 U 1 1 5783036E
-P 3175 7175
-F 0 "#PWR073" H 3175 6925 39  0001 C CNN
-F 1 "GND" H 3175 7025 39  0001 C CNN
-F 2 "" H 3175 7175 50  0000 C CNN
-F 3 "" H 3175 7175 50  0000 C CNN
-	1    3175 7175
+P 3250 6875
+F 0 "#PWR95" H 3250 6625 39  0001 C CNN
+F 1 "GND" H 3250 6725 39  0001 C CNN
+F 2 "" H 3250 6875 50  0000 C CNN
+F 3 "" H 3250 6875 50  0000 C CNN
+	1    3250 6875
 	1    0    0    -1  
 $EndComp
 Wire Wire Line
-	3200 7150 3175 7150
+	3275 6850 3250 6850
 Wire Wire Line
-	3175 7150 3175 7175
-Text Notes 3475 6875 0    60   ~ 0
-Daughter board I2C.
-Text GLabel 3050 6750 0    39   BiDi ~ 0
-SDA
+	3250 6850 3250 6875
+Text Notes 3375 7050 0    39   ~ 0
+I2C 1
 Wire Wire Line
-	3050 6750 3200 6750
-Text GLabel 3050 6950 0    39   Input ~ 0
-SCL
+	3050 6450 3275 6450
 Wire Wire Line
-	3050 6950 3200 6950
-Wire Wire Line
-	3075 6550 3200 6550
+	2850 6650 3275 6650
 $Comp
 L BNC CL2
 U 1 1 578D434B
@@ -832,10 +809,10 @@ $EndComp
 Wire Wire Line
 	6725 5500 6700 5500
 $Comp
-L GND #PWR074
+L GND #PWR92
 U 1 1 578D45DB
 P 6875 5725
-F 0 "#PWR074" H 6875 5475 39  0001 C CNN
+F 0 "#PWR92" H 6875 5475 39  0001 C CNN
 F 1 "GND" H 6875 5575 39  0001 C CNN
 F 2 "" H 6875 5725 50  0000 C CNN
 F 3 "" H 6875 5725 50  0000 C CNN
@@ -844,44 +821,18 @@ F 3 "" H 6875 5725 50  0000 C CNN
 $EndComp
 Wire Wire Line
 	6875 5700 6875 5725
-Text Notes 3900 2525 0    60   ~ 12
-A
-Text Notes 3075 2425 0    60   ~ 12
-B
-Text Notes 3075 2825 0    60   ~ 12
-C
-Text Notes 1400 2550 0    60   ~ 12
-D
-Text Notes 1400 2950 0    60   ~ 12
-D
-Text Notes 2575 2350 0    60   ~ 12
-D
-Text Notes 4050 3375 0    60   ~ 12
-A
-Text Notes 5550 2600 0    60   ~ 12
-A
-Text Notes 2850 3400 0    60   ~ 12
-E
-Text Notes 4375 3125 0    60   ~ 12
-C
-Text Notes 4450 2850 0    60   ~ 12
-E
-Text Notes 1325 875  0    60   ~ 12
-Build Options
-Text Notes 1325 1525 0    60   ~ 0
-Versa with oscillator: Include A, include B and/or C with adjusted values per oscillator's spec, exclude D and E\nVersa with VCO: Include A and D, exclude B, C and E\nVersa with crystal: Include E, E jumpers shorted, exclude A except oscillator footprint is now stuffed with crystal, include C as 15pF capacitor, exclude B and D\nVersa with second output for synchronized slave: Build one of the Versa options above, include F\nNo Versa but oscillator to AD9866: Exclude all Versa components, build for oscillator, connect WJ3 to WJ1\nNo Versa but external clock to AD9866: Exclude all Versa components, A, B, C, D, and E, wire from WJ2 to WJ1\nSee RF Frontend sheet for additional AD9866 clock options 
-Text Notes 6675 5625 0    60   ~ 12
-F
-Text Notes 6975 5500 0    60   ~ 12
-F
+Text Notes 1325 850  0    60   ~ 12
+Build Options:
+Text Notes 1325 1550 0    60   ~ 0
+Default Versa with oscillator: Include FB12,C41,B56,B57,X2. Include R36,R38 if required by oscillator. Exclude B55,R35,R37,U5,J3,J4,C42.\nVersa with VCO: Include FB12,C41,B56,B57,X2,U5,R35,R37,B55. Exclude R36,R38,J4,J3,C42.\nVersa with crystal: Include X2 as crystal, B57 as jumper, J4,J3,C42, R38 as 15pF. Exclude FB12,C41,B56,U5,R35,R36,R37,B55.\n\nNo Versa but oscillator to AD9866: Exclude all Versa components, build for oscillator, connect WJ3 to WJ1.\nNo Versa but external clock to AD9866: Exclude all Versa components and oscillator components. Wire from WJ2 to WJ1.\nSee RF Frontend sheet for additional AD9866 clock options 
 Wire Wire Line
 	1025 2050 1025 2075
 Connection ~ 1350 2050
 $Comp
-L GND #PWR075
+L GND #PWR80
 U 1 1 578A03E0
 P 1025 2300
-F 0 "#PWR075" H 1025 2050 39  0001 C CNN
+F 0 "#PWR80" H 1025 2050 39  0001 C CNN
 F 1 "GND" H 1025 2150 39  0001 C CNN
 F 2 "" H 1025 2300 50  0000 C CNN
 F 3 "" H 1025 2300 50  0000 C CNN
@@ -890,8 +841,6 @@ F 3 "" H 1025 2300 50  0000 C CNN
 $EndComp
 Wire Wire Line
 	1025 2275 1025 2300
-Text Notes 875  2225 0    60   ~ 12
-D
 $Comp
 L C_Small B114
 U 1 1 57C7D417
@@ -954,10 +903,10 @@ F 3 "" H 7875 4825 50  0000 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L +3V3 #PWR076
+L +3V3 #PWR89
 U 1 1 57C7DDE6
 P 8750 4700
-F 0 "#PWR076" H 8750 4550 50  0001 C CNN
+F 0 "#PWR89" H 8750 4550 50  0001 C CNN
 F 1 "+3V3" V 8750 4900 50  0000 C CNN
 F 2 "" H 8750 4700 50  0000 C CNN
 F 3 "" H 8750 4700 50  0000 C CNN
@@ -1030,15 +979,11 @@ Connection ~ 7250 4600
 Wire Wire Line
 	7450 4725 7450 4600
 Connection ~ 7450 4600
-Text Notes 5025 2750 0    60   ~ 12
-A
-Text Notes 5500 2750 0    60   ~ 12
-A
 $Comp
-L +3V3 #PWR077
+L +3V3 #PWR82
 U 1 1 57CAA351
 P 5850 2650
-F 0 "#PWR077" H 5850 2500 50  0001 C CNN
+F 0 "#PWR82" H 5850 2500 50  0001 C CNN
 F 1 "+3V3" V 5850 2850 50  0000 C CNN
 F 2 "" H 5850 2650 50  0000 C CNN
 F 3 "" H 5850 2650 50  0000 C CNN
@@ -1046,10 +991,10 @@ F 3 "" H 5850 2650 50  0000 C CNN
 	0    1    1    0   
 $EndComp
 $Comp
-L +3V3 #PWR078
+L +3V3 #PWR91
 U 1 1 57CAC53B
 P 3900 5550
-F 0 "#PWR078" H 3900 5400 50  0001 C CNN
+F 0 "#PWR91" H 3900 5400 50  0001 C CNN
 F 1 "+3V3" V 3900 5750 50  0000 C CNN
 F 2 "" H 3900 5550 50  0000 C CNN
 F 3 "" H 3900 5550 50  0000 C CNN
@@ -1057,15 +1002,15 @@ F 3 "" H 3900 5550 50  0000 C CNN
 	0    -1   -1   0   
 $EndComp
 $Comp
-L +3V3 #PWR079
+L +3V3 #PWR94
 U 1 1 57CEABCE
-P 3075 6550
-F 0 "#PWR079" H 3075 6400 50  0001 C CNN
-F 1 "+3V3" V 3075 6750 50  0000 C CNN
-F 2 "" H 3075 6550 50  0000 C CNN
-F 3 "" H 3075 6550 50  0000 C CNN
-	1    3075 6550
-	0    -1   -1   0   
+P 3250 6225
+F 0 "#PWR94" H 3250 6075 50  0001 C CNN
+F 1 "+3V3" H 3225 6400 50  0000 C CNN
+F 2 "" H 3250 6225 50  0000 C CNN
+F 3 "" H 3250 6225 50  0000 C CNN
+	1    3250 6225
+	1    0    0    -1  
 $EndComp
 $Comp
 L RFD2a DB5
@@ -1075,6 +1020,8 @@ F 0 "DB5" H 2825 4500 39  0000 C CNN
 F 1 "RFD2a" H 2825 4900 39  0001 C CNN
 F 2 "HERMESLITE:2x1" H 2875 4350 60  0001 C CNN
 F 3 "" H 2875 4350 60  0000 C CNN
+F 4 "DBIO" H 2875 4700 60  0001 C CNN "Option"
+F 5 "CN2S" H 2875 4700 60  0001 C CNN "Key"
 	1    2875 4700
 	-1   0    0    1   
 $EndComp
@@ -1098,4 +1045,37 @@ Wire Wire Line
 	3150 4800 3125 4800
 Wire Wire Line
 	2775 4800 2600 4800
+Wire Wire Line
+	3250 6225 3250 6250
+Wire Wire Line
+	3250 6250 3275 6250
+Wire Wire Line
+	3050 4900 3050 6450
+Wire Wire Line
+	2850 5000 2850 6650
+Connection ~ 3050 4900
+Connection ~ 2850 5000
+Connection ~ 4550 3150
+Wire Wire Line
+	4550 3150 4550 3000
+Connection ~ 4550 2650
+Wire Wire Line
+	4550 2650 4550 2700
+$Comp
+L JNO J3
+U 1 1 5782ED21
+P 4550 2850
+F 0 "J3" H 4650 2825 39  0000 C CNN
+F 1 "JNO" V 4550 2850 39  0000 C CNN
+F 2 "HERMESLITE:SMD-0603" V 4480 2850 50  0001 C CNN
+F 3 "" H 4550 2850 50  0000 C CNN
+	1    4550 2850
+	1    0    0    -1  
+$EndComp
+Text Notes 925  3675 0    60   ~ 12
+Build Options:
+Text Notes 7500 5625 0    60   ~ 12
+Build Options:
+Text Notes 7500 5750 0    60   ~ 0
+Output for synchronized radio: Include R45,CL2.
 $EndSCHEMATC
