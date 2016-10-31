@@ -36,8 +36,8 @@ $Descr USLetter 11000 8500
 encoding utf-8
 Sheet 6 7
 Title "Hermes-Lite Input Output"
-Date "2016-10-16"
-Rev "2.0-pre3"
+Date "2016-10-30"
+Rev "2.0-beta1"
 Comp "SofterHardware"
 Comment1 "KF7O Steve Haynal"
 Comment2 ""
@@ -2284,4 +2284,8 @@ F 3 "" H 9700 2400 50  0000 C CNN
 	-1   0    0    -1  
 $EndComp
 Connection ~ 9700 2550
+Text Notes 9450 1100 0    60   ~ 0
+Connections to PA \nthermal sensors.
+Text Notes 6975 5600 0    60   ~ 0
+I2C for filter selection on extension board.\n2 Analog inputs for forward/reverse measurement.
 $EndSCHEMATC

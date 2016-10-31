@@ -36,8 +36,8 @@ $Descr USLetter 11000 8500
 encoding utf-8
 Sheet 5 7
 Title "RF Frontend"
-Date "2016-10-16"
-Rev "2.0-pre3"
+Date "2016-10-30"
+Rev "2.0-beta1"
 Comp "SofterHardware"
 Comment1 "KF7O Steve Haynal"
 Comment2 ""
@@ -1904,7 +1904,7 @@ TX Build Options
 Text Notes 5050 5550 0    60   ~ 12
 RX Build Options
 Text Notes 5050 5400 0    60   ~ 0
-\nInstrument & PA TX: Include FB14,B66,R52,U10,B69,B71,R54,R62,U11,B76,B79,R61,T1,RF1. Exclude R48,R53,R60,R66.\nInstrument TX: Include T1,RF1,R54,R53,R61,R66. Exclude FB14,B66,R48,R52,B70,U10,B69,B71,R60,U11,B76,B79.\nPA TX: Include R48,R60. Exclude FB14,B66,R52,U10,B69,B71,R53,R54,R66,R62,U11,B76,B79,R61,T1,RF1.\nTermination is in two sections so power output to PA and instrument TX can be varied and dissipation split.\nTotal termination for instrument TX designed to be 24 Ohms on each leg but can be reduced to increase power.
+\nInstrument & PA SW: Include FB14,B66,U10,B69,B71,R54,U11,B76,B79,R61,T1,RF1.\nInstrument TX: Include T1,RF1,R53. R52,R62=24Ohm. Wire DB2.1/DB21.1, DB2.4 to DB25.1. Exclude Inst&PA SW.\nPA TX: Wire DB2.1/DB20.1, DB2.4/DB23.1. Exclude Inst&PA SW, T1, RF1.\nTermination is in two sections so power output to PA and instrument TX can be varied and dissipation split.\nTotal termination for instrument TX designed to be 24 Ohms on each leg but can be reduced to increase power.
 Text Notes 5050 6600 0    60   ~ 0
 Default Versa Clock: Include J22. Exclude C58,X3,C59,CL4. \nLocal Crystal: Include C58,X3,C59. Exclude J22,CL4.\nSynchronized Clock: Include CL4 for clock connection. Exclude J22,C58,X3,C59.\nX3 to support 2.5x2.0 or 3.2x2.5 mm standard 4-lead SMD packages.
 Text Notes 5050 6200 0    60   ~ 12

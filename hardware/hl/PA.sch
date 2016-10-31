@@ -36,8 +36,8 @@ $Descr USLetter 11000 8500
 encoding utf-8
 Sheet 7 7
 Title "Hermes-Lite V2 5W Power Amplifier"
-Date "2016-10-16"
-Rev "2.0-pre3"
+Date "2016-10-30"
+Rev "2.0-beta1"
 Comp "SofterHardware"
 Comment1 "KF7O Steve Haynal"
 Comment2 ""
@@ -151,8 +151,6 @@ F 3 "" H 4125 6650 39  0000 C CNN
 	1    4125 6650
 	1    0    0    -1  
 $EndComp
-Text Notes 3800 7050 0    39   ~ 0
-All I2C address to be checked for overlap!!\nPosition bias logic near digital logic, run long bias lines.
 Wire Wire Line
 	3475 6625 3475 6650
 Wire Wire Line
@@ -327,7 +325,7 @@ L R R94
 U 1 1 578577DF
 P 2750 3075
 F 0 "R94" V 2675 3075 39  0000 C CNN
-F 1 "10" V 2757 3076 39  0000 C CNN
+F 1 "14" V 2757 3076 39  0000 C CNN
 F 2 "HERMESLITE:SMD-0805" V 2680 3075 30  0001 C CNN
 F 3 "" H 2750 3075 30  0000 C CNN
 	1    2750 3075
@@ -360,7 +358,7 @@ L L_Small L33
 U 1 1 578550B1
 P 4175 3075
 F 0 "L33" V 4250 3075 39  0000 L CNN
-F 1 "100nH" V 4125 2975 39  0000 L CNN
+F 1 "0nH" V 4125 2975 39  0000 L CNN
 F 2 "HERMESLITE:SMD-0805" H 4175 3075 50  0001 C CNN
 F 3 "" H 4175 3075 50  0000 C CNN
 	1    4175 3075
@@ -447,7 +445,7 @@ $Comp
 L R R93
 U 1 1 5785EF26
 P 5725 3050
-F 0 "R93" H 5850 2975 39  0000 C CNN
+F 0 "R93" H 5600 3125 39  0000 C CNN
 F 1 "DNI" V 5732 3051 39  0000 C CNN
 F 2 "HERMESLITE:SMD-0805" V 5655 3050 30  0001 C CNN
 F 3 "" H 5725 3050 30  0000 C CNN
@@ -458,7 +456,7 @@ $Comp
 L R R96
 U 1 1 578605E7
 P 5725 3400
-F 0 "R96" H 5850 3525 39  0000 C CNN
+F 0 "R96" H 5600 3325 39  0000 C CNN
 F 1 "DNI" V 5732 3401 39  0000 C CNN
 F 2 "HERMESLITE:SMD-0805" V 5655 3400 30  0001 C CNN
 F 3 "" H 5725 3400 30  0000 C CNN
@@ -635,7 +633,7 @@ L L_Small L34
 U 1 1 57864AB5
 P 4175 4175
 F 0 "L34" V 4250 4175 39  0000 L CNN
-F 1 "100nH" V 4125 4075 39  0000 L CNN
+F 1 "0nH" V 4125 4075 39  0000 L CNN
 F 2 "HERMESLITE:SMD-0805" H 4175 4175 50  0001 C CNN
 F 3 "" H 4175 4175 50  0000 C CNN
 	1    4175 4175
@@ -824,7 +822,7 @@ L R R100
 U 1 1 5786B904
 P 2750 4175
 F 0 "R100" V 2675 4175 39  0000 C CNN
-F 1 "10" V 2757 4176 39  0000 C CNN
+F 1 "14" V 2757 4176 39  0000 C CNN
 F 2 "HERMESLITE:SMD-0805" V 2680 4175 30  0001 C CNN
 F 3 "" H 2750 4175 30  0000 C CNN
 	1    2750 4175
@@ -874,7 +872,7 @@ Text GLabel 2200 4175 0    39   Input ~ 0
 TXPAn
 Text Notes 925  800  0    60   ~ 12
 All values are first-cut place holders. To be refined with simulation and experimentation.
-Text Notes 1100 7625 0    60   ~ 12
+Text Notes 1100 7625 0    60   ~ 0
 Design based on work by Claudio IN3OTD/DK1CG, John W9JSW, and other LDMOS/MOSFET QRP PA designs
 Wire Wire Line
 	5725 2875 5900 2875
@@ -950,12 +948,12 @@ Connection ~ 5050 3800
 Wire Wire Line
 	4775 4200 5050 4200
 Connection ~ 4775 4200
-Text Notes 6100 3675 0    39   ~ 0
+Text Notes 6100 3750 0    60   ~ 0
 BN43-202\n4T Primary\n1+1T Secondary
 Wire Wire Line
 	4550 2250 5150 2250
 Wire Wire Line
-	4475 2000 5325 2000
+	4475 2000 5375 2000
 Wire Wire Line
 	8250 2325 8250 3025
 Text GLabel 8150 1575 0    39   Output ~ 0
@@ -1074,76 +1072,76 @@ Wire Wire Line
 $Comp
 L MOSFET_N Q5
 U 1 1 58037F7F
-P 8375 5100
-F 0 "Q5" H 8375 4900 39  0000 R CNN
-F 1 "2N7002K" H 8400 5300 39  0000 R CNN
-F 2 "HERMESLITE:SOT23_3" H 8375 5100 60  0001 C CNN
-F 3 "" H 8375 5100 60  0000 C CNN
-	1    8375 5100
+P 7775 5475
+F 0 "Q5" H 7775 5275 39  0000 R CNN
+F 1 "2N7002K" H 7800 5675 39  0000 R CNN
+F 2 "HERMESLITE:SOT23_3" H 7775 5475 60  0001 C CNN
+F 3 "" H 7775 5475 60  0000 C CNN
+	1    7775 5475
 	1    0    0    -1  
 $EndComp
 $Comp
 L R R125
 U 1 1 58037F8E
-P 8000 5275
-F 0 "R125" H 8150 5300 39  0000 C CNN
-F 1 "DNI" V 8007 5276 39  0000 C CNN
-F 2 "HERMESLITE:SMD-0603" V 7930 5275 30  0001 C CNN
-F 3 "" H 8000 5275 30  0000 C CNN
-	1    8000 5275
+P 7400 5650
+F 0 "R125" H 7550 5675 39  0000 C CNN
+F 1 "DNI" V 7407 5651 39  0000 C CNN
+F 2 "HERMESLITE:SMD-0603" V 7330 5650 30  0001 C CNN
+F 3 "" H 7400 5650 30  0000 C CNN
+	1    7400 5650
 	-1   0    0    1   
 $EndComp
 $Comp
 L GND #PWR0190
 U 1 1 58037F95
-P 8600 5100
-F 0 "#PWR0190" H 8600 5100 30  0001 C CNN
-F 1 "GND" H 8600 5030 30  0001 C CNN
-F 2 "" H 8600 5100 50  0000 C CNN
-F 3 "" H 8600 5100 50  0000 C CNN
-	1    8600 5100
+P 8000 5475
+F 0 "#PWR0190" H 8000 5475 30  0001 C CNN
+F 1 "GND" H 8000 5405 30  0001 C CNN
+F 2 "" H 8000 5475 50  0000 C CNN
+F 3 "" H 8000 5475 50  0000 C CNN
+	1    8000 5475
 	1    0    0    -1  
 $EndComp
 $Comp
 L GND #PWR0191
 U 1 1 58037FA1
-P 8475 5325
-F 0 "#PWR0191" H 8475 5325 30  0001 C CNN
-F 1 "GND" H 8475 5255 30  0001 C CNN
-F 2 "" H 8475 5325 50  0000 C CNN
-F 3 "" H 8475 5325 50  0000 C CNN
-	1    8475 5325
+P 7875 5700
+F 0 "#PWR0191" H 7875 5700 30  0001 C CNN
+F 1 "GND" H 7875 5630 30  0001 C CNN
+F 2 "" H 7875 5700 50  0000 C CNN
+F 3 "" H 7875 5700 50  0000 C CNN
+	1    7875 5700
 	1    0    0    -1  
 $EndComp
 $Comp
 L GND #PWR0192
 U 1 1 58037FA7
-P 8000 5450
-F 0 "#PWR0192" H 8000 5450 30  0001 C CNN
-F 1 "GND" H 8000 5380 30  0001 C CNN
-F 2 "" H 8000 5450 50  0000 C CNN
-F 3 "" H 8000 5450 50  0000 C CNN
-	1    8000 5450
+P 7400 5825
+F 0 "#PWR0192" H 7400 5825 30  0001 C CNN
+F 1 "GND" H 7400 5755 30  0001 C CNN
+F 2 "" H 7400 5825 50  0000 C CNN
+F 3 "" H 7400 5825 50  0000 C CNN
+	1    7400 5825
 	1    0    0    -1  
 $EndComp
 Wire Wire Line
-	7800 5100 8175 5100
+	7200 5475 7575 5475
 Wire Wire Line
-	8000 5100 8000 5125
+	7400 5475 7400 5500
 Wire Wire Line
-	8000 5425 8000 5450
+	7400 5800 7400 5825
 Wire Wire Line
-	8475 5300 8475 5325
+	7875 5675 7875 5700
 Wire Wire Line
-	8600 5100 8600 5075
+	8000 5475 8000 5450
 Wire Wire Line
-	8600 5075 8625 5075
+	8000 5450 8025 5450
 Wire Wire Line
-	8475 4900 8475 4875
-Text Notes 7600 4725 0    60   ~ 0
+	7875 5275 7875 5250
+Text Notes 8375 5475 0    60   ~ 0
 External PTT\nWill ground pin 1 \nduring TX
-Connection ~ 8000 5100
-Text Label 7800 5100 0    39   ~ 0
+Connection ~ 7400 5475
+Text Label 7200 5475 0    39   ~ 0
 TR
 Wire Wire Line
 	8150 1575 8250 1575
@@ -1188,7 +1186,7 @@ Build Optons
 Text Notes 925  1125 0    60   ~ 0
 Any or all components may be excluded if PA is unused.
 Text Notes 925  1925 0    60   ~ 0
-SOT-89 or TO-220 LDMOS supported on main circuit board. \nTO-220 mounts to side of enclosure.\nSOT-89 dissipates heat to PCB and side of enclosure.\n\nDeafult build uses 2 AFT05MS003 mounted on main board.\n\nPLD-1.5 and alternate SOT-89 supported by adapter board.\nAdapter board dissipates heat to side of enclosure.
+SOT-89 or TO-220 LDMOS supported on main circuit board. \nTO-220 mounts to side of enclosure.\nSOT-89 dissipates heat to PCB and side of enclosure.\n\nDeafult build uses 2 AFT05MS003 mounted on main board, 110mA bias.\n\nPLD-1.5 and alternate SOT-89 supported by adapter board.\nAdapter board dissipates heat to side of enclosure.
 $Comp
 L DPDTR_GND K2
 U 1 1 58084EBB
@@ -1250,16 +1248,16 @@ Connection ~ 7650 1700
 $Comp
 L RFD2b CN11
 U 1 1 580FC650
-P 8725 4975
-F 0 "CN11" H 8675 4775 39  0000 C CNN
-F 1 "RFD2b" H 8675 5175 39  0001 C CNN
-F 2 "HERMESLITE:2x1" H 8725 4625 60  0001 C CNN
-F 3 "" H 8725 4625 60  0000 C CNN
-	1    8725 4975
+P 8125 5350
+F 0 "CN11" H 8075 5150 39  0000 C CNN
+F 1 "RFD2b" H 8075 5550 39  0001 C CNN
+F 2 "HERMESLITE:2x1" H 8125 5000 60  0001 C CNN
+F 3 "" H 8125 5000 60  0000 C CNN
+	1    8125 5350
 	-1   0    0    -1  
 $EndComp
 Wire Wire Line
-	8475 4875 8625 4875
+	7875 5250 8025 5250
 Text GLabel 3800 5950 0    39   Input ~ 0
 SCL2
 Text GLabel 3800 5850 0    39   BiDi ~ 0
@@ -1270,4 +1268,67 @@ Wire Wire Line
 	3800 5950 3925 5950
 Wire Wire Line
 	2450 6100 2175 6100
+$Comp
+L C_Small C84
+U 1 1 5816E929
+P 5625 2825
+F 0 "C84" H 5700 2900 39  0000 L CNN
+F 1 "270pF" H 5650 2750 39  0000 L CNN
+F 2 "HERMESLITE:SMD-0805" H 5625 2825 50  0001 C CNN
+F 3 "" H 5625 2825 50  0000 C CNN
+	1    5625 2825
+	-1   0    0    -1  
+$EndComp
+Wire Wire Line
+	5625 2725 5625 2700
+Connection ~ 5625 2700
+Wire Wire Line
+	5625 2925 5625 3800
+Connection ~ 5625 3800
+Text Notes 1975 2900 0    60   ~ 0
+Add attenuation with R97,R98,R94,R100\nif PA is overdriven.
+$Comp
+L C_Small C85
+U 1 1 58173BC3
+P 5475 2000
+F 0 "C85" V 5525 1850 39  0000 L CNN
+F 1 "DNI" V 5375 1950 39  0000 L CNN
+F 2 "HERMESLITE:SMD-0805" H 5475 2000 50  0001 C CNN
+F 3 "" H 5475 2000 50  0000 C CNN
+	1    5475 2000
+	0    1    -1   0   
+$EndComp
+$Comp
+L R R60
+U 1 1 58173C9A
+P 5775 2000
+F 0 "R60" V 5700 2000 39  0000 C CNN
+F 1 "DNI" V 5782 2001 39  0000 C CNN
+F 2 "HERMESLITE:SMD-0805" V 5705 2000 30  0001 C CNN
+F 3 "" H 5775 2000 30  0000 C CNN
+	1    5775 2000
+	0    1    1    0   
+$EndComp
+$Comp
+L GND #PWR0196
+U 1 1 58173FC5
+P 5950 2025
+F 0 "#PWR0196" H 5950 1775 50  0001 C CNN
+F 1 "GND" H 5950 1875 50  0001 C CNN
+F 2 "" H 5950 2025 50  0000 C CNN
+F 3 "" H 5950 2025 50  0000 C CNN
+	1    5950 2025
+	1    0    0    -1  
+$EndComp
+Connection ~ 5325 2000
+Wire Wire Line
+	5575 2000 5625 2000
+Wire Wire Line
+	5925 2000 5950 2000
+Wire Wire Line
+	5950 2000 5950 2025
+Text Notes 925  2550 0    60   ~ 0
+L33,L34 = 4.7 Ohm\nR92,R99 = 500 Ohm\nT3 = BN61-202 4T Pri, 2+2T Sec\n200 mA bias
+Text Notes 925  2125 0    60   ~ 12
+RD15HVF1 Test Build Option
 $EndSCHEMATC
