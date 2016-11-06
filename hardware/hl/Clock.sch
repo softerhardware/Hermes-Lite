@@ -1078,4 +1078,8 @@ Text Notes 7500 5625 0    60   ~ 12
 Build Options:
 Text Notes 7500 5750 0    60   ~ 0
 Output for synchronized radio: Include R45,CL2.
+Text Notes 5175 6025 0    39   ~ 0
+I2C ADDR 0xD4
+Text Notes 2175 2950 0    39   ~ 0
+I2C ADDR 0x60
 $EndSCHEMATC

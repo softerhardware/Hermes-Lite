@@ -267,4 +267,11 @@ Wire Wire Line
 	1950 7325 1950 7350
 Connection ~ 1950 7350
 Connection ~ 1750 7350
+NoConn ~ 4300 6100
+NoConn ~ 4300 6350
+NoConn ~ 4300 6600
+NoConn ~ 4600 6600
+NoConn ~ 4600 6350
+NoConn ~ 4600 6100
+NoConn ~ 6225 5825
 $EndSCHEMATC

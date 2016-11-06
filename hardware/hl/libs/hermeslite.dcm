@@ -10,6 +10,11 @@ D Diode schottky
 K DEV DIODE
 $ENDCMP
 #
+$CMP DIODESCH3
+D Diode schottky
+K DEV DIODE
+$ENDCMP
+#
 $CMP JNC
 D Resistor
 K R DEV
