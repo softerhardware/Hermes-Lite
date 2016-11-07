@@ -36,7 +36,7 @@ $Descr USLetter 11000 8500
 encoding utf-8
 Sheet 6 7
 Title "Hermes-Lite Input Output"
-Date "2016-11-02"
+Date "2016-11-06"
 Rev "2.0-beta1"
 Comp "SofterHardware"
 Comment1 "KF7O Steve Haynal"
@@ -701,7 +701,7 @@ L R R8
 U 1 1 57C6B024
 P 3975 6825
 F 0 "R8" H 3925 6675 39  0000 C CNN
-F 1 "10K" V 3975 6825 39  0000 C CNN
+F 1 "DNI" V 3975 6825 39  0000 C CNN
 F 2 "HERMESLITE:SMD-0603" V 3905 6825 50  0001 C CNN
 F 3 "" H 3975 6825 50  0000 C CNN
 F 4 "DBEXTRA" H 3975 6825 60  0001 C CNN "Option"
@@ -713,7 +713,7 @@ L R R9
 U 1 1 57C6B1A0
 P 3775 6825
 F 0 "R9" H 3725 6675 39  0000 C CNN
-F 1 "10K" V 3775 6825 39  0000 C CNN
+F 1 "DNI" V 3775 6825 39  0000 C CNN
 F 2 "HERMESLITE:SMD-0603" V 3705 6825 50  0001 C CNN
 F 3 "" H 3775 6825 50  0000 C CNN
 F 4 "DBEXTRA" H 3775 6825 60  0001 C CNN "Option"
@@ -724,8 +724,8 @@ $Comp
 L C_Small C10
 U 1 1 57C6B31F
 P 3975 7625
-F 0 "C10" H 3850 7700 39  0000 L CNN
-F 1 "1uF" H 3985 7545 39  0000 L CNN
+F 0 "C10" H 4000 7700 39  0000 L CNN
+F 1 "DNI" H 3985 7545 39  0000 L CNN
 F 2 "HERMESLITE:SMD-0603" H 3975 7625 50  0001 C CNN
 F 3 "" H 3975 7625 50  0000 C CNN
 F 4 "DBEXTRA" H 3975 7625 60  0001 C CNN "Option"
@@ -736,8 +736,8 @@ $Comp
 L C_Small C11
 U 1 1 57C6B4F9
 P 3775 7625
-F 0 "C11" H 3625 7700 39  0000 L CNN
-F 1 "1uF" H 3785 7545 39  0000 L CNN
+F 0 "C11" H 3800 7700 39  0000 L CNN
+F 1 "DNI" H 3785 7545 39  0000 L CNN
 F 2 "HERMESLITE:SMD-0603" H 3775 7625 50  0001 C CNN
 F 3 "" H 3775 7625 50  0000 C CNN
 F 4 "DBEXTRA" H 3775 7625 60  0001 C CNN "Option"
@@ -872,7 +872,7 @@ Wire Wire Line
 Wire Wire Line
 	3775 6975 3775 7525
 Text Notes 800  7600 0    60   ~ 0
-Optional external reference\nfor frequency calibration.\nExclude R9,R8,C10,C11\nfor external reference.\nInclude R9,R8,C10,C11 \nif used as generic slow switch inputs.\nInclude R18 for \ndifferential termination if needed.
+Optional external reference\nfor frequency calibration.\nLayout may be populated with resistors\nand capacitors as seen above for\noptional use as slow inputs.\nInclude R18 for differential \ntermination if needed.
 Wire Wire Line
 	3175 4425 3175 4450
 Connection ~ 3175 4450
