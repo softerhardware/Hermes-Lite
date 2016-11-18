@@ -15,7 +15,7 @@
 	},
 
 "C 1uF 0603": {
-	"mpn":["CC0603KKX7R7BB105"],
+	"mpn":["GRM188R61E105KA12D","GRM188R61C105KA93D"],
 	"spec":"1uF 0603 X5R/X7R >=6.3V <=20%",
 	"assembly":"SMT",
 	"pins":2
@@ -141,7 +141,7 @@
 	},
 
 "U EEPROM": {
-	"mpn":["W25Q16DVSSIG"],
+	"mpn":["S25FL116K0XMFI011","W25Q16DVSSIG"],
 	"spec":"EEPROM 2Mx8bit >40MHz",
 	"assembly":"SMT",
 	"pins":8
@@ -176,7 +176,7 @@
 	},
 
 "U PE4259": {
-	"mpn":["4259-63"],
+	"mpn":["4259-63","4239-52","PE42421SCAA"],
 	"spec":"RF Switch",
 	"assembly":"SMT",
 	"pins":6
