@@ -10,8 +10,8 @@ class Quote:
         self.price = price
         self.name = name
         self.url = url
-        self.manufacturer = manufacturer
-        self.sku = sku
+        self.manufacturer = manufacturer.encode('utf-8')
+        self.sku = sku.encode('utf-8')
         self.mpn = mpn
 
     def __cmp__(self,other):
@@ -30,6 +30,7 @@ class Quote:
 
         octoparturl = '[{0}](http://www.octopart.com/search?q={0})'.format(self.mpn)
 
+        ##print self.manufacturer,octoparturl,seller,sku,self.price
         return "{0} | {1} | {2} | {3} | {4:.2f}".format(self.manufacturer,octoparturl,seller,sku,self.price)
 
 ## Special component quotes
@@ -148,7 +149,17 @@ class Component:
         self.ext = ''
         self.key = ''
 
+
         self.value = self.xml.value.cdata
+
+        try:
+            fp = self.xml.footprint.cdata
+            if '0603' in fp:
+                self.ext = '0603'
+            elif '0805' in fp:
+                self.ext = '0805'
+        except:
+            pass
 
         try:
             for field in self.xml.fields.field:
@@ -165,6 +176,7 @@ class Component:
                 elif field['name'] == 'Hand' and hand:
                     self.key = field.cdata
 
+
         except:
             pass
 
@@ -174,6 +186,9 @@ class Component:
                 self.key = (self.ref[0] + " " + self.value + " " + self.ext).strip()
             else:
                 self.key = (self.ref[0:2] + " " + self.value + " " + self.ext).strip()
+        elif self.ext != '':
+            self.key = self.key + ' ' + self.ext
+
 
         ## Convert ref to sortable ascii,integer tuple
         if self.ref[1].isdigit():
@@ -198,7 +213,7 @@ class Part:
 
     def AddPartSel(self,v):
         self.mpns = v['mpn']
-        self.spec = v['spec']
+        self.spec = v['spec'].encode('utf-8')
         self.pins = v['pins']
         self.assembly = v['assembly']
 
@@ -351,12 +366,13 @@ class BOM:
                 c2 = quote.WikiLine()
                 c4 = quote.price * c3
             else:
-                print "ERROR: No quote for mpn",p.mpns,p.spec,p.components[0].ref
+                print "ERROR: No quote for mpn",p.mpns,p.spec,p.components[0].ref,p.components[0].key
                 continue
 
             items,parts,pins = ipp[p.assembly]
             ipp[p.assembly] = items+1,parts+c3,pins+(p.pins*c3)
 
+            ##print "!!!",c1,p.spec,c2,c3,c4
             s = '| {0} | {1} | {2} | {3} | {4:.2f} |'.format(c1,p.spec,c2,c3,c4)
             total = total + c4
 
