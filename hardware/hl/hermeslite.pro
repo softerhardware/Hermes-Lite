@@ -1,4 +1,4 @@
-update=8/11/2016 9:55:20 PM
+update=Sun 20 Nov 2016 12:43:27 PM PST
 version=1
 last_client=kicad
 [pcbnew]
@@ -27,7 +27,7 @@ NetIExt=net
 version=1
 [eeschema]
 version=1
-LibDir=
+LibDir=../../../local/kicad/library
 [eeschema/libraries]
 LibName1=power
 LibName2=device
@@ -66,6 +66,6 @@ PlotDirectoryName=
 SubpartIdSeparator=0
 SubpartFirstId=65
 NetFmtName=Pcbnew
-SpiceForceRefPrefix=0
-SpiceUseNetNumbers=0
+SpiceAjustPassiveValues=0
 LabSize=60
+ERC_TestSimilarLabels=1

@@ -1,15 +1,15 @@
 {
 
 "B 0.1uF 0603": {
-	"mpn":["GRM188R71E104KA01D"],
-	"spec":"0.1uF 0603>=X5R>=6.3V<=20%",
+	"mpn":["C0603C104M5RACTU"],
+	"spec":"0.1uF 0603>=X5R>=50V<=20%",
 	"assembly":"SMT",
 	"pins":2
 	},
 
-"C 1uF 0805": {
-	"mpn":["CC0805KKX7R7BB105"],
-	"spec":"1uF 0805>=X5R>=6.3V<=20%",
+"C 1uF 0805 HV": {
+	"mpn":["CL21B105KAFNNNE"],
+	"spec":"1uF 0805>=X5R>=25V<=20%",
 	"assembly":"SMT",
 	"pins":2
 	},
@@ -42,6 +42,13 @@
 	"pins":2
 	},
 
+"C 22uF 0805 HV": {
+	"mpn":["GRM21BR61E226ME44L"],
+	"spec":"22uF 0805>=X5R>=6.3V<=20%",
+	"assembly":"SMT",
+	"pins":2
+	},
+
 "C 10uF HV": {
 	"mpn":["CL31A106KAHNNNE"],
 	"spec":"10uF 1206>=X5R>=25V<=20%",
@@ -49,9 +56,9 @@
 	"pins":2
 	},
 
-"C 4.7uF HV": {
+"C 4.7uF 0805 HV": {
 	"mpn":["GRM21BR61E475KA12L"],
-	"spec":"10uF 0805>=X5R>=25V<=20%",
+	"spec":"4.7uF 0805>=X5R>=25V<=20%",
 	"assembly":"SMT",
 	"pins":2
 	},
@@ -65,7 +72,7 @@
 
 "C 4.7nF 0603": {
 	"mpn":["CL10B472KB8NNNC"],
-	"spec":"4.7nF 0603>=X5R>=6.3V<=20%",
+	"spec":"4.7nF 0603>=X5R>=25V<=20%",
 	"assembly":"SMT",
 	"pins":2
 	},
@@ -224,6 +231,13 @@
 	"pins":14
 	},
 
+"U AP2204": {
+	"mpn":["AP2204MP-ADJTRG1"],
+	"spec":"Regulator",
+	"assembly":"SMT",
+	"pins":8
+	},	
+
 "D 1N5711": {
 	"mpn":["1N5711WS-7-F"],
 	"spec":"Schottky Barrier Diode",
@@ -261,7 +275,7 @@
 
 "R 220K 0603": {
 	"mpn":["RC0603FR-07220KL"],
-	"spec":"35.7K 0603<=1%>=1/10W",
+	"spec":"220K 0603<=1%>=1/10W",
 	"assembly":"SMT",
 	"pins":2
 	},
@@ -387,7 +401,14 @@
 
 "R 330 0603": {
 	"mpn":["RC0603FR-07330RL"],
-	"spec":"240 0603<=1%>=1/10W",
+	"spec":"330 0603<=1%>=1/10W",
+	"assembly":"SMT",
+	"pins":2
+	},
+
+"R 100 0603": {
+	"mpn":["RC0603FR-07100RL"],
+	"spec":"100 0603<=1%>=1/10W",
 	"assembly":"SMT",
 	"pins":2
 	},
@@ -435,6 +456,13 @@
 	},
 
 "J JNC 0603": {
+	"mpn":["RC0603JR-070RL"],
+	"spec":"0 0603<=5%>=1/10W",
+	"assembly":"SMT",
+	"pins":2
+	},
+
+"J JNO 0603": {
 	"mpn":["RC0603JR-070RL"],
 	"spec":"0 0603<=5%>=1/10W",
 	"assembly":"SMT",
@@ -543,7 +571,7 @@
 
 "L 240nH 0805": {
 	"mpn":["LQW2BASR24J00L"],
-	"spec":"240Nn >=350mA",
+	"spec":"240nH >=350mA",
 	"assembly":"SMT",
 	"pins":2
 	},		
@@ -558,14 +586,14 @@
 "L 2.2uH PS": {
 	"mpn":["SRN5020-2R2Y"],
 	"altmpn":["NRS6045T2R3NMGK"],
-	"spec":"2.2µH 2.9A",
+	"spec":"2.2uH 2.9A",
 	"assembly":"SMT",
 	"pins":2
 	},		
 
 "L 3.3uH PS": {
 	"mpn":["SRN5020-3R3M"],
-	"spec":"3.3µH 2.4A",
+	"spec":"3.3uH 2.4A",
 	"assembly":"SMT",
 	"pins":2
 	},		

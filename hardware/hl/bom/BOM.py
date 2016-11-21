@@ -206,7 +206,10 @@ class Component:
                 elif field['name'] == 'Notes':
                     self.notes = field.cdata
                 elif field['name'] == 'Ext':
-                    self.ext = field.cdata
+                    if self.ext != '':
+                        self.ext = self.ext + ' ' + field.cdata
+                    else:
+                        self.ext = field.cdata
                     ##print "Found ext",self.ext
                 elif field['name'] == 'Key':
                     self.key = field.cdata
@@ -281,7 +284,7 @@ class Part:
                 unique.add(c.option)
 
         key = self.components[0].key
-        if "TP TEST" in key:
+        if "NOBOM" in key:
             return (0,len(self.components),len(unique))
         else:
             return (1*(len(self.components)-optional),optional,len(unique))
@@ -358,7 +361,7 @@ class Part:
         return res
 
     def DNIRefs(self,options):
-        return [c.ref for c in self.components if c.option not in options]
+        return [c.ref for c in self.components if (c.option not in options and "NOBOM" not in c.key)]
 
     def Sort(self):
         self.components.sort(key=lambda x: x.ref)
@@ -495,12 +498,16 @@ class BOM:
         print >>f,"  * Manual TH: {0}".format(ipp['MTH'][2])
         print >>f,"  * Total: {0}".format(ipp['MTH'][2]+ipp['SMT'][2]+ipp['TH'][2])
 
-    def LaTeXPrint(self,prefer=None):
+    def LaTeXPrint(self,pre="",prefer=None):
         keys = self.parts.keys()
         keys.sort(key=lambda x: self.parts[x].FirstRef(self.optionset))
         ##keys.sort(key=lambda x: self.parts[x].components[0].ref)
 
         total = Decimal(0.0)
+
+        f = open("bompre.dat","w")
+        print >>f,pre
+        f.close()
 
         f = open("bom.dat","w")
 
@@ -549,23 +556,13 @@ class BOM:
 
         f = open("bompost.dat","w")
 
-        print >>f," * Total Price: ${0:.2f}".format(total)
-        print >>f," * Line Items"
-        print >>f,"  * Assembled TH: {0}".format(ipp['TH'][0])
-        print >>f,"  * Manual TH: {0}".format(ipp['MTH'][0])
-        print >>f,"  * Total: {0}".format(ipp['MTH'][0]+ipp['SMT'][0]+ipp['TH'][0])
-        print >>f," * Parts"
-        print >>f,"  * SMT: {0}".format(ipp['SMT'][1])
-        print >>f,"  * Assembled TH: {0}".format(ipp['TH'][1])
-        print >>f,"  * Manual TH: {0}".format(ipp['MTH'][1])
-        print >>f,"  * Total: {0}".format(ipp['MTH'][1]+ipp['SMT'][1]+ipp['TH'][1])
-        print >>f," * Pins"
-        print >>f,"  * SMT: {0}".format(ipp['SMT'][2])
-        print >>f,"  * Assembled TH: {0}".format(ipp['TH'][2])
-        print >>f,"  * Manual TH: {0}".format(ipp['MTH'][2])
-        print >>f,"  * Total: {0}".format(ipp['MTH'][2]+ipp['SMT'][2]+ipp['TH'][2])
-        print >>f," * DNI"
+        print >>f,"\\noindent \\textbf{{Total Price:}} \\${0:.2f}\\\\".format(total)
+        print >>f,"\\textbf{{Line Items:}} SMT:{0} Assembled TH:{1} Manual TH:{2} Total:{3}\\\\".format(ipp['SMT'][0],ipp['TH'][0],ipp['MTH'][0],ipp['MTH'][0]+ipp['SMT'][0]+ipp['TH'][0])
+        print >>f,"\\textbf{{Parts:}} SMT:{0} Assembled TH:{1} Manual TH:{2} Total:{3}\\\\".format(ipp['SMT'][1],ipp['TH'][1],ipp['MTH'][1],ipp['MTH'][1]+ipp['SMT'][1]+ipp['TH'][1])
+        print >>f,"\\textbf{{Pins:}} SMT:{0} Assembled TH:{1} Manual TH:{2} Total:{3}\\\\".format(ipp['SMT'][2],ipp['TH'][2],ipp['MTH'][2],ipp['MTH'][2]+ipp['SMT'][2]+ipp['TH'][2])
+        print >>f,"\\textbf{{Do Not Include:}}"
         print >>f,' '.join(dni)
+        print >>f,"\\\\"
 
         f.close()
 
