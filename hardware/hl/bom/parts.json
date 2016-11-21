@@ -2,126 +2,126 @@
 
 "B 0.1uF 0603": {
 	"mpn":["GRM188R71E104KA01D"],
-	"spec":"0.1uF 0603 X5R/X7R >=6.3V <=20%",
+	"spec":"0.1uF 0603>=X5R>=6.3V<=20%",
 	"assembly":"SMT",
 	"pins":2
 	},
 
 "C 1uF 0805": {
 	"mpn":["CC0805KKX7R7BB105"],
-	"spec":"1uF 0805 X5R/X7R >=6.3V <=20%",
+	"spec":"1uF 0805>=X5R>=6.3V<=20%",
 	"assembly":"SMT",
 	"pins":2
 	},
 
 "C 1uF 0603": {
 	"mpn":["GRM188R61E105KA12D","GRM188R61C105KA93D"],
-	"spec":"1uF 0603 X5R/X7R >=6.3V <=20%",
+	"spec":"1uF 0603>=X5R>=6.3V<=20%",
 	"assembly":"SMT",
 	"pins":2
 	},
 
 "C 10uF 0603": {
 	"mpn":["GRM188R60J106KE47D"],
-	"spec":"10uF 0603 X5R/X7R >=6.3V <=20%",
+	"spec":"10uF 0603>=X5R>=6.3V<=20%",
 	"assembly":"SMT",
 	"pins":2
 	},
 
 "C 10uF 0805": {
 	"mpn":["GRM21BR60J106ME19L"],
-	"spec":"10uF 0805 X5R/X7R >=6.3V <=20%",
+	"spec":"10uF 0805>=X5R>=6.3V<=20%",
 	"assembly":"SMT",
 	"pins":2
 	},
 
 "C 22uF 0805": {
 	"mpn":["GRM21BR60J226ME39L"],
-	"spec":"22uF 0805 X5R/X7R >=6.3V <=20%",
+	"spec":"22uF 0805>=X5R>=6.3V<=20%",
 	"assembly":"SMT",
 	"pins":2
 	},
 
 "C 10uF HV": {
 	"mpn":["CL31A106KAHNNNE"],
-	"spec":"10uF 1206 X5R/X7R >=25V <=20%",
+	"spec":"10uF 1206>=X5R>=25V<=20%",
 	"assembly":"SMT",
 	"pins":2
 	},
 
 "C 4.7uF HV": {
 	"mpn":["GRM21BR61E475KA12L"],
-	"spec":"10uF 0805 X5R/X7R >=25V <=20%",
+	"spec":"10uF 0805>=X5R>=25V<=20%",
 	"assembly":"SMT",
 	"pins":2
 	},
 
 "C 100uF": {
 	"mpn":["GRM31CR60J107ME39K"],
-	"spec":"100uF 1206 X5R/X7R >=6.3V <=20%",
+	"spec":"100uF 1206>=X5R>=6.3V<=20%",
 	"assembly":"SMT",
 	"pins":2
 	},
 
 "C 4.7nF 0603": {
 	"mpn":["CL10B472KB8NNNC"],
-	"spec":"4.7nF 0603 X5R/X7R >=6.3V <=20%",
+	"spec":"4.7nF 0603>=X5R>=6.3V<=20%",
 	"assembly":"SMT",
 	"pins":2
 	},
 
 "C 270pF 0805": {
 	"mpn":["CC0805JRNPO0BN271","GRM2195C2A271JA01D","CL21C271JCANNNC","C0805C271J1GACTU","251R15S271JV4E"],
-	"spec":"270pF 0805 NP0 >=100V <=5%",
+	"spec":"270pF 0805NP0>=100V<=5%",
 	"assembly":"SMT",
 	"pins":2
 	},
 
 "C 180pF 0805": {
 	"mpn":["CC0805JRNPO0BN181","GRM2195C2A181JA01D","CL21C181JCANNNC","C0805C181J1GACTU","251R15S181JV4E"],
-	"spec":"180pF 0805 NP0 >=100V <=5%",
+	"spec":"180pF 0805NP0>=100V<=5%",
 	"assembly":"SMT",
 	"pins":2
 	},
 
 "C 160pF 0805": {
 	"mpn":["CC0805JRNPO0BN161","GRM2165C2A161JA01D","CL21C161JCANNNC","C0805C161J1GACTU","251R15S161JV4E"],
-	"spec":"160pF 0805 NP0 >=100V <=5%",
+	"spec":"160pF 0805NP0>=100V<=5%",
 	"assembly":"SMT",
 	"pins":2
 	},
 
 "C 150pF 0805": {
 	"mpn":["CC0805JRNPO0BN151","GRM2195C2A151JA01D","CL21C151JCANNNC","C0805C151J1GACTU","251R15S151JV4E"],
-	"spec":"150pF 0805 NP0 >=100V <=5%",
+	"spec":"150pF 0805NP0>=100V<=5%",
 	"assembly":"SMT",
 	"pins":2
 	},
 
 "C 100pF 0805": {
 	"mpn":["CC0805JRNPO0BN101","GRM2195C2A101JA01D","CL21C101JCANNNC","C0805C101J1GACTU","251R15S101JV4E"],
-	"spec":"100pF 0805 NP0 >=100V <=5%",
+	"spec":"100pF 0805NP0>=100V<=5%",
 	"assembly":"SMT",
 	"pins":2
 	},
 
 "C 75pF 0805": {
 	"mpn":["CC0805JRNPO0BN750","GRM2195C2A750JA01D","CL21C750JCANNNC","C0805C750J1GACTU","251R15S750JV4E"],
-	"spec":"75pF 0805 NP0 >=100V <=5%",
+	"spec":"75pF 0805NP0>=100V<=5%",
 	"assembly":"SMT",
 	"pins":2
 	},
 
 "C 15pF 0603": {
 	"mpn":["CC0603JRNPO9BN150"],
-	"spec":"15pF 0603 NP0 >=6.3V <=5%",
+	"spec":"15pF 0603NP0>=6.3V<=5%",
 	"assembly":"SMT",
 	"pins":2
 	},
 
 "C 10pF 0805": {
 	"mpn":["CC0805JRNPO9BN100"],
-	"spec":"10pF 0805 NP0 >=6.3V <=5%",
+	"spec":"10pF 0805NP0>=6.3V<=5%",
 	"assembly":"SMT",
 	"pins":2
 	},
@@ -254,189 +254,189 @@
 
 "FB FB 0603": {
 	"mpn":["MPZ1608S601ATA00"],
-	"spec":"600Ohm 100MHz Ferrite Bead 1A 0603 <=25%",
+	"spec":"FB 0603 100MHz 1A<=25%",
 	"assembly":"SMT",
 	"pins":2
 	},
 
 "R 35.7K 0603": {
 	"mpn":["RC0603FR-0735K7L"],
-	"spec":"35.7K 0603 <=1% >=1/10W",
+	"spec":"35.7K 0603<=1%>=1/10W",
 	"assembly":"SMT",
 	"pins":2
 	},
 
 "R 20K 0603": {
 	"mpn":["RC0603FR-0720KL"],
-	"spec":"20K 0603 <=1% >=1/10W",
+	"spec":"20K 0603<=1%>=1/10W",
 	"assembly":"SMT",
 	"pins":2
 	},
 
 "R 16.2K 0603": {
 	"mpn":["RC0603FR-0716K2L"],
-	"spec":"16.2K 0603 <=1% >=1/10W",
+	"spec":"16.2K 0603<=1%>=1/10W",
 	"assembly":"SMT",
 	"pins":2
 	},
 
 "R 12.1K 0603": {
 	"mpn":["RC0603FR-0712K1L"],
-	"spec":"12.1K 0603 <=1% >=1/10W",
+	"spec":"12.1K 0603<=1%>=1/10W",
 	"assembly":"SMT",
 	"pins":2
 	},
 
 "R 11.5K 0603": {
 	"mpn":["RC0603FR-0711K5L"],
-	"spec":"11.5K 0603 <=1% >=1/10W",
+	"spec":"11.5K 0603<=1%>=1/10W",
 	"assembly":"SMT",
 	"pins":2
 	},
 
 "R 10K 0603": {
 	"mpn":["RC0603FR-0710KL"],
-	"spec":"10K 0603 <=5% >=1/10W",
+	"spec":"10K 0603<=5%>=1/10W",
 	"assembly":"SMT",
 	"pins":2
 	},
 
 "R 4.7K 0603": {
 	"mpn":["RC0603FR-074K7L"],
-	"spec":"4.7K 0603 <=5% >=1/10W",
+	"spec":"4.7K 0603<=5%>=1/10W",
 	"assembly":"SMT",
 	"pins":2
 	},
 
 "R 3.3K 0603": {
 	"mpn":["RC0603FR-073K3L"],
-	"spec":"3.3K 0603 <=5% >=1/10W",
+	"spec":"3.3K 0603<=5%>=1/10W",
 	"assembly":"SMT",
 	"pins":2
 	},
 
 "R 2.2K 0603": {
 	"mpn":["RC0603FR-072K2L"],
-	"spec":"2.2K 0603 <=5% >=1/10W",
+	"spec":"2.2K 0603<=5%>=1/10W",
 	"assembly":"SMT",
 	"pins":2
 	},
 
 "R 1.8K 0603": {
 	"mpn":["RC0603FR-071K8L"],
-	"spec":"1.8K 0603 <=5% >=1/10W",
+	"spec":"1.8K 0603<=5%>=1/10W",
 	"assembly":"SMT",
 	"pins":2
 	},
 
 "R 1.6K 0603": {
 	"mpn":["RC0603FR-071K6L"],
-	"spec":"1.6K 0603 <=5% >=1/10W",
+	"spec":"1.6K 0603<=5%>=1/10W",
 	"assembly":"SMT",
 	"pins":2
 	},
 
 "R 1.5K 0603": {
 	"mpn":["RC0603FR-071K5L"],
-	"spec":"1.5K 0603 <=5% >=1/10W",
+	"spec":"1.5K 0603<=5%>=1/10W",
 	"assembly":"SMT",
 	"pins":2
 	},
 
 "R 1K 0603": {
 	"mpn":["RC0603FR-071KL"],
-	"spec":"1K 0603 <=5% >=1/10W",
+	"spec":"1K 0603<=5%>=1/10W",
 	"assembly":"SMT",
 	"pins":2
 	},
 
 "R 1K 0805": {
 	"mpn":["RC0805FR-071KL"],
-	"spec":"1K 0805 <=5% >=1/8W",
+	"spec":"1K 0805<=5%>=1/8W",
 	"assembly":"SMT",
 	"pins":2
 	},
 
 "R 120 0603": {
 	"mpn":["RC0603FR-07120RL"],
-	"spec":"120 0603 <=5% >=1/10W",
+	"spec":"120 0603<=5%>=1/10W",
 	"assembly":"SMT",
 	"pins":2
 	},
 
 "R 270 0603": {
 	"mpn":["RC0603FR-07270RL"],
-	"spec":"270 0603 <=5% >=1/10W",
+	"spec":"270 0603<=5%>=1/10W",
 	"assembly":"SMT",
 	"pins":2
 	},
 
 "R 270 0805": {
 	"mpn":["RC0805FR-07270RL"],
-	"spec":"270 0805 <=5% >=1/8W",
+	"spec":"270 0805<=5%>=1/8W",
 	"assembly":"SMT",
 	"pins":2
 	},
 
 "R 330 0603": {
 	"mpn":["RC0603FR-07330RL"],
-	"spec":"240 0603 <=1% >=1/10W",
+	"spec":"240 0603<=1%>=1/10W",
 	"assembly":"SMT",
 	"pins":2
 	},
 
 "R 75 0603": {
 	"mpn":["RC0603FR-0775RL"],
-	"spec":"75 0603 <=5% >=1/10W",
+	"spec":"75 0603<=5%>=1/10W",
 	"assembly":"SMT",
 	"pins":2
 	},
 
 "R 33 0603": {
 	"mpn":["RC0603FR-0733RL"],
-	"spec":"33 0603 <=1% >=1/10W",
+	"spec":"33 0603<=1%>=1/10W",
 	"assembly":"SMT",
 	"pins":2
 	},
 
 "R 22 0603": {
 	"mpn":["RC0603FR-0722RL"],
-	"spec":"22 0603 <=5% >=1/10W",
+	"spec":"22 0603<=5%>=1/10W",
 	"assembly":"SMT",
 	"pins":2
 	},
 
 "R 14 0805": {
 	"mpn":["ESR10EZPF14R0"],
-	"spec":"14 0805 <=5% >=1/4W",
+	"spec":"14 0805<=5%>=1/4W",
 	"assembly":"SMT",
 	"pins":2
 	},
 
 "R 10 0805": {
 	"mpn":["ESR10EZPF10R0"],
-	"spec":"10 0805 <=5% >=1/4W",
+	"spec":"10 0805<=5%>=1/4W",
 	"assembly":"SMT",
 	"pins":2
 	},
 
 "R 2.2 0603": {
 	"mpn":["RC0603FR-072R2L"],
-	"spec":"2.2 0603 <=5% >=1/10W",
+	"spec":"2.2 0603<=5%>=1/10W",
 	"assembly":"SMT",
 	"pins":2
 	},
 
 "J JNC 0603": {
 	"mpn":["RC0603JR-070RL"],
-	"spec":"0 0603 <=5% >=1/10W",
+	"spec":"0 0603<=5%>=1/10W",
 	"assembly":"SMT",
 	"pins":2
 	},
 
 "J JNC 0805": {
 	"mpn":["RC0805JR-070RL"],
-	"spec":"0 0805 <=5% >=1/10W",
+	"spec":"0 0805<=5%>=1/10W",
 	"assembly":"SMT",
 	"pins":2
 	},
@@ -508,7 +508,7 @@
 "X 38.4MHz": {
 	"mpn":["ASTXR-12-38.400MHZ-514054-T"],
 	"altmpn":["520L15IA38M4000","TSX-3225 38.4000MF10Z-AS3"],
-	"spec":"38.4MHz 3.3V <=10ppm",
+	"spec":"38.4MHz 3.3V<=10ppm",
 	"assembly":"SMT",
 	"pins":4
 	},	
@@ -520,7 +520,7 @@
 	"pins":4
 	},	
 
-"X 38.4MHz NoVersa": {
+"X 38.4MHz XTAL": {
 	"mpn":["TSX-3225 38.4000MF10Z-AS3"],
 	"spec":"38.4MHz <=10ppm",
 	"assembly":"SMT",
@@ -529,21 +529,21 @@
 
 "L 270nH 0805": {
 	"mpn":["LQW2BASR27J00L"],
-	"spec":"270nH >=350mA 1 Ohm",
+	"spec":"270nH >=350mA",
 	"assembly":"SMT",
 	"pins":2
 	},		
 
 "L 240nH 0805": {
 	"mpn":["LQW2BASR24J00L"],
-	"spec":"240Nn >=350mA 1 Ohm",
+	"spec":"240Nn >=350mA",
 	"assembly":"SMT",
 	"pins":2
 	},		
 
 "L 330nH 0805": {
 	"mpn":["LQW2BASR33J00L"],
-	"spec":"330nH 350mA 1 Ohm",
+	"spec":"330nH 350mA",
 	"assembly":"SMT",
 	"pins":2
 	},	
@@ -551,14 +551,14 @@
 "L 2.2uH PS": {
 	"mpn":["SRN5020-2R2Y"],
 	"altmpn":["NRS6045T2R3NMGK"],
-	"spec":"2.2µH Shielded Wirewound Inductor 2.9A 42 mOhm",
+	"spec":"2.2µH 2.9A",
 	"assembly":"SMT",
 	"pins":2
 	},		
 
 "L 3.3uH PS": {
 	"mpn":["SRN5020-3R3M"],
-	"spec":"3.3µH Shielded Wirewound Inductor 2.4A 58 mOhm",
+	"spec":"3.3µH 2.4A",
 	"assembly":"SMT",
 	"pins":2
 	},		

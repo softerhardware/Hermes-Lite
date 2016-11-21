@@ -2,7 +2,27 @@
 import untangle, json
 import pickledb
 import urllib
+import re
 from decimal import Decimal
+
+
+def LaTeXEscape(s):
+    d = {
+        '&': r'\&',
+        '%': r'\%',
+        '$': r'\$',
+        '#': r'\#',
+        '_': r'\_',
+        '{': r'\{',
+        '}': r'\}',
+        '~': r'\textasciitilde{}',
+        '^': r'\^{}',
+        '<=': r'$\leq$',
+        '>=': r'$\geq$',
+        '\\': r'\textbackslash{}',
+    }
+    regex = re.compile('|'.join(re.escape(unicode(key)) for key in sorted(d.keys(), key = lambda item: - len(item))))
+    return regex.sub(lambda match: d[match.group()], s)
 
 
 class Quote:
@@ -20,6 +40,21 @@ class Quote:
     def DebugPrint(self):
         print "{0.2f:10} {1:20} {2:30} {3:30} {4}".format(self.price,self.sku,self.name,self.manufacturer,self.url)
 
+    def LaTeXLine(self):
+        if self.name == 'Digi-Key':
+            sku = '\href{{http://www.digikey.com/product-search/en?keywords={0}}}{{{0}}}'.format(self.sku)
+        else:
+            sku = self.sku 
+
+        name = self.name.strip('*')
+        seller = '\href{{{1}}}{{{0}}}'.format(LaTeXEscape(name),self.url)
+
+        octoparturl = '\href{{http://www.octopart.com/search?q={0}}}{{{0}}}'.format(self.mpn)
+
+        ##print self.manufacturer,octoparturl,seller,sku,self.price
+        ##return "{0} & {1} & {2} & {3} & {4:.2f}".format(self.manufacturer,octoparturl,seller,sku,self.price)
+        return "{0} & {1} & {2} & {3:.2f}".format(octoparturl,seller,sku,self.price)
+
     def WikiLine(self):
         if self.name == 'Digi-Key':
             sku = '[{0}](http://www.digikey.com/product-search/en?keywords={0})'.format(self.sku)
@@ -33,13 +68,15 @@ class Quote:
         ##print self.manufacturer,octoparturl,seller,sku,self.price
         return "{0} | {1} | {2} | {3} | {4:.2f}".format(self.manufacturer,octoparturl,seller,sku,self.price)
 
+
+
 ## Special component quotes
 special = {
     "HK4100F-DC12V-SHG":[Quote(Decimal(0.50),'*EBay','http://www.ebay.com','','HK4100F-DC12V-SHG','HK4100F-DC12V-SHG')],
-    "BN43-202":[Quote(Decimal(0.50),'*Kits and Parts','http://www.kitsandparts.com','','BN43-202','BN43-202')],
-    "BN43-2402":[Quote(Decimal(0.25),'*Kits and Parts','http://www.kitsandparts.com','','BN43-2402','BN43-2402')],
-    "T37-2":[Quote(Decimal(0.25),'*Kits and Parts','http://www.kitsandparts.com','','T37-2','T37-2')],
-    "T37-6":[Quote(Decimal(0.25),'*Kits and Parts','http://www.kitsandparts.com','','T37-6','T37-6')],
+    "BN43-202":[Quote(Decimal(0.50),'*Kits&Parts','http://www.kitsandparts.com','','BN43-202','BN43-202')],
+    "BN43-2402":[Quote(Decimal(0.25),'*Kits&Parts','http://www.kitsandparts.com','','BN43-2402','BN43-2402')],
+    "T37-2":[Quote(Decimal(0.25),'*Kits&Parts','http://www.kitsandparts.com','','T37-2','T37-2')],
+    "T37-6":[Quote(Decimal(0.25),'*Kits&Parts','http://www.kitsandparts.com','','T37-6','T37-6')],
     "RD15HVF1":[Quote(Decimal(4.00),'*AliExpress','http://www.aliexpress.com','Mitsubishi','RD15HVF1','RD15HVF1')],
     "PCB":[Quote(Decimal(20.00),'*Tindie','http://www.tindie.com','Elecrow','PCB','PCB')],
     "CASE":[Quote(Decimal(13.00),'*EBay','http://www.ebay.com','Various','','Aluminum Enclosure 150 105 55')],
@@ -142,7 +179,7 @@ octopart = Octopart()
 
 
 class Component:
-    def __init__(self,xml,hand):
+    def __init__(self,xml,hand,optionset):
         self.xml = xml
         self.option = ''
         self.notes = ''
@@ -175,10 +212,28 @@ class Component:
                     self.key = field.cdata
                 elif field['name'] == 'Hand' and hand:
                     self.key = field.cdata
-
-
         except:
             pass
+
+    	## Handle option ORs
+    	if '_' in self.option:
+    		options = self.option.split('_')
+    		for o in options:
+    			no,nk = o.split(":")
+    			if no in optionset:
+    				self.option = no
+    				self.key = nk
+    				print "Forcing OR option",no,nk
+    				break
+
+        if '&' in self.option:
+            options = self.option.split('&')
+            if False in [o in optionset for o in options]:
+                print "AND condition not met",options
+            else:
+                print "AND condtion met",options
+                self.option = options[0]
+
 
         self.ref = self.xml['ref']
         if self.key == '':
@@ -217,23 +272,23 @@ class Part:
         self.pins = v['pins']
         self.assembly = v['assembly']
 
-    def Quantities(self):
+    def Quantities(self,options):
         unique = set([])
         optional = 0
         for c in self.components:
-            if c.option != '':
+            if c.option not in options:
                 optional += 1
                 unique.add(c.option)
 
         key = self.components[0].key
-        if "DNI" in key or "TP TEST" in key or "JNO" in key:
+        if "TP TEST" in key:
             return (0,len(self.components),len(unique))
         else:
             return (1*(len(self.components)-optional),optional,len(unique))
 
 
-    def Quotes(self,prefer=None):
-        quantity = self.Quantities()
+    def Quotes(self,options,prefer=None):
+        quantity = self.Quantities(options)
         quotes = []
         for mpn in self.mpns:
             quotes.extend(octopart.Quotes(mpn,quantity[0]))
@@ -245,9 +300,16 @@ class Part:
 
         return quotes
 
-    def WikiRefs(self,llen=20):
+    def FirstRef(self,selectedoptions):
+        for c in self.components:
+            if c.option in selectedoptions:
+                return c.ref
+        return "REF ERROR"
 
-        refs = [c.ref for c in self.components if c.option == '']
+
+    def WikiRefs(self,options,llen=20):
+
+        refs = [c.ref for c in self.components if c.option in options]
         refs.sort()
 
         if refs == []: return ''
@@ -270,25 +332,50 @@ class Part:
 
         return res
 
-    def Sort(self):
+    def LaTeXRefs(self,options,llen=16):
 
+        refs = [c.ref for c in self.components if c.option in options]
+        refs.sort()
+
+        res = ''
+
+        if refs == []: return res
+
+        i = 0
+        for ref in refs[:-1]:
+            if i > llen:
+                res = res + ' '
+                i = 0
+            ref = ref[0]+str(ref[1])
+            res = res + ref + ","
+            i = i + 1 + len(ref)
+
+        if i > llen:
+            res = res + ' '
+
+        res = res + refs[-1][0] + str(refs[-1][1])
+
+        return res
+
+    def DNIRefs(self,options):
+        return [c.ref for c in self.components if c.option not in options]
+
+    def Sort(self):
         self.components.sort(key=lambda x: x.ref)
  
-
-
     def DebugPrint(self):
         print "{0} {1:10} {2:20} {3}".format(self.components[0].DebugStr(),self.Quantities(),self.mpns,self.spec)
 
-    def PrintOptional(self):
+    def PrintOptional(self,opitons):
         for c in self.components:
-            if c.option != '': print c.ref,c.option
+            if c.option not in options: print c.ref,c.option
 
 
 
 
 class BOM:
 
-    def __init__(self,fn,hand=True):
+    def __init__(self,fn,hand=True,optionset=set([])):
 
         self.hand = hand
         ## Read components from KiCAD XML
@@ -298,14 +385,23 @@ class BOM:
         ml = kicad.export.components.comp
 
         self.parts = {}
+
+        self.optionset = optionset
+        ## Make sure no options components are selected
+        self.optionset.add('')
+
+        self.unusedoptions = set([])
   
         for comp in ml:
-            c = Component(comp,self.hand)
+            c = Component(comp,self.hand,self.optionset)
             if c.key in self.parts:
                 p = self.parts[c.key]
                 p.AddComponent(c)
             else:
                 self.parts[c.key] = Part(c)
+            if c.option:
+            	if c.option not in self.optionset:
+            		self.unusedoptions.add(c.option)
 
         ## Pair with mpn
         f = open("parts.json")
@@ -324,13 +420,17 @@ class BOM:
         for k,v in self.parts.iteritems():
             v.Sort()
 
+        print "Selected Options:",self.optionset
+        print
+        print "Unselected Options:",self.unusedoptions
+
     def DebugPrint(self):
         keys = self.parts.keys()
         keys.sort()
         for k in keys:
             v = self.parts[k]
             v.DebugPrint()
-            quotes = v.Quotes(prefer=['Mouser','Digi-Key'])
+            quotes = v.Quotes(self.optionset,prefer=['Mouser','Digi-Key'])
             ##print quotes
             for q in quotes: q.DebugPrint()
 
@@ -354,13 +454,13 @@ class BOM:
         for k in keys:
             p = self.parts[k]
 
-            c1 = p.WikiRefs()
+            c1 = p.WikiRefs(self.optionset)
 
             c3 = p.Quantities()[0]
 
             if c3 == 0: continue
 
-            quotes = p.Quotes(prefer)
+            quotes = p.Quotes(self.optionset,prefer)
             if quotes != []:
                 quote = quotes[0]
                 c2 = quote.WikiLine()
@@ -395,6 +495,81 @@ class BOM:
         print >>f,"  * Manual TH: {0}".format(ipp['MTH'][2])
         print >>f,"  * Total: {0}".format(ipp['MTH'][2]+ipp['SMT'][2]+ipp['TH'][2])
 
+    def LaTeXPrint(self,prefer=None):
+        keys = self.parts.keys()
+        keys.sort(key=lambda x: self.parts[x].FirstRef(self.optionset))
+        ##keys.sort(key=lambda x: self.parts[x].components[0].ref)
+
+        total = Decimal(0.0)
+
+        f = open("bom.dat","w")
+
+        # itemspartspins
+        ipp = {
+            'SMT':(0,0,0),
+            'TH':(0,0,0),
+            'MTH':(0,0,0)
+        }
+
+        dni = []
+
+        for k in keys:
+            p = self.parts[k]
+
+            c1 = p.LaTeXRefs(self.optionset)
+            dni.extend(p.DNIRefs(self.optionset))
+
+            c3 = p.Quantities(self.optionset)[0]
+
+            if c3 == 0: continue
+
+            quotes = p.Quotes(self.optionset,prefer)
+            if quotes != []:
+                quote = quotes[0]
+                c2 = quote.LaTeXLine()
+                c4 = quote.price * c3
+            else:
+                print "ERROR: No quote for mpn",p.mpns,p.spec,p.components[0].ref,p.components[0].key
+                continue
+
+            items,parts,pins = ipp[p.assembly]
+            ipp[p.assembly] = items+1,parts+c3,pins+(p.pins*c3)
+
+            ##print "!!!",c1,p.spec,c2,c3,c4
+            s = '{0} & {1} & {2} & {3} & {4:.2f} \\\\ \hline'.format(c1,LaTeXEscape(p.spec),c2,c3,c4)
+            total = total + c4
+
+            print >>f,s
+
+        f.close()
+
+        dni.sort()
+        dni = [d[0]+str(d[1]) for d in dni]
+
+
+        f = open("bompost.dat","w")
+
+        print >>f," * Total Price: ${0:.2f}".format(total)
+        print >>f," * Line Items"
+        print >>f,"  * Assembled TH: {0}".format(ipp['TH'][0])
+        print >>f,"  * Manual TH: {0}".format(ipp['MTH'][0])
+        print >>f,"  * Total: {0}".format(ipp['MTH'][0]+ipp['SMT'][0]+ipp['TH'][0])
+        print >>f," * Parts"
+        print >>f,"  * SMT: {0}".format(ipp['SMT'][1])
+        print >>f,"  * Assembled TH: {0}".format(ipp['TH'][1])
+        print >>f,"  * Manual TH: {0}".format(ipp['MTH'][1])
+        print >>f,"  * Total: {0}".format(ipp['MTH'][1]+ipp['SMT'][1]+ipp['TH'][1])
+        print >>f," * Pins"
+        print >>f,"  * SMT: {0}".format(ipp['SMT'][2])
+        print >>f,"  * Assembled TH: {0}".format(ipp['TH'][2])
+        print >>f,"  * Manual TH: {0}".format(ipp['MTH'][2])
+        print >>f,"  * Total: {0}".format(ipp['MTH'][2]+ipp['SMT'][2]+ipp['TH'][2])
+        print >>f," * DNI"
+        print >>f,' '.join(dni)
+
+        f.close()
+
+
     def OctoPartUpdatePrices(self):
 
         mpns = []
@@ -412,7 +587,7 @@ class BOM:
 
         for key in keys:
             p = self.parts[key]
-            p.PrintOptional()
+            p.PrintOptional(self.optionset)
 
 
   
