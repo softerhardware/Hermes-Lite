@@ -47,9 +47,14 @@ class Quote:
             sku = self.sku 
 
         name = self.name.strip('*')
-        seller = '\href{{{1}}}{{{0}}}'.format(LaTeXEscape(name),self.url)
 
-        octoparturl = '\href{{http://www.octopart.com/search?q={0}}}{{{0}}}'.format(self.mpn)
+        if sku != '':
+            octoparturl = '\href{{http://www.octopart.com/search?q={0}}}{{{0}}}'.format(self.mpn)    
+            seller = '\href{{{1}}}{{{0}}}'.format(LaTeXEscape(name),self.url)
+        else:
+            octoparturl = self.mpn
+            seller = name
+            sku = '\href{{{1}}}{{{0}}}'.format(LaTeXEscape(name),self.url)
 
         ##print self.manufacturer,octoparturl,seller,sku,self.price
         ##return "{0} & {1} & {2} & {3} & {4:.2f}".format(self.manufacturer,octoparturl,seller,sku,self.price)
@@ -78,9 +83,9 @@ special = {
     "T37-2":[Quote(Decimal(0.25),'*Kits&Parts','http://www.kitsandparts.com','','T37-2','T37-2')],
     "T37-6":[Quote(Decimal(0.25),'*Kits&Parts','http://www.kitsandparts.com','','T37-6','T37-6')],
     "RD15HVF1":[Quote(Decimal(4.00),'*AliExpress','http://www.aliexpress.com','Mitsubishi','RD15HVF1','RD15HVF1')],
-    "PCB":[Quote(Decimal(20.00),'*Tindie','http://www.tindie.com','Elecrow','PCB','PCB')],
-    "CASE":[Quote(Decimal(13.00),'*EBay','http://www.ebay.com','Various','','Aluminum Enclosure 150 105 55')],
-    "PROG":[Quote(Decimal(5.00),'*EBay','http://www.ebay.com','Various','','USB Blaster')]
+    "PCB":[Quote(Decimal(18.00),'*Tindie','http://www.tindie.com','Elecrow','','PCB')],
+    "CASE":[Quote(Decimal(9.00),'*EBay','http://www.ebay.com/itm/1PC-Aluminum-PCB-Instrument-Box-Enclosure-Project-Electronic-Case-8-Screws-US-/322239636151?hash=item4b06faa2b7:g:s20AAOSw6n5Xvlrb','Various','','Aluminum 100x100x50')],
+    "PROG":[Quote(Decimal(3.00),'*EBay','http://www.ebay.com/itm/altera-Mini-Usb-Blaster-Cable-For-CPLD-FPGA-NIOS-JTAG-Altera-Programmer-/200943750380?hash=item2ec92e4cec:g:YyMAAOSw0fhXieqQ','Various','','USB Blaster')]
 }
 
 
@@ -246,6 +251,9 @@ class Component:
                 self.key = (self.ref[0:2] + " " + self.value + " " + self.ext).strip()
         elif self.ext != '':
             self.key = self.key + ' ' + self.ext
+
+        ## Merge any requested jumpers into one class
+        self.key = self.key.replace("J JNO","J JNC")
 
 
         ## Convert ref to sortable ascii,integer tuple
@@ -560,9 +568,13 @@ class BOM:
         print >>f,"\\textbf{{Line Items:}} SMT:{0} Assembled TH:{1} Manual TH:{2} Total:{3}\\\\".format(ipp['SMT'][0],ipp['TH'][0],ipp['MTH'][0],ipp['MTH'][0]+ipp['SMT'][0]+ipp['TH'][0])
         print >>f,"\\textbf{{Parts:}} SMT:{0} Assembled TH:{1} Manual TH:{2} Total:{3}\\\\".format(ipp['SMT'][1],ipp['TH'][1],ipp['MTH'][1],ipp['MTH'][1]+ipp['SMT'][1]+ipp['TH'][1])
         print >>f,"\\textbf{{Pins:}} SMT:{0} Assembled TH:{1} Manual TH:{2} Total:{3}\\\\".format(ipp['SMT'][2],ipp['TH'][2],ipp['MTH'][2],ipp['MTH'][2]+ipp['SMT'][2]+ipp['TH'][2])
-        print >>f,"\\textbf{{Do Not Include:}}"
-        print >>f,' '.join(dni)
-        print >>f,"\\\\"
+        
+
+        dnis = ' '.join(dni).strip()        
+        if dnis != '':
+            print >>f,"\\textbf{{Do Not Include:}}"
+            print >>f,dnis
+            print >>f,"\\\\"
 
         f.close()
 

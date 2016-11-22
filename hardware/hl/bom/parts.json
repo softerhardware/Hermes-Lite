@@ -43,8 +43,8 @@
 	},
 
 "C 22uF 0805 HV": {
-	"mpn":["GRM21BR61E226ME44L"],
-	"spec":"22uF 0805>=X5R>=6.3V<=20%",
+	"mpn":["GRM21BR61E226ME44L","GRT21BR61E226ME13L"],
+	"spec":"22uF 0805>=X5R>=25V<=20%",
 	"assembly":"SMT",
 	"pins":2
 	},
@@ -113,7 +113,7 @@
 	},
 
 "C 75pF 0805": {
-	"mpn":["CC0805JRNPO0BN750","GRM2195C2A750JA01D","CL21C750JCANNNC","C0805C750J1GACTU","251R15S750JV4E"],
+	"mpn":["CC0805JRNPO0BN750","GRM2195C2A750JA01D","CL21C750JCANNNC","C0805C750J1GACTU","251R15S750JV4E","08051A750JAT2A"],
 	"spec":"75pF 0805NP0>=100V<=5%",
 	"assembly":"SMT",
 	"pins":2
@@ -135,7 +135,7 @@
 
 "U KSZ9031RN": {
 	"mpn":["KSZ9031RNXCC","KSZ9031RNXCA"],
-	"spec":"GbE Phy",
+	"spec":"Gigabit EthPhy",
 	"assembly":"SMT",
 	"pins":48
 	},
@@ -170,14 +170,14 @@
 
 "U AD9866BCPZ": {
 	"mpn":["AD9866BCPZ"],
-	"spec":"MxFE",
+	"spec":"RF ADC DAC",
 	"assembly":"SMT",
 	"pins":64
 	},
 
 "U OPA2677": {
 	"mpn":["OPA2677IDDAR"],
-	"spec":"OpAmp",
+	"spec":"RF Preamp OpAmp",
 	"assembly":"SMT",
 	"pins":8
 	},
@@ -198,7 +198,7 @@
 
 "U MCP4661": {
 	"mpn":["MCP4661-103E/ST"],
-	"spec":"POT 10K",
+	"spec":"Digital POT 10K",
 	"assembly":"SMT",
 	"pins":14
 	},	
@@ -212,14 +212,14 @@
 
 "U MAX11613": {
 	"mpn":["MAX11613EUA"],
-	"spec":"Switching Regulator",
+	"spec":"Slow ADC",
 	"assembly":"SMT",
 	"pins":8
 	},
 
 "U TPS730": {
 	"mpn":["TPS73025DBVR"],
-	"spec":"Regulator",
+	"spec":"LDO Regulator",
 	"assembly":"SMT",
 	"pins":5
 	},
@@ -233,7 +233,7 @@
 
 "U AP2204": {
 	"mpn":["AP2204MP-ADJTRG1"],
-	"spec":"Regulator",
+	"spec":"LDO Regulator",
 	"assembly":"SMT",
 	"pins":8
 	},	
@@ -247,14 +247,14 @@
 
 "D TVS": {
 	"mpn":["CDSOD323-T05L"],
-	"spec":"TVS RF Overvoltage",
+	"spec":"TVS Diode",
 	"assembly":"SMT",
 	"pins":3
 	},
 
 "D DNI": {
 	"mpn":["SL15T1G"],
-	"spec":"TVS RF Overvoltage",
+	"spec":"TVS Diode",
 	"assembly":"SMT",
 	"pins":2
 	},
@@ -457,21 +457,21 @@
 
 "J JNC 0603": {
 	"mpn":["RC0603JR-070RL"],
-	"spec":"0 0603<=5%>=1/10W",
+	"spec":"0Ohm 0603<=5%>=1/10W",
 	"assembly":"SMT",
 	"pins":2
 	},
 
 "J JNO 0603": {
 	"mpn":["RC0603JR-070RL"],
-	"spec":"0 0603<=5%>=1/10W",
+	"spec":"0Ohm 0603<=5%>=1/10W",
 	"assembly":"SMT",
 	"pins":2
 	},
 
 "J JNC 0805": {
 	"mpn":["RC0805JR-070RL"],
-	"spec":"0 0805<=5%>=1/10W",
+	"spec":"0Ohm 0805<=5%>=1/10W",
 	"assembly":"SMT",
 	"pins":2
 	},
@@ -492,42 +492,42 @@
 
 "CN MagJack": {
 	"mpn":["L829-1J1T-43"],
-	"spec":"MagJack",
+	"spec":"Eth MagJack",
 	"assembly":"TH",
 	"pins":18
 	},	
 
 "CN4S": {
 	"mpn":["61300411121","68016-404HLF","640457-4"],
-	"spec":"4x1 M 0.1in S",
+	"spec":"4x1 M 0.1in HDR S",
 	"assembly":"MTH",
 	"pins":4
 	},
 
 "CN2S": {
 	"mpn":["M20-9990245"],
-	"spec":"2x1 M 0.1in S",
+	"spec":"2x1 M 0.1in HDR S",
 	"assembly":"MTH",
 	"pins":2
 	},
 
 "CN2R": {
 	"mpn":["M20-9960245"],
-	"spec":"2x1 M 0.1in R",
+	"spec":"2x1 M 0.1in HDR RA",
 	"assembly":"MTH",
 	"pins":2
 	},	
 
 "CN8R": {
 	"mpn":["61300821021"],
-	"spec":"4x2 M 0.1in RA",
+	"spec":"4x2 M 0.1in HDR RA",
 	"assembly":"TH",
 	"pins":8
 	},		
 
 "CL SMA": {
 	"mpn":["5-1814832-1"],
-	"spec":"SMA",
+	"spec":"SMA Straight",
 	"altsrc":[["www.ebay.com",1.00]],
 	"assembly":"MTH",
 	"pins":5	
@@ -564,21 +564,21 @@
 
 "L 270nH 0805": {
 	"mpn":["LQW2BASR27J00L"],
-	"spec":"270nH >=350mA",
+	"spec":"270nH",
 	"assembly":"SMT",
 	"pins":2
 	},		
 
 "L 240nH 0805": {
 	"mpn":["LQW2BASR24J00L"],
-	"spec":"240nH >=350mA",
+	"spec":"240nH",
 	"assembly":"SMT",
 	"pins":2
 	},		
 
 "L 330nH 0805": {
 	"mpn":["LQW2BASR33J00L"],
-	"spec":"330nH 350mA",
+	"spec":"330nH",
 	"assembly":"SMT",
 	"pins":2
 	},	
@@ -586,14 +586,14 @@
 "L 2.2uH PS": {
 	"mpn":["SRN5020-2R2Y"],
 	"altmpn":["NRS6045T2R3NMGK"],
-	"spec":"2.2uH 2.9A",
+	"spec":"2.2uH >=2.4A",
 	"assembly":"SMT",
 	"pins":2
 	},		
 
 "L 3.3uH PS": {
 	"mpn":["SRN5020-3R3M"],
-	"spec":"3.3uH 2.4A",
+	"spec":"3.3uH >=2.4A",
 	"assembly":"SMT",
 	"pins":2
 	},		
