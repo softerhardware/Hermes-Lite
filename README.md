@@ -1,7 +1,12 @@
+Deprecated Project!!!
+=====================
+
+This project is deprecated. Current development is now focussed on the [Hermes-Lite 2.x](https://github.com/softerhardware/Hermes-Lite2).  
+
 Hermes-Lite
 ===========
 
-This is a work in progress to create a low-cost software defined radio HF transceiver based on a [broadband modem chip](http://www.analog.com/en/broadband-products/broadband-codecs/ad9866/products/product.html) and the [Hermes SDR](http://openhpsdr.org/wiki/index.php?title=HERMES) project. This project currently targets experimenters. About 50 Hermes-Lites have been successfully built.
+This is a work in progress to create a low-cost software defined radio HF transceiver based on a [broadband modem chip](http://www.analog.com/en/broadband-products/broadband-codecs/ad9866/products/product.html) and the [Hermes SDR](http://openhpsdr.org/wiki/index.php?title=HERMES) project. This project currently targets experimenters. About 100 Hermes-Lites have been successfully built.
 
  * [Wiki](https://github.com/softerhardware/Hermes-Lite/wiki) for documentation.
  * [Google Groups](https://groups.google.com/forum/#!forum/hermes-lite) for discussion.
@@ -16,7 +21,6 @@ This is a work in progress to create a low-cost software defined radio HF transc
   * [IN3OTD's Hermes-Lite Experiments](http://www.qsl.net/in3otd/ham_radio/Hermes-Lite/Hermes-Lite.html).
   * [JI1UDD's Hermes-Lite 6M Support, Audio Codec and Iambic Keyer](https://github.com/ji1udd/Hermes-Lite/tree/6M).
   * [AB4OJ's Hermes-Lite Test Report](http://www.ab4oj.com/sdr/hermes_lite/hl_notes.pdf).
-
 
  
 ## Introduction
