@@ -136,8 +136,11 @@ always @(posedge clock)
   //subtract quadrant and Pi/4 from the angle
   Z[0] <= {~phase[WP-3], ~phase[WP-3], phase[WP-4:WP-WZ-1]};
 
-  //advance NCO
-  phase <= phase + frequency;
+  if (frequency == 1'b0)
+    phase <= 1'b0;
+  else
+    //advance NCO
+    phase <= phase + frequency;
   end
 
 
