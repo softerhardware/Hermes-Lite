@@ -147,7 +147,7 @@ wire FPGA_PTT;
 parameter M_TPD   = 4;
 parameter IF_TPD  = 2;
 
-parameter  Hermes_serialno = 8'd31;     // Serial number of this version
+parameter  Hermes_serialno = 8'd32;     // Serial number of this version
 localparam Penny_serialno = 8'd00;      // Use same value as equ1valent Penny code 
 localparam Merc_serialno = 8'd00;       // Use same value as equivalent Mercury code
 
@@ -881,7 +881,42 @@ end
         endcase
     end 
 
-// create the first receiver; it is capable of VNA mode
+// This firmware supports two VNA modes: scanning by the PC (original method) and scanning in the FPGA.
+// The VNA bit must be turned on for either.  So VNA is one for either method, and zero otherwise.
+// The scan method depends on the number of VNA scan points, IF_VNA_count.  This is zero for the original method.
+wire VNA_SCAN_PC   = VNA & (IF_VNA_count == 0);
+wire VNA_SCAN_FPGA = VNA & (IF_VNA_count != 0);
+
+wire signed [17:0] cordic_data_I, cordic_data_Q;
+wire [31:0] rx0_frequency;
+wire vna_strobe, rx0_strobe;
+wire signed [23:0] vna_out_I, vna_out_Q, rx0_out_I, rx0_out_Q;
+
+assign rx0_frequency = VNA ? C122_phase_word_Tx : C122_sync_phase_word[0];
+assign strobe[0] = VNA_SCAN_FPGA ? vna_strobe : rx0_strobe;
+assign rx_I[0] = VNA_SCAN_FPGA ? vna_out_I : rx0_out_I;
+assign rx_Q[0] = VNA_SCAN_FPGA ? vna_out_Q : rx0_out_Q;
+
+receiver_vna #(.CICRATE(CICRATE), .RATE48(RATE48)) rx_vna (	// use this output for VNA_SCAN_FPGA
+    //control
+    .clock(AD9866clkX1),
+    .freq_delta(C122_sync_phase_word[0]),
+    .output_strobe(vna_strobe),
+    //input
+    .cordic_data_I(cordic_data_I),
+    .cordic_data_Q(cordic_data_Q),
+    //output
+    .out_data_I(vna_out_I),
+    .out_data_Q(vna_out_Q),
+    // VNA mode data
+    .vna(VNA),
+    .Tx_frequency_in(C122_sync_phase_word_Tx),
+    .Tx_frequency_out(C122_phase_word_Tx),
+	.vna_count(IF_VNA_count)
+    );
+
+// create the first receiver
+
 cdc_mcp #(48)           // Transfer the receiver data and strobe from AD9866clkX1 to IF_clk
         IQ_sync0 (.a_data ({rx_I[0], rx_Q[0]}), .a_clk(AD9866clkX1),.b_clk(IF_clk), .a_data_rdy(strobe[0]),
                 .a_rst(C122_rst), .b_rst(IF_rst), .b_data(IF_M_IQ_Data[0]), .b_data_ack(IF_M_IQ_Data_rdy[0]));
@@ -889,48 +924,23 @@ cdc_mcp #(48)           // Transfer the receiver data and strobe from AD9866clkX
 // transfer Rx1 frequency to the receiver clock AD9866clkX1
 cdc_sync #(32)
         freqRx0 (.siga(IF_frequency[1]), .rstb(C122_rst), .clkb(AD9866clkX1), .sigb(C122_frequency_HZ[0]));
-
-`define NEW_VNA
-
-`ifdef NEW_VNA
-
 assign C122_sync_phase_word[0] = C122_frequency_HZ[0];
-receiver_vna #(.CICRATE(CICRATE), .RATE48(RATE48)) receiver_inst0 (	// first receiver
+
+receiver #(.CICRATE(CICRATE)) receiver_inst0 (	// This first receiver is used for transceiver and VNA_SCAN_PC.
     //control
     .clock(AD9866clkX1),
     .rate(rate),
-    .Rx_frequency(C122_sync_phase_word[0]),
-    .output_strobe(strobe[0]),
+    .frequency(rx0_frequency),
+    .out_strobe(rx0_strobe),
     //input
-      .in_data(adcpipe[0]),
+    .in_data(adcpipe[0]),
     //output
-    .out_data_I(rx_I[0]),
-    .out_data_Q(rx_Q[0]),
-    // VNA mode data
-    .vna(VNA),
-    .Tx_frequency_in(C122_sync_phase_word_Tx),
-    .Tx_frequency_out(C122_phase_word_Tx),
-	.vna_count(IF_VNA_count)
+    .out_data_I(rx0_out_I),
+    .out_data_Q(rx0_out_Q),
+    .cordic_outdata_I(cordic_data_I),
+    .cordic_outdata_Q(cordic_data_Q)
     );
-`else
-// Old VNA mode
-// if in VNA mode use the Rx[0] phase word for the Tx. 
-//assign C122_phase_word_Tx = VNA ? C122_sync_phase_word[0] : C122_sync_phase_word_Tx;
-assign C122_phase_word_Tx = C122_sync_phase_word_Tx;
-assign C122_sync_phase_word[0] = C122_frequency_HZ[0];
-receiver #(.CICRATE(CICRATE)) receiver_inst0 (	// first receiver
-    //control
-    .clock(AD9866clkX1),
-    .rate(rate),
-    .frequency(C122_phase_word_Tx), //C122_sync_phase_word[0]),
-    .out_strobe(strobe[0]),
-    //input
-      .in_data(adcpipe[0]),
-    //output
-    .out_data_I(rx_I[0]),
-    .out_data_Q(rx_Q[0])
-    );
-`endif
+
 genvar c;
 generate	// generate the receivers after the first
   for (c = 1; c < NR; c = c + 1) // calc freq phase word for 4 freqs (Rx1, Rx2, Rx3, Rx4)
@@ -1144,11 +1154,6 @@ wire signed [31:0] C122_phase_word_Tx;
 wire signed [15:0] I;
 wire signed [15:0] Q;
 
-// This firmware supports two VNA modes: scanning by the PC (original method) and scanning in the FPGA.
-// The VNA bit must be turned on for either.  So VNA is one for either method, and zero otherwise.
-// These are set according to the number of VNA scan points, IF_VNA_count.  This is zero for the original method.
-wire VNA_SCAN_PC   = VNA ? (IF_VNA_count == 0) : 1'b0;
-wire VNA_SCAN_FPGA = VNA ? ~ VNA_SCAN_PC       : 1'b0;
 // If in either VNA mode, transmit a sine wave.
 assign                  I = VNA ? 16'd19274 : (cwkey ? {1'b0, C122_cwlevel} : y2_i);    // select VNA mode if active. Set CORDIC for max DAC output
 assign                  Q = (VNA | cwkey) ? 0 : y2_r;                   // taking into account CORDICs gain i.e. 0x7FFF/1.7
