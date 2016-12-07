@@ -277,7 +277,7 @@ localparam bit [0:19][8:0] initarray_regular = {
 };
 
 
-localparam disable_IAMP = 1'b0; 
+localparam disable_IAMP = 1'b1; 
 localparam bit [0:19][8:0] initarray0 = (disable_IAMP == 1) ? initarray_disable_IAMP : initarray_regular;
 
 
@@ -891,13 +891,21 @@ wire signed [17:0] cordic_data_I, cordic_data_Q;
 wire [31:0] rx0_frequency;
 wire vna_strobe, rx0_strobe;
 wire signed [23:0] vna_out_I, vna_out_Q, rx0_out_I, rx0_out_Q;
+wire [15:0] C122_VNA_count;
+wire C122_VNA_bit;
 
 assign rx0_frequency = VNA ? C122_phase_word_Tx : C122_sync_phase_word[0];
 assign strobe[0] = VNA_SCAN_FPGA ? vna_strobe : rx0_strobe;
 assign rx_I[0] = VNA_SCAN_FPGA ? vna_out_I : rx0_out_I;
 assign rx_Q[0] = VNA_SCAN_FPGA ? vna_out_Q : rx0_out_Q;
 
-receiver_vna #(.CICRATE(CICRATE), .RATE48(RATE48)) rx_vna (	// use this output for VNA_SCAN_FPGA
+cdc_sync #(16)
+    vna_cnt  (.siga(IF_VNA_count), .rstb(C122_rst), .clkb(AD9866clkX1), .sigb(C122_VNA_count));
+
+cdc_sync #(1)
+    vna_bit  (.siga(VNA), .rstb(C122_rst), .clkb(AD9866clkX1), .sigb(C122_VNA_bit));
+
+vna_scanner #(.CICRATE(CICRATE), .RATE48(RATE48)) rx_vna (	// use this output for VNA_SCAN_FPGA
     //control
     .clock(AD9866clkX1),
     .freq_delta(C122_sync_phase_word[0]),
@@ -909,10 +917,10 @@ receiver_vna #(.CICRATE(CICRATE), .RATE48(RATE48)) rx_vna (	// use this output f
     .out_data_I(vna_out_I),
     .out_data_Q(vna_out_Q),
     // VNA mode data
-    .vna(VNA),
+    .vna(C122_VNA_bit),
     .Tx_frequency_in(C122_sync_phase_word_Tx),
     .Tx_frequency_out(C122_phase_word_Tx),
-	.vna_count(IF_VNA_count)
+    .vna_count(C122_VNA_count)
     );
 
 // create the first receiver
