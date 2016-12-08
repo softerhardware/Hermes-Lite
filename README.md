@@ -1,22 +1,7 @@
-Hermes-Lite
-===========
+Hermes-Lite 1.x Deprecated Project!!!
+=====================================
 
-This is a work in progress to create a low-cost software defined radio HF transceiver based on a [broadband modem chip](http://www.analog.com/en/broadband-products/broadband-codecs/ad9866/products/product.html) and the [Hermes SDR](http://openhpsdr.org/wiki/index.php?title=HERMES) project. This project currently targets experimenters. About 50 Hermes-Lites have been successfully built.
-
- * [Wiki](https://github.com/softerhardware/Hermes-Lite/wiki) for documentation.
- * [Google Groups](https://groups.google.com/forum/#!forum/hermes-lite) for discussion.
- * [Tindie](https://www.tindie.com/products/SofterHardware/hermes-lite-sdr-amateur-radio-printed-circuit-board-set-pcb/) to purchase bare board sets and kits.
- * [GitHub](https://github.com/softerhardware/Hermes-Lite) for all open source hardware, software and firmware.
-  * Hermes-Lite [schematic](https://github.com/softerhardware/Hermes-Lite/raw/master/pcb/hermeslite.pdf), [BOM](https://github.com/softerhardware/Hermes-Lite/raw/master/pcb/bom.xls) and [PCB](https://www.oshpark.com/profiles/SofterHardware).
-  * Basic RF front end [schematic](https://github.com/softerhardware/Hermes-Lite/raw/master/frontend/basic/frontend.pdf), [BOM](https://github.com/softerhardware/Hermes-Lite/raw/master/frontend/basic/bom.xls) and [PCB](https://www.oshpark.com/profiles/SofterHardware).
- * [GitHub Issues](https://github.com/softerhardware/Hermes-Lite/issues) to track all bugs, feature requests and planning.
- * [Version 2.0 Architecture](https://github.com/softerhardware/Hermes-Lite/wiki/Hermes-Lite-2.0)
- * External Hermes-Lite Hardware Links
-  * [W9JSW's Hermes-Lite Power Amplifiers and Filters](https://github.com/W9JSW/Hermes-Lite/tree/Amplifiers).
-  * [IN3OTD's Hermes-Lite Experiments](http://www.qsl.net/in3otd/ham_radio/Hermes-Lite/Hermes-Lite.html).
-  * [JI1UDD's Hermes-Lite 6M Support, Audio Codec and Iambic Keyer](https://github.com/ji1udd/Hermes-Lite/tree/6M).
-  * [AB4OJ's Hermes-Lite Test Report](http://www.ab4oj.com/sdr/hermes_lite/hl_notes.pdf).
-
+This project is deprecated. Current development is now focussed on the Hermes-Lite 2.x. See the main [Hermes-Lite Web Page](http://www.hermeslite.com) for the latest links and details.
 
  
 ## Introduction
